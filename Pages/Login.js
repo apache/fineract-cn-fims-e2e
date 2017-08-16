@@ -1,0 +1,134 @@
+//Login.js
+
+var Common = require('./Common.js');
+
+//actions specific to logging in, logging out, changing password
+
+var EC = protractor.ExpectedConditions;
+var inputTenant = $(".mat-input-element[formcontrolname='tenant']");
+var inputUsername = $(".mat-input-element[formcontrolname='username']");
+var inputPassword = $(".mat-input-element[formcontrolname='password']");
+var inputCurrentPassword = $(".mat-input-element[formcontrolname='currentPassword']");
+var inputNewPassword = $(".mat-input-element[formcontrolname='newPassword']");
+var inputConfirmNewPassword = $(".mat-input-element[formcontrolname='confirmNewPassword']");
+var userAccountButton =$$("md-toolbar-row .mat-icon-button").get(1);
+var buttonSignOut = $$(".mat-menu-panel .mat-menu-item").get(2);
+
+module.exports = {
+
+    enterTextInInputFieldForTenant: function(text){
+
+        browser.wait(EC.visibilityOf(inputTenant), 5000);
+        inputTenant.click().sendKeys(text);
+    },
+    enterTextInInputFieldForUsername: function(text){
+        browser.wait(EC.visibilityOf(inputUsername), 5000);
+        inputUsername.click().sendKeys(text);
+    },
+    enterTextInInputFieldForPassword: function(text) {
+        browser.wait(EC.visibilityOf(inputPassword), 5000);
+        inputPassword.click().sendKeys(text);
+    },
+    clickEnabledSignInOrChangePasswordButton: function(){
+        expect($(".mat-raised-button.mat-primary").isEnabled()).toBeTruthy();
+        $(".mat-raised-button.mat-primary").click();
+        browser.wait(EC.not(EC.presenceOf($('.td-loading'))), 10000);
+    },
+    verifyMessageForUnsuccessfulLoginIsDisplayed: function(){
+        browser.wait(EC.visibilityOf($("div p.md-caption")), 2000);
+        message = $("div p.md-caption").getText();
+        expect(message).toEqual("Sorry, that login did not work.");
+    },
+    clearInputFieldForUsername: function(){
+        inputUsername.clear();
+    },
+    clearInputFieldForTenant: function(){
+        inputTenant.clear();
+    },
+    clearInputFieldForPassword: function(){
+        inputPassword.clear();
+    },
+    verifyUserIsOnChangePasswordPage: function(){
+        browser.wait(EC.visibilityOf($(".mat-card .mat-card-title")));
+        expect($(".mat-card .mat-card-title").getText()).toEqual("Change password");
+    },
+    enterTextInInputFieldForCurrentPassword: function(text){
+        browser.wait(EC.visibilityOf(inputCurrentPassword));
+        inputCurrentPassword.click().sendKeys(text);
+    },
+    enterTextInInputFieldForNewPassword: function(text){
+        inputNewPassword.click().sendKeys(text);
+    },
+    enterTextInInputFieldForConfirmNewPassword: function(text){
+        inputConfirmNewPassword.click().sendKeys(text);
+    },
+    verifyMessageThatPasswordsMustMatchIsDisplayed: function(){
+        browser.wait(EC.visibilityOf($(".tc-red-700")), 2000);
+        message = $(".tc-red-700").getText();
+        expect(message).toEqual("Passwords must match.");
+    },
+    clearInputFieldForNewPassword: function(){
+        inputNewPassword.clear();
+    },
+    clearInputFieldForCurrentPassword: function(){
+        inputCurrentPassword.clear();
+    },
+    clearInputFieldForConfirmNewPassword: function(){
+        inputConfirmNewPassword.clear();
+    },
+    verifySignInOrChangePasswordButtonIsDisabled: function(){
+        expect($(".mat-raised-button.mat-primary").isEnabled()).toBeFalsy();
+    },
+    verifySignInOrChangePasswordButtonIsEnabled: function(){
+        expect($(".mat-raised-button.mat-primary").isEnabled()).toBeTruthy();
+    },
+    clickButtonToOpenUserAccountMenu: function() {
+        userAccountButton.click();
+        browser.wait(EC.visibilityOf($$(".mat-menu-item span").first()), 5000);
+    },
+    verifyUserIsLoggedIn: function(text) {
+        loggedInUser=$$(".mat-menu-item span").first().getText();
+        expect(loggedInUser).toEqual(text);
+    },
+    closeOpenUserAccountMenu: function(){
+        $$(".mat-menu-item span").first().click();
+    },
+    clickMenuItemSignOut: function() {
+        browser.wait(EC.visibilityOf(buttonSignOut, 2000));
+        buttonSignOut.click();
+    },
+    clickMenuItemSettings: function() {
+        browser.wait(EC.visibilityOf($$(".mat-menu-panel .mat-menu-item").get(1), 2000));
+        $$(".mat-menu-panel .mat-menu-item").get(1).click();
+    },
+    verifyNewPasswordInputFieldMarkedAsRequired: function(){
+        expect(inputNewPassword.getAttribute('aria-invalid')).toEqual('true');
+        expect($(".mat-input-error").getText()).toEqual("Required");
+    },
+    logInWithTenantUserAndPassword: function(tenant, user, password){
+        this.enterTextInInputFieldForTenant(tenant);
+        this.enterTextInInputFieldForUsername(user);
+        this.enterTextInInputFieldForPassword(password);
+        this.clickEnabledSignInOrChangePasswordButton();
+        Common.waitForThePageToFinishLoading();
+    },
+    logInForFirstTimeWithTenantUserAndPassword: function(tenant, user, initialPassword, newPassword){
+        this.enterTextInInputFieldForTenant(tenant);
+        this.enterTextInInputFieldForUsername(user);
+        this.enterTextInInputFieldForPassword(initialPassword);
+        this.clickEnabledSignInOrChangePasswordButton();
+        this.enterTextInInputFieldForCurrentPassword(initialPassword);
+        this.enterTextInInputFieldForNewPassword(newPassword);
+        this.enterTextInInputFieldForConfirmNewPassword(newPassword);
+        this.clickEnabledSignInOrChangePasswordButton();
+        this.enterTextInInputFieldForTenant(tenant);
+        this.enterTextInInputFieldForUsername(user);
+        this.enterTextInInputFieldForPassword(newPassword);
+        this.clickEnabledSignInOrChangePasswordButton();
+        Common.waitForThePageToFinishLoading();
+    },
+    signOut: function(){
+        this.clickButtonToOpenUserAccountMenu();
+        this.clickMenuItemSignOut();
+    }
+};
