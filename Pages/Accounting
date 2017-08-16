@@ -1,0 +1,25 @@
+//Accounting.js
+
+//Actions specific to the Accounting section
+
+var EC = protractor.ExpectedConditions;
+var usernameInput = $(".mat-input-infix input[placeholder='Username']");
+var firstNameInput = $(".mat-input-infix input[formcontrolname='firstName']");
+var createLedger = $("a[href='/accounting/create']");
+
+
+
+
+module.exports = {
+    goToAccountingViaSidePanel: function() {
+        $$("a[href='/accounting']").first().click();
+    },
+    verifyCardHasTitleGeneralLedger: function() {
+        form_title=$("fims-layout-card-over .mat-toolbar-row div").getText();
+        expect(form_title).toEqual("General Ledger");
+    },
+    clickButtonOrLinkCreateNewLedger: function(){
+        browser.wait(EC.visibilityOf(createLedger), 5000);
+        createLedger.click();
+    }
+}
