@@ -5,20 +5,19 @@
 var EC = protractor.ExpectedConditions;
 var titleRow = $("fims-layout-card-over .mat-toolbar-row div");
 var createLoan = $("a[href='/loans/create']");
-
 var shortNameInput = $("fims-id-input[controlname='identifier'] input");
-var nameInput = $(".mat-input-infix input[controlname='name']");
-var descriptionInput = $(".mat-input-infix input[controlname='description']");
-var minimumBalanceInput = $("fims-number-input[controlname='minimumBalance'] input");
+var nameInput = $(".mat-input-infix input[formcontrolname='name']");
+var descriptionInput = $(".mat-input-infix input[formcontrolname='description']");
+var minimumPrincipalAmoung = $(".mat-input-infix[placeholder='Minimum principal amount']");
+var maximumPrincipalAmoung = $(".mat-input-infix[placeholder='Maximum principal amount']");
 var currencySelect = $("md-select[formcontrolname='currencyCode']");
-var interestInput = $("fims-number-input[controlname='interest'] input");
-var termPeriodInput = $(".mat-input-infix input[formcontrolname='termPeriod']");
-var fixedTermEnabledToggle = $("md-slide-toggle[formcontrolname='fixedTermEnabled']");
-var termTimeUnit = $("md-radio-group[formcontrolname='fixedTermEnabled']");
-var cashAccountInput = $("fims-account-select[formcontrolname='cashAccountIdentifier'] input");
-var expenseAccountInput = $("fims-account-select[formcontrolname='expenseAccountIdentifier'] input");
-var accrueAccountInput = $("fims-account-select[formcontrolname='accrueAccountIdentifier'] input");
-var equityLedgerInput = $("fims-ledger-select[formcontrolname='equityLedgerIdentifier'] input");
+var termInput = $(".mat-input-infix input[formcontrolname='term']");
+var radioWeeks = $$("md-radio-group .mat-radio-button").first();
+var radioMonths =  $$("md-radio-group .mat-radio-button").get(1);
+var radioYears =  $$("md-radio-group .mat-radio-button").get(2);
+
+var cashFundAccountInput = $("fims-account-select[formcontrolname='loanFundAccount'] input");
+var customerLoanLedgerInput = $("fims-ledger-select[formcontrolname='customerLoanLedger'] input");
 
 module.exports = {
     goToLoanProductsViaSidePanel: function() {
@@ -42,24 +41,17 @@ module.exports = {
     enterTextIntoDescriptionInputField: function(text) {
         descriptionInput.click().sendKeys(text);
     },
-    enterTextIntoMinimumBalanceInputField: function(text) {
-        minimumBalanceInput.click().sendKeys(text);
+    enterTextIntoMinimumPrincipalInputField: function(text) {
+        minimumPrincipalInput.click().sendKeys(text);
     },
-    enterTextIntoInterestInputField: function(text) {
-        interestInput.click().sendKeys(text);
+    enterTextIntoMaximumPrincipalInputField: function(text) {
+        maximumPrincipalInput.click().sendKeys(text);
     },
-    enterTextIntoTermPeriodInputField: function(text) {
-        termPeriodInput.click().sendKeys(text);
+    enterTextIntoTermInputField: function(text) {
+        termInput.click().sendKeys(text);
     },
-    verifyFixedTermToggleSetToOff: function(){
-        //
-    },
-    verifyTermPeriodInputFieldIsDisabled: function(){
-        //
-    },
-    verifyRadioButtonsMonthAndYearDisabled: function(){
-        //
-    },
+
+
     enterTextIntoCashAccountInputField: function(text) {
         cashAccountInput.click().sendKeys(text);
     },

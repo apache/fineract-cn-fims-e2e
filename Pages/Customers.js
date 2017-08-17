@@ -20,6 +20,7 @@ var titleRow = $("fims-layout-card-over .mat-toolbar-row div");
 
 module.exports = {
     verifyCardHasTitleManageCustomers: function() {
+        browser.wait(EC.not(EC.presenceOf($('.td-loading'))), 10000);
         browser.wait(EC.visibilityOf(titleRow), 5000);
         expect(titleRow.getText()).toEqual("Manage customers");
     },
@@ -40,7 +41,9 @@ module.exports = {
         lastNameInput.click().sendKeys(text);
     },
    enterTextIntoDayOfBirthInputField: function(){
-        birthDayInput.click().sendKeys("991978");
+        birthDayInput.click().sendKeys(protractor.Key.ARROW_LEFT);
+        birthDayInput.sendKeys(protractor.Key.ARROW_LEFT);
+        birthDayInput.sendKeys("991978");
 
     },
     enterTextIntoStreetInputField: function(text) {
@@ -60,14 +63,17 @@ module.exports = {
         mobileInput.click().sendKeys(text);
     },
     clickEnabledContinueButtonForCustomerDetails: function(){
+        browser.wait(EC.elementToBeClickable($$(".mat-raised-button").get(0)), 5000);
         expect($$(".mat-raised-button").get(0).isEnabled()).toBeTruthy();
         $$(".mat-raised-button").get(0).click();
     },
     clickEnabledContinueButtonForCustomerAddress: function(){
+        browser.wait(EC.elementToBeClickable($$(".mat-raised-button").get(1)), 5000);
         expect($$(".mat-raised-button").get(1).isEnabled()).toBeTruthy();
         $$(".mat-raised-button").get(1).click();
     },
     clickEnabledContinueButtonForCustomerContact: function(){
+        browser.wait(EC.elementToBeClickable($$(".mat-raised-button").get(2)), 5000);
         expect($$(".mat-raised-button").get(2).isEnabled()).toBeTruthy();
         $$(".mat-raised-button").get(2).click();
     },

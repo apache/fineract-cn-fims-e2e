@@ -5,6 +5,10 @@
 var EC = protractor.ExpectedConditions;
 var titleRow = $("fims-layout-card-over .mat-toolbar-row div");
 var createDeposit = $("a[href='/deposits/create']");
+var radioGroupType = $("md-radio-group[formcontrolname='type']")
+var radioChecking = $$("md-radio-group md-radio-button").get(0);
+var radioSavings = $$("md-radio-group md-radio-button").get(1);
+var radioShare = $$("md-radio-group md-radio-button").get(2);
 var shortNameInput = $("fims-id-input[controlname='identifier'] input");
 var nameInput = $(".mat-input-infix input[controlname='name']");
 var descriptionInput = $(".mat-input-infix input[controlname='description']");
@@ -19,6 +23,7 @@ var expenseAccountInput = $("fims-account-select[formcontrolname='expenseAccount
 var accrueAccountInput = $("fims-account-select[formcontrolname='accrueAccountIdentifier'] input");
 var equityLedgerInput = $("fims-ledger-select[formcontrolname='equityLedgerIdentifier'] input");
 
+
 module.exports = {
     goToDepositsViaSidePanel: function() {
         $("a[href='/deposits']").click();
@@ -31,7 +36,25 @@ module.exports = {
         browser.wait(EC.visibilityOf(createDeposit), 5000);
         createDeposit.click();
     },
-    enterTextIntoshortNameInputField: function(text) {
+    verifyRadioCheckingIsSelected: function(element){
+        expect(radioChecking.getAttribute('class')).toMatch('mat-radio-checked')
+    },
+    verifyRadioSavingsIsSelected: function(element){
+        expect(radioSavings.getAttribute('class')).toMatch('mat-radio-checked')
+    },
+    verifyRadioShareIsSelected: function(element){
+        expect(radioShare.getAttribute('class')).toMatch('mat-radio-checked')
+    },
+    selectRadioButtonSavings: function(){
+        radioSavings.click();
+    },
+    selectRadioButtonShare: function(){
+        radioShare.click();
+    },
+    selectRadioButtonChecking: function(){
+        radioChecking.click();
+    },
+    enterTextIntoShortNameInputField: function(text) {
         browser.wait(EC.visibilityOf(shortNameInput), 5000);
         shortNameInput.click().sendKeys(text);
     },

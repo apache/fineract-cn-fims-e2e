@@ -26,5 +26,16 @@ module.exports = {
     enterTextIntoSearchInputField: function(text){
         browser.wait(EC.visibilityOf($("td-search-input input")), 5000);
         $("td-search-input input").click().sendKeys(text);
+    },
+    clickButtonShowAtIndex: function(i){
+        $$("button[title='SHOW']").get(i).click();
+    },
+    verifyCardHasTitleHasNameOfCustomer: function (text) {
+        browser.wait(EC.presenceOf($('fims-portrait')), 10000);
+        form_title = $("fims-layout-card-over .mat-toolbar-row div").getText();
+        expect(form_title).toEqual(text);
+    },
+    pauseTeller: function(){
+        $("a[title='Pause']").click();
     }
 };

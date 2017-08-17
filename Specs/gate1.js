@@ -1,4 +1,12 @@
 //test round 1 - admin user can execute basic actions (TBD)
+//1) User operator creates a new role Administrator with all permissions
+//2) User operator creates a new employee with that role
+//3) New employee logs in and creates headoffice
+//4) New employee creates branch office
+//5) New employee creates a teller for the branch office
+//6) New employee opens the teller and assigns it to himself
+//7) New employee creates a customer
+//8) New employee unlocks the teller
 //test 1 and 3 fail if role and headquarter already exist, but other tests should be able to continue
 
 var helper = require('../helper.js');
@@ -9,6 +17,7 @@ var Offices = require('../Pages/Offices');
 var Roles = require('../Pages/Roles');
 var Teller = require('../Pages/Teller');
 var Customers = require('../Pages/Customers');
+var Deposits = require('../Pages/Deposits');
 
 describe('Gate 1', function() {
     var EC = protractor.ExpectedConditions;
@@ -70,8 +79,7 @@ describe('Gate 1', function() {
         Offices.clickEnabledCreateTellerButton();
 
         //workaround for current bug that teller is not always listed immediately
-        browser.wait(EC.visibilityOf($$(".mat-toolbar .mat-toolbar-row .mat-icon-button").get(2)), 5000);
-        $$(".mat-toolbar .mat-toolbar-row .mat-icon-button").get(2).click();
+        Common.clickBackButtonInTitleBar();
 
         Offices.goToManageTellersForOfficeByIdentifier(officeIdentifier);
         //Offices.verifyTellerStatusIs("CLOSED");
@@ -97,7 +105,6 @@ describe('Gate 1', function() {
         Customers.enterTextIntoFirstNameInputField("Thomas");
         Customers.enterTextIntoLastNameInputField("Pynchon");
         Customers.enterTextIntoDayOfBirthInputField("09/21/1978");
-        browser.pause();
         //Customers.verifyMemberCheckboxIsChecked();
         Customers.clickEnabledContinueButtonForCustomerDetails();
         Customers.enterTextIntoStreetInputField("800 Chatham Road #326");
@@ -105,7 +112,6 @@ describe('Gate 1', function() {
         Customers.selectCountryByName("Germany");
         Customers.clickEnabledContinueButtonForCustomerAddress();
         Customers.clickEnabledContinueButtonForCustomerContact();
-
         Customers.clickEnabledCreateCustomerButton();
         Customers.verifyCardHasTitleManageCustomers();
         Common.clickSearchButtonToMakeSearchInputFieldAppear();
@@ -113,11 +119,26 @@ describe('Gate 1', function() {
         Common.verifyFirstRowOfSearchResultHasTextAsId(customerAccount);
     });
 
-        it('assigned employee should be able to unlock teller', function () {
+    it('assigned employee should be able to unlock teller', function () {
         Teller.goToTellerManagementViaSidePanel();
         Teller.enterTextIntoTellerNumberInputField(tellerIdentifier);
         Teller.enterTextIntoPasswordInputField("qazwsx123!!");
         Teller.clickEnabledUnlockTellerButton();
         Teller.enterTextIntoSearchInputField("Pynchon");
+        Teller.clickButtonShowAtIndex(0);
+        Teller.verifyCardHasTitleHasNameOfCustomer("Thomas Pynchon");
+        //verify only appropriate actions are displayed for pending customer without any accounts (work in progress)
+        Common.clickBackButtonInTitleBar();
+        Teller.pauseTeller();
+    });
+    it('should create a deposit account - Checking', function () {
+        Deposits.goToDepositsViaSidePanel();
+        Deposits.verifyCardHasTitle("Manage deposit products");
+        Deposits.clickButtonCreateDepositAccount();
+        Deposits.verifyCardHasTitle("Create new deposit product");
+        Deposits.enterTextIntoShortNameInputField(depositIdentifier);
+        Deposits.verifyRadioCheckingIsSelected();
+        Deposits.enterTextIntoNameInputField();
+        Deposits.enterTextInto
     });
 });

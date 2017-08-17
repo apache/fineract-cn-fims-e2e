@@ -24,6 +24,10 @@ module.exports = {
         browser.wait(EC.visibilityOf($("tr td.td-data-table-cell button")), 5000);
         $("tr td.td-data-table-cell button").click();
     },
+    clickBackButtonInTitleBar: function() {
+        browser.wait(EC.visibilityOf($$(".mat-toolbar .mat-toolbar-row .mat-icon-button").get(2)), 5000);
+        $$(".mat-toolbar .mat-toolbar-row .mat-icon-button").get(2).click();
+    },
     clickLinkShowForRowWithId: function(identifier){
         //if > page of entries, need to implement way to page in order to find correct row
         var firstCellPerRow = $$("tr td.td-data-table-cell");
