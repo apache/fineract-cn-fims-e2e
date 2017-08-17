@@ -30,10 +30,10 @@ module.exports = {
     clickButtonShowAtIndex: function(i){
         $$("button[title='SHOW']").get(i).click();
     },
-    verifyCardHasTitleHasNameOfCustomer: function (text) {
+    verifyCardTitleHasNameOfCustomer: function (text) {
         browser.wait(EC.presenceOf($('fims-portrait')), 10000);
         form_title = $("fims-layout-card-over .mat-toolbar-row div").getText();
-        expect(form_title).toEqual(text);
+        expect(form_title).toMatch(text);
     },
     pauseTeller: function(){
         $("a[title='Pause']").click();

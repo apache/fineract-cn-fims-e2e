@@ -6,7 +6,8 @@
 //5) New employee creates a teller for the branch office
 //6) New employee opens the teller and assigns it to himself
 //7) New employee creates a customer
-//8) New employee unlocks the teller
+//8) New employee unlocks the teller, views customer and pauses teller again
+//9) New employee creates a deposit product
 //test 1 and 3 fail if role and headquarter already exist, but other tests should be able to continue
 
 var helper = require('../helper.js');
@@ -25,6 +26,7 @@ describe('Gate 1', function() {
     officeIdentifier = helper.getRandomString(6);
     tellerIdentifier = helper.getRandomString(4);
     customerAccount = helper.getRandomString(5);
+    depositIdentifier = helper.getRandomString(4);
 
     it('should create a new administrator role', function () {
         Common.waitForThePageToFinishLoading();
@@ -119,14 +121,14 @@ describe('Gate 1', function() {
         Common.verifyFirstRowOfSearchResultHasTextAsId(customerAccount);
     });
 
-    it('assigned employee should be able to unlock teller', function () {
+    it('assigned employee should be able to unlock teller and view customer', function () {
         Teller.goToTellerManagementViaSidePanel();
         Teller.enterTextIntoTellerNumberInputField(tellerIdentifier);
         Teller.enterTextIntoPasswordInputField("qazwsx123!!");
         Teller.clickEnabledUnlockTellerButton();
-        Teller.enterTextIntoSearchInputField("Pynchon");
+        Teller.enterTextIntoSearchInputField(customerAccount);
         Teller.clickButtonShowAtIndex(0);
-        Teller.verifyCardHasTitleHasNameOfCustomer("Thomas Pynchon");
+        Teller.verifyCardTitleHasNameOfCustomer("Thomas Pynchon");
         //verify only appropriate actions are displayed for pending customer without any accounts (work in progress)
         Common.clickBackButtonInTitleBar();
         Teller.pauseTeller();
@@ -138,7 +140,18 @@ describe('Gate 1', function() {
         Deposits.verifyCardHasTitle("Create new deposit product");
         Deposits.enterTextIntoShortNameInputField(depositIdentifier);
         Deposits.verifyRadioCheckingIsSelected();
-        Deposits.enterTextIntoNameInputField();
-        Deposits.enterTextInto
+        Deposits.enterTextIntoNameInputField("My first deposit product");
+        Deposits.enterTextIntoMinimumBalanceInputField("100");
+        Deposits.verifyRadioAnnuallyIsSelected();
+        Deposits.verifyCheckboxFlexibleInterestNotChecked();
+        Deposits.enterTextIntoInterestInputField('0.05');
+        Deposits.verifyFixedTermToggleSetToOff();
+        Deposits.verifyTermPeriodInputFieldIsDisabled();
+        Deposits.verifyRadioButtonsMonthAndYearDisabled();
+        Deposits.toggleFixedTermToOn();
+        Deposits.verifyTermPeriodInputFieldIsEnabled();
+        Deposits.verifyRadioButtonsMonthAndYearEnabled();
+        Deposits.toggleFixedTermToOff();
+
     });
 });
