@@ -6,8 +6,13 @@
 //5) New employee creates a teller for the branch office
 //6) New employee opens the teller and assigns it to himself
 //7) New employee creates a customer
-//8) New employee unlocks the teller, views customer and pauses teller again
-//9) New employee creates a deposit product
+//8) New employee activates the customer
+//9) New employee unlocks the teller, views customer and pauses teller again
+//10) New employee creates a deposit product
+//11) New employee enables deposit product
+//12) New employee assigns deposit product to customer
+//13) New employee opens account in teller
+
 //test 1 and 3 fail if role and headquarter already exist, but other tests should be able to continue
 
 var helper = require('../helper.js');
@@ -27,6 +32,7 @@ describe('Gate 1', function() {
     tellerIdentifier = helper.getRandomString(4);
     customerAccount = helper.getRandomString(5);
     depositIdentifier = helper.getRandomString(4);
+    depositName = helper.getRandomString("8");
 
     it('should create a new administrator role', function () {
         Common.waitForThePageToFinishLoading();
@@ -35,10 +41,6 @@ describe('Gate 1', function() {
         Roles.verifyCardHasTitleCreateRole();
         Roles.selectCheckboxToGiveUserAllPermissions();
         Roles.clickEnabledSaveRoleButton();
-
-        //to work around current bug that side panel is hidden initially
-        $(".mat-toolbar-row .mat-icon-button").click();
-
         Roles.verifyCardHasTitleManageRoles();
     });
     it('should create a new employee with administrator permissions', function () {
@@ -82,7 +84,6 @@ describe('Gate 1', function() {
 
         //workaround for current bug that teller is not always listed immediately
         Common.clickBackButtonInTitleBar();
-
         Offices.goToManageTellersForOfficeByIdentifier(officeIdentifier);
         //Offices.verifyTellerStatusIs("CLOSED");
         Common.clickLinkShowForFirstRowInTable();
@@ -95,10 +96,6 @@ describe('Gate 1', function() {
         Offices.verifyTellerStatusIs("OPEN");
     });
     it('should be able to create customer', function () {
-
-        //to work around current bug that side panel is hidden initially
-        $(".mat-toolbar-row .mat-icon-button").click();
-
         Customers.goToManageCustomersViaSidePanel();
         Customers.verifyCardHasTitleManageCustomers();
         Customers.clickButtonOrLinkCreateNewCustomer();
@@ -120,38 +117,73 @@ describe('Gate 1', function() {
         Common.enterTextInSearchInputFieldAndApplySearch(customerAccount);
         Common.verifyFirstRowOfSearchResultHasTextAsId(customerAccount);
     });
-
+    it('should activate the customer', function () {
+        Common.clickLinkShowForFirstRowInTable();
+        Customers.verifyCustomerHasStatusInactive();
+        Customers.clickButtonGoToTasks();
+        Customers.clickButtonActivate();
+        Customers.verifyCustomerHasStatusActive();
+    });
     it('assigned employee should be able to unlock teller and view customer', function () {
         Teller.goToTellerManagementViaSidePanel();
         Teller.enterTextIntoTellerNumberInputField(tellerIdentifier);
         Teller.enterTextIntoPasswordInputField("qazwsx123!!");
         Teller.clickEnabledUnlockTellerButton();
         Teller.enterTextIntoSearchInputField(customerAccount);
+        //will be successful even if the customer does not exist, clicks one of the buttons too quickly: need to fix
         Teller.clickButtonShowAtIndex(0);
         Teller.verifyCardTitleHasNameOfCustomer("Thomas Pynchon");
         //verify only appropriate actions are displayed for pending customer without any accounts (work in progress)
         Common.clickBackButtonInTitleBar();
         Teller.pauseTeller();
+        Teller.verifyTellerIsLocked();
     });
-    it('should create a deposit account - Checking', function () {
+    it('should create a deposit account - Checking with charges', function () {
         Deposits.goToDepositsViaSidePanel();
         Deposits.verifyCardHasTitle("Manage deposit products");
         Deposits.clickButtonCreateDepositAccount();
         Deposits.verifyCardHasTitle("Create new deposit product");
         Deposits.enterTextIntoShortNameInputField(depositIdentifier);
         Deposits.verifyRadioCheckingIsSelected();
-        Deposits.enterTextIntoNameInputField("My first deposit product");
+        Deposits.enterTextIntoNameInputField(depositName);
         Deposits.enterTextIntoMinimumBalanceInputField("100");
         Deposits.verifyRadioAnnuallyIsSelected();
         Deposits.verifyCheckboxFlexibleInterestNotChecked();
-        Deposits.enterTextIntoInterestInputField('0.05');
+        Deposits.enterTextIntoInterestInputField("0.05");
         Deposits.verifyFixedTermToggleSetToOff();
         Deposits.verifyTermPeriodInputFieldIsDisabled();
         Deposits.verifyRadioButtonsMonthAndYearDisabled();
         Deposits.toggleFixedTermToOn();
         Deposits.verifyTermPeriodInputFieldIsEnabled();
         Deposits.verifyRadioButtonsMonthAndYearEnabled();
-        Deposits.toggleFixedTermToOff();
-
+        Deposits.selectRadioButtonYear();
+        Deposits.enterTextIntoCashAccountInputField("7352");
+        Deposits.enterTextIntoExpenseAccountInputField("2820");
+        Deposits.enterTextIntoAccrueAccountInputField("8202");
+        Deposits.enterTextIntoEquityLedgerInputField("9100");
+        Deposits.enterTextIntoTermPeriodInputField("5");
+        Deposits.selectRadioButtonYear();
+        Deposits.clickEnabledContinueButtonForProductDetails();
+        Deposits.clickButtonAddCharge();
+        Deposits.enterTextIntoChargeNameInputField("onOpening");
+        Deposits.enterTextIntoIncomeAccountInputField("1104");
+        Deposits.enterTextIntoChargeAmountInputField("5");
+        Deposits.selectTypeOfCharge("Account Opening");
+        Deposits.clickEnabledCreateProductButton();
+        Deposits.verifyCardHasTitle("Manage deposit products");
+    });
+    it('should enable deposit product', function () {
+        Common.clickLinkShowForRowWithId(depositIdentifier);
+        Deposits.verifyProductHasStatusDisabled();
+        Deposits.clickButtonEnableProduct();
+        Deposits.verifyProductHasStatusEnabled();
+    });
+    it('should assign deposit product to customer', function () {
+        Customers.goToManageCustomersViaSidePanel();
+        Common.clickLinkShowForRowWithId(customerIdentifier);
+        Customers.clickManageDepositAccountsForCustomer(customerIdentifier);
+        Customers.clickCreateDepositAccountForCustomer(customerIdentifier);
+        Customers.selectDepositProduct(depositName);
+        Customers.clickEnabledButtonCreateDepositAccount();
     });
 });

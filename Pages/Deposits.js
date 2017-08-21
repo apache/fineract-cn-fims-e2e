@@ -24,24 +24,27 @@ var interestInput = $("fims-number-input[controlname='interest'] input");
 var termPeriodInput = $(".mat-input-infix input[formcontrolname='termPeriod']");
 var fixedTermEnabledToggle = $("md-slide-toggle[formcontrolname='fixedTermEnabled']");
 var termTimeUnit = $("md-radio-group[formcontrolname='termTimeUnit']");
-var radioMonth = termTimeUnit.$$("md-radio-button input").get(0);
-var radioYear = termTimeUnit.$$("md-radio-button input").get(1);
-
+var radioMonth = termTimeUnit.$$("md-radio-button").get(0);
+var radioYear = termTimeUnit.$$("md-radio-button").get(1);
 
 var cashAccountInput = $("fims-account-select[formcontrolname='cashAccountIdentifier'] input");
 var expenseAccountInput = $("fims-account-select[formcontrolname='expenseAccountIdentifier'] input");
 var accrueAccountInput = $("fims-account-select[formcontrolname='accrueAccountIdentifier'] input");
 var equityLedgerInput = $("fims-ledger-select[formcontrolname='equityLedgerIdentifier'] input");
 
+var chargeNameInput = $("fims-deposit-product-charges-form input[formcontrolname='name']");
+var chargeDescriptionInput = $("input[formcontrolname='description']");
+var chargeAmountInput = $("fims-number-input[controlname='amount'] input");
+var chargeTypeSelect = $("md-select[formcontrolname='actionIdentifier']");
+var incomeAccountInput = $("fims-account-select[formcontrolname='incomeAccountIdentifier'] input");
+var checkboxProportional = $("md-checkbox[formcontrolname='proportional']");
 
 module.exports = {
     goToDepositsViaSidePanel: function() {
         $("a[href='/deposits']").click();
     },
     verifyCardHasTitle: function(text) {
-        browser.wait(EC.visibilityOf(titleRow), 5000);
-        form_title = titleRow.getText();
-        expect(form_title).toEqual(text);
+        browser.wait(EC.textToBePresentInElement(titleRow, text), 5000);
     },
     clickButtonCreateDepositAccount: function(){
         browser.wait(EC.visibilityOf(createDeposit), 5000);
@@ -116,14 +119,23 @@ module.exports = {
         expect(termPeriodInput.isEnabled()).toBe(true);
     },
     verifyRadioButtonsMonthAndYearDisabled: function() {
-        expect(radioMonth.isEnabled()).toBe(false);
-        expect(radioYear.isEnabled()).toBe(false);
+        expect(termTimeUnit.$$("md-radio-button input").get(0).isEnabled()).toBe(false);
+        expect(termTimeUnit.$$("md-radio-button input").get(1).isEnabled()).toBe(false);
     },
     verifyRadioButtonsMonthAndYearEnabled: function() {
-        expect(radioMonth.isEnabled()).toBe(true);
-        expect(radioYear.isEnabled()).toBe(true);
+        expect(termTimeUnit.$$("md-radio-button input").get(0).isEnabled()).toBe(true);
+        expect(termTimeUnit.$$("md-radio-button input").get(1).isEnabled()).toBe(true);
+    },
+    selectRadioButtonMonth: function(){
+        browser.executeScript("arguments[0].scrollIntoView();", radioMonth.getWebElement());
+        radioMonth.click();
+    },
+    selectRadioButtonYear: function(){
+        browser.executeScript("arguments[0].scrollIntoView();", radioYear.getWebElement());
+        radioYear.click();
     },
     enterTextIntoCashAccountInputField: function(text) {
+        browser.executeScript("arguments[0].scrollIntoView();", cashAccountInput.getWebElement());
         cashAccountInput.click().sendKeys(text);
     },
     enterTextIntoExpenseAccountInputField: function(text) {
@@ -138,5 +150,53 @@ module.exports = {
     clickEnabledContinueButtonForProductDetails: function(){
         expect($$(".mat-raised-button").get(0).isEnabled()).toBeTruthy();
         $$(".mat-raised-button").get(0).click();
+    },
+    clickButtonAddCharge: function(){
+        browser.wait(EC.elementToBeClickable($("fims-deposit-product-charges-form button")), 2000);
+        $("fims-deposit-product-charges-form button").click();
+    },
+    enterTextIntoChargeNameInputField: function(text) {
+        chargeNameInput.click().sendKeys(text);
+    },
+    enterTextIntoChargeDescriptionInputField: function(text) {
+        chargeDescriptionInput.click().sendKeys(text);
+    },
+    enterTextIntoChargeAmountInputField: function(text) {
+        chargeAmountInput.click().clear().sendKeys(text);
+    },
+    selectTypeOfCharge: function(text) {
+        chargeTypeSelect.click();
+        browser.wait(EC.visibilityOf($(".mat-option")), 5000);
+        element(by.cssContainingText('.mat-option', text)).click();
+    },
+    enterTextIntoIncomeAccountInputField: function(text) {
+        incomeAccountInput.click().sendKeys(text);
+    },
+    clickEnabledContinueButtonForProductDetails: function(){
+        browser.wait(EC.elementToBeClickable($$(".mat-raised-button").get(0)), 5000);
+        expect($$(".mat-raised-button").get(0).isEnabled()).toBeTruthy();
+        $$(".mat-raised-button").get(0).click();
+    },
+    clickEnabledCreateProductButton: function(){
+        browser.executeScript("arguments[0].scrollIntoView();", $(".mat-raised-button.mat-primary").getWebElement());
+        browser.wait(EC.elementToBeClickable($(".mat-raised-button.mat-primary")), 5000);
+        browser.wait($(".mat-raised-button.mat-primary").isEnabled(), 2000);
+        $(".mat-raised-button.mat-primary").click();
+    },
+    clickButtonEnableProduct: function(){
+        browser.wait(EC.elementToBeClickable($("td-message button")), 2000);
+        $("td-message button").click();
+    },
+    verifyProductHasStatusDisabled: function(){
+        browser.wait(EC.visibilityOf($("td-message")), 2000);
+        color = $("td-message").getAttribute("color");
+        message = $("td-message .td-message-label").getText();
+        expect(color).toEqual("warn");
+        expect(message).toContain("Product not enabled");
+    },
+    verifyProductHasStatusEnabled: function(){
+        browser.wait(EC.textToBePresentInElement($("td-message .td-message-label"), "Product enabled"), 2000);
+        color = $("td-message").getAttribute("color");
+        expect(color).toEqual("accent");
     }
 };

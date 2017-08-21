@@ -8,7 +8,6 @@ var EC = protractor.ExpectedConditions;
 var inputTenant = $(".mat-input-element[formcontrolname='tenant']");
 var inputUsername = $(".mat-input-element[formcontrolname='username']");
 var inputPassword = $(".mat-input-element[formcontrolname='password']");
-var inputCurrentPassword = $(".mat-input-element[formcontrolname='currentPassword']");
 var inputNewPassword = $(".mat-input-element[formcontrolname='newPassword']");
 var inputConfirmNewPassword = $(".mat-input-element[formcontrolname='confirmNewPassword']");
 var userAccountButton =$$("md-toolbar-row .mat-icon-button").get(1);
@@ -17,7 +16,6 @@ var buttonSignOut = $$(".mat-menu-panel .mat-menu-item").get(2);
 module.exports = {
 
     enterTextInInputFieldForTenant: function(text){
-
         browser.wait(EC.visibilityOf(inputTenant), 5000);
         inputTenant.click().sendKeys(text);
     },
@@ -52,11 +50,8 @@ module.exports = {
         browser.wait(EC.visibilityOf($(".mat-card .mat-card-title")));
         expect($(".mat-card .mat-card-title").getText()).toEqual("Change password");
     },
-    enterTextInInputFieldForCurrentPassword: function(text){
-        browser.wait(EC.visibilityOf(inputCurrentPassword));
-        inputCurrentPassword.click().sendKeys(text);
-    },
     enterTextInInputFieldForNewPassword: function(text){
+        browser.wait(EC.visibilityOf(inputNewPassword), 5000);
         inputNewPassword.click().sendKeys(text);
     },
     enterTextInInputFieldForConfirmNewPassword: function(text){
@@ -69,9 +64,6 @@ module.exports = {
     },
     clearInputFieldForNewPassword: function(){
         inputNewPassword.clear();
-    },
-    clearInputFieldForCurrentPassword: function(){
-        inputCurrentPassword.clear();
     },
     clearInputFieldForConfirmNewPassword: function(){
         inputConfirmNewPassword.clear();
@@ -117,7 +109,6 @@ module.exports = {
         this.enterTextInInputFieldForUsername(user);
         this.enterTextInInputFieldForPassword(initialPassword);
         this.clickEnabledSignInOrChangePasswordButton();
-        this.enterTextInInputFieldForCurrentPassword(initialPassword);
         this.enterTextInInputFieldForNewPassword(newPassword);
         this.enterTextInInputFieldForConfirmNewPassword(newPassword);
         this.clickEnabledSignInOrChangePasswordButton();

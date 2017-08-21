@@ -28,15 +28,14 @@ module.exports = {
         browser.wait(EC.visibilityOf($$(".mat-toolbar .mat-toolbar-row .mat-icon-button").get(2)), 5000);
         $$(".mat-toolbar .mat-toolbar-row .mat-icon-button").get(2).click();
     },
-    clickLinkShowForRowWithId: function(identifier){
+    clickLinkShowForRowWithId: function(identifier) {
+        browser.wait(EC.visibilityOf($("tbody tr")), 5000);
         //if > page of entries, need to implement way to page in order to find correct row
-        var firstCellPerRow = $$("tr td.td-data-table-cell");
-        for (var x = 0; x < firstCellPerRow.size; x++){
-            idRow = firstCellPerRow.get(x).getText();
-                if (idRow.equals(identifier)){
-                    firstCellPerRow.get(x).parent().$(".td-data-table-cell button").click();
-                    break;
-                };
-        };
-    }
+        $$('tbody tr').filter(function(elem, index) {
+            console.log(index);
+            return elem.$(".td-data-table-cell").getText().then(function(text) {
+                return text === identifier;
+            });
+        }).$$(".td-data-table-cell").last().click();
+    },
 };

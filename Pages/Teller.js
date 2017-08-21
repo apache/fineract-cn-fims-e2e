@@ -37,5 +37,8 @@ module.exports = {
     },
     pauseTeller: function(){
         $("a[title='Pause']").click();
+    },
+    verifyTellerIsLocked: function(){
+        browser.wait(EC.visibilityOf(tellerNumberInput), 3000);
     }
 };
