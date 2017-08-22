@@ -87,7 +87,7 @@ module.exports = {
         assignedEmployeeInput.click().sendKeys(text);
     },
     clickEnabledCreateTellerButton: function(){
-        //rowser.wait(EC.elementToBeClickable(buttonPrimary), 5000);
+        //browser.wait(EC.elementToBeClickable(buttonPrimary), 5000);
         expect(buttonPrimary.isEnabled()).toBeTruthy();
         buttonPrimary.click();
     },

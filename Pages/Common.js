@@ -29,10 +29,10 @@ module.exports = {
         $$(".mat-toolbar .mat-toolbar-row .mat-icon-button").get(2).click();
     },
     clickLinkShowForRowWithId: function(identifier) {
+        browser.sleep(1000);
         browser.wait(EC.visibilityOf($("tbody tr")), 5000);
         //if > page of entries, need to implement way to page in order to find correct row
         $$('tbody tr').filter(function(elem, index) {
-            console.log(index);
             return elem.$(".td-data-table-cell").getText().then(function(text) {
                 return text === identifier;
             });

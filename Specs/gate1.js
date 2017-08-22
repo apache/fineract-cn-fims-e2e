@@ -11,7 +11,8 @@
 //10) New employee creates a deposit product
 //11) New employee enables deposit product
 //12) New employee assigns deposit product to customer
-//13) New employee opens account in teller
+//13) New employee opens account in teller and verifies the account is now active
+//14) New employee verifies transaction have been booked as expected (accounting)
 
 //test 1 and 3 fail if role and headquarter already exist, but other tests should be able to continue
 
@@ -24,6 +25,7 @@ var Roles = require('../Pages/Roles');
 var Teller = require('../Pages/Teller');
 var Customers = require('../Pages/Customers');
 var Deposits = require('../Pages/Deposits');
+var Accounting = require('../Pages/Accounting');
 
 describe('Gate 1', function() {
     var EC = protractor.ExpectedConditions;
@@ -33,6 +35,7 @@ describe('Gate 1', function() {
     customerAccount = helper.getRandomString(5);
     depositIdentifier = helper.getRandomString(4);
     depositName = helper.getRandomString(8);
+    depositAccountIdentifierCustomer = '';
 
     it('should create a new administrator role', function () {
         Common.waitForThePageToFinishLoading();
@@ -185,5 +188,54 @@ describe('Gate 1', function() {
         Customers.clickCreateDepositAccountForCustomer(customerAccount);
         Customers.selectDepositProduct(depositName);
         Customers.clickEnabledButtonCreateDepositAccount();
+        //might not be in list immediately always
+        //workaround
+        Common.clickBackButtonInTitleBar();
+        Customers.clickManageDepositAccountsForCustomer(customerAccount);
+        Common.clickBackButtonInTitleBar();
+        Customers.clickManageDepositAccountsForCustomer(customerAccount);
+
+        Common.clickLinkShowForRowWithId(depositIdentifier);
+        Customers.verifyDepositAccountHasStatus("PENDING");
+        Customers.verifyDepositAccountBalanceIs("0.00");
+        depositAccountIdentifierCustomer = Customers.getDepositAccountIdentifier();
+    });
+    it('should be able to open account', function () {
+        Teller.goToTellerManagementViaSidePanel();
+        Teller.enterTextIntoTellerNumberInputField(tellerIdentifier);
+        Teller.enterTextIntoPasswordInputField("qazwsx123!!");
+        Teller.clickEnabledUnlockTellerButton();
+        Teller.enterTextIntoSearchInputField(customerAccount);
+        //will be successful even if the customer does not exist, clicks one of the buttons too quickly: need to fix
+        Teller.clickButtonShowAtIndex(0);
+        Teller.verifyCardTitleHasNameOfCustomer("Thomas Pynchon");
+        Teller.clickOnOpenAccountForCustomer(customerAccount);
+        Teller.selectAccountToBeOpened(depositAccountIdentifierCustomer);
+        Teller.enterTextIntoAmountInputField("100");
+        Teller.clickEnabledCreateTransactionButton();
+        Teller.verifyChargesPayedInCashCheckboxChecked();
+        Teller.clickEnabledConfirmTransactionButton();
+        //verify account is active and balance is as expected
+        Customers.goToManageCustomersViaSidePanel();
+        Common.clickLinkShowForRowWithId(customerAccount);
+        Customers.clickManageDepositAccountsForCustomer(customerAccount);
+        //test might be too fast, account still PENDING here and balance 0.00 (but on leaving and coming back, everything as expected)
+        browser.sleep(5000);
+        Common.clickLinkShowForRowWithId(depositIdentifier);
+        Customers.verifyDepositAccountHasStatus("ACTIVE");
+        Customers.verifyDepositAccountBalanceIs("100.00");
+        Customers.clickButtonEditDepositAccount(customerAccount, depositAccountIdentifierCustomer);
+    });
+    it('transaction should have been booked as expected', function () {
+        Accounting.goToAccountingViaSidePanel();
+        //verify balance on customer's account
+        Common.clickLinkShowForRowWithId("9000");
+        Common.clickLinkShowForRowWithId("9100");
+        Common.clickLinkShowForRowWithId(depositAccountIdentifierCustomer);
+        Accounting.viewAccountEntriesForAccount(depositAccountIdentifierCustomer);
+        //Accounting.verifyTransactionType("CREDIT");
+        //Accounting.verifyTransactionMessage("ACCO");
+        //Accounting.verifyTransactionAmount("100");
+        //Accounting.verifyAccountBalance("100");
     });
 });

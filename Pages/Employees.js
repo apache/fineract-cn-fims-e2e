@@ -65,7 +65,9 @@ module.exports = {
         element.all(by.css('.mat-option')).get(i).click();
     },
     selectRoleByName: function(name){
-        roleSelection = $(".mat-select-trigger").click();
+        roleSelection = $(".mat-select-trigger");
+        browser.wait(EC.elementToBeClickable(roleSelection), 2000);
+        roleSelection.click();
         browser.wait(EC.visibilityOf($(".mat-option")), 5000);
         element(by.cssContainingText('.mat-option',name)).click();
     },

@@ -21,6 +21,7 @@ var depositProductSelect = $("md-select[formcontrolname='productIdentifier']");
 var beneficiaryInput = $("td-chips[formcontrolname='beneficiaries'] input");
 var primaryButton =  $(".mat-raised-button.mat-primary");
 var continueButton = $$(".mat-raised-button.mat-accent");
+var beneficiaryInput = $("td-chips[formcontrolname='beneficiaries'] input");
 
 module.exports = {
     verifyCardHasTitleManageCustomers: function() {
@@ -128,7 +129,7 @@ module.exports = {
     },
     clickManageDepositAccountsForCustomer: function(customer){
         link = "/customers/detail/" + customer + "/deposits";
-        browser.wait(EC.visibilityOf($('a[href="'+ link + '"]')), 5000);
+        browser.wait(EC.elementToBeClickable($('a[href="'+ link + '"]')), 6000);
         $('a[href="'+ link + '"]').click();
     },
     clickCreateDepositAccountForCustomer: function(customer){
@@ -139,11 +140,43 @@ module.exports = {
     selectDepositProduct: function(depositProductName){
         depositProductSelect.click();
         browser.wait(EC.visibilityOf($(".mat-option")), 5000);
-        element(by.cssContainingText('.mat-option', depositProductName)).click();
+        opt =  element(by.cssContainingText('.mat-option', depositProductName));
+        browser.executeScript("arguments[0].scrollIntoView();", opt.getWebElement());
+        opt.click();
     },
     clickEnabledButtonCreateDepositAccount: function(){
         browser.wait(EC.elementToBeClickable($(".mat-raised-button.mat-primary")), 5000);
         expect($(".mat-raised-button.mat-primary").isEnabled()).toBeTruthy();
         $(".mat-raised-button.mat-primary").click();
-    }
+    },
+    verifyDepositAccountHasStatus: function(expectedStatus){
+        browser.wait(EC.visibilityOf($("fims-state-display")), 2000);
+        status = $("fims-state-display .mat-list-text .mat-line").getText();
+        expect(status).toEqual(expectedStatus);
+    },
+    clickButtonEditDepositAccount: function(customer, depositAccountIdentifier) {
+        link = "/customers/detail/" + customer + "/deposits/detail/" + depositAccountIdentifier + "/edit" ;
+        browser.wait(EC.visibilityOf($('a[href="' + link + '"]')), 2000);
+        $('a[href="' + link + '"]').click();
+    },
+
+    verifyDepositAccountBalanceIs: function(expectedBalance){
+        $$("fims-layout-card-over .mat-list-item .mat-list-text").filter(function(elem, index) {
+            return elem.$("h3").getText().then(function(text) {
+                    return text === "Balance";
+            });
+        }).$$("p").first().getText().then(function(text){
+            return text === expectedBalance;
+        });
+    },
+    getDepositAccountIdentifier: function(){
+        depAccount = $$("fims-layout-card-over .mat-list-item .mat-list-text").filter(function(elem, index) {
+            return elem.$("h3").getText().then(function(text) {
+                return text === "Account";
+            });
+        }).$$("p").first().getText().then(function(text){
+            return text;
+        });
+        return depAccount;
+    },
 };

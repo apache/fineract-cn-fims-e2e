@@ -7,9 +7,6 @@ var usernameInput = $(".mat-input-infix input[placeholder='Username']");
 var firstNameInput = $(".mat-input-infix input[formcontrolname='firstName']");
 var createLedger = $("a[href='/accounting/create']");
 
-
-
-
 module.exports = {
     goToAccountingViaSidePanel: function() {
         $$("a[href='/accounting']").first().click();
@@ -21,5 +18,10 @@ module.exports = {
     clickButtonOrLinkCreateNewLedger: function(){
         browser.wait(EC.visibilityOf(createLedger), 5000);
         createLedger.click();
+    },
+    viewAccountEntriesForAccount: function(accountIdentifier){
+        link = "/accounting/accounts/detail/" + accountIdentifier + "/entries";
+        browser.wait(EC.visibilityOf($('a[href="'+ link + '"]')));
+        $('a[href="'+ link + '"]').click();
     }
-}
+};

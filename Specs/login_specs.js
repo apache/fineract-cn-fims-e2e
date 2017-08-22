@@ -35,10 +35,6 @@ describe('Login suite', function() {
     });
     it('should be logged in as user "operator"', function() {
         //verify logged in as user
-
-        //to work around current bug that side panel is hidden initially
-        $(".mat-toolbar-row .mat-icon-button").click();
-
         Login.clickButtonToOpenUserAccountMenu();
         Login.verifyUserIsLoggedIn(username);
         Login.closeOpenUserAccountMenu();
@@ -76,7 +72,6 @@ describe('Login suite', function() {
         Login.clickMenuItemSignOut();
         //user should be back on the log in page
         Login.enterTextInInputFieldForTenant(tenant);
-
     });
     it('should not be able to log in on entering the wrong tenant, username or password', function() {
         //wrong password
@@ -101,7 +96,6 @@ describe('Login suite', function() {
         Login.enterTextInInputFieldForTenant(tenant);
         Login.clickEnabledSignInOrChangePasswordButton();
         Login.verifyUserIsOnChangePasswordPage();
-        Login.enterTextInInputFieldForCurrentPassword('abc123!!');
         Login.enterTextInInputFieldForNewPassword("xyz456?");
         Login.enterTextInInputFieldForConfirmNewPassword("xyz456?");
         Login.clickEnabledSignInOrChangePasswordButton();
@@ -116,21 +110,9 @@ describe('Login suite', function() {
         Login.verifyUserIsOnChangePasswordPage();
 
     });
-    it('should not be able to change password if invalid input is entered - current password incorrect', function() {
-        Login.verifySignInOrChangePasswordButtonIsDisabled();
-        //current password not correct, user can change password even if he enters the current password wrong
-        Login.enterTextInInputFieldForCurrentPassword("aaaaaa");
-        Login.enterTextInInputFieldForNewPassword("abc123!!");
-        Login.enterTextInInputFieldForConfirmNewPassword("abc123!!");
-        //should not be possible to change password but it currently is
-        //not sure how behavior should be, button disabled or only error on clicking Change Password
-        Login.verifySignInOrChangePasswordButtonIsDisabled()
-    });
     it('should not be able to change password if input in new password and confirm new password fields does not match', function(){
         //new password and confirm password not matching
-        Login.clearInputFieldForCurrentPassword();
-        Login.enterTextInInputFieldForCurrentPassword("xyz456?");
-        Login.clearInputFieldForConfirmNewPassword();
+        Login.enterTextInInputFieldForNewPassword("abc123?!");
         Login.enterTextInInputFieldForConfirmNewPassword("abc123!?");
         Login.verifyMessageThatPasswordsMustMatchIsDisplayed();
         Login.verifySignInOrChangePasswordButtonIsDisabled();
@@ -141,12 +123,10 @@ describe('Login suite', function() {
         Login.enterTextInInputFieldForNewPassword("abc");
         Login.clearInputFieldForConfirmNewPassword();
         Login.enterTextInInputFieldForConfirmNewPassword("abc");
-        //no validation, button Change Password remains enabled, clicking Change password results in an error
+        //verify message that password has to have at least 8 chars is displayed
         Login.verifySignInOrChangePasswordButtonIsDisabled();
     });
     it('button Change Password should be disabled if required input missing and input field should be marked as required', function() {
-        Login.clearInputFieldForCurrentPassword();
-        Login.enterTextInInputFieldForCurrentPassword("xyz456?");
         Login.enterTextInInputFieldForNewPassword("123!!");
         Login.enterTextInInputFieldForConfirmNewPassword("123!!");
         Login.verifySignInOrChangePasswordButtonIsEnabled();
