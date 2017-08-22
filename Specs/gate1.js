@@ -32,7 +32,7 @@ describe('Gate 1', function() {
     tellerIdentifier = helper.getRandomString(4);
     customerAccount = helper.getRandomString(5);
     depositIdentifier = helper.getRandomString(4);
-    depositName = helper.getRandomString("8");
+    depositName = helper.getRandomString(8);
 
     it('should create a new administrator role', function () {
         Common.waitForThePageToFinishLoading();
@@ -110,7 +110,7 @@ describe('Gate 1', function() {
         Customers.enterTextIntoCityInputField("Winston-Salem");
         Customers.selectCountryByName("Germany");
         Customers.clickEnabledContinueButtonForCustomerAddress();
-        Customers.clickEnabledContinueButtonForCustomerContact();
+        //Customers.clickEnabledContinueButtonForCustomerContact();
         Customers.clickEnabledCreateCustomerButton();
         Customers.verifyCardHasTitleManageCustomers();
         Common.clickSearchButtonToMakeSearchInputFieldAppear();
@@ -180,9 +180,9 @@ describe('Gate 1', function() {
     });
     it('should assign deposit product to customer', function () {
         Customers.goToManageCustomersViaSidePanel();
-        Common.clickLinkShowForRowWithId(customerIdentifier);
-        Customers.clickManageDepositAccountsForCustomer(customerIdentifier);
-        Customers.clickCreateDepositAccountForCustomer(customerIdentifier);
+        Common.clickLinkShowForRowWithId(customerAccount);
+        Customers.clickManageDepositAccountsForCustomer(customerAccount);
+        Customers.clickCreateDepositAccountForCustomer(customerAccount);
         Customers.selectDepositProduct(depositName);
         Customers.clickEnabledButtonCreateDepositAccount();
     });

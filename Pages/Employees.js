@@ -12,6 +12,7 @@ var emailInput = $(".mat-input-infix input[formcontrolname='email']");
 var phoneInput = $(".mat-input-infix input[formcontrolname='phone']");
 var mobileInput = $(".mat-input-infix input[formcontrolname='mobile']");
 var createEmployee = $("a[href='/employees/create']");
+var primaryButton = $(".mat-raised-button.mat-primary");
 
 
 module.exports = {
@@ -40,18 +41,20 @@ module.exports = {
         passwordInput.click().sendKeys(text);
     },
     clickEnabledContinueButtonForEmployeeDetails: function(){
-        expect($$(".mat-raised-button").get(0).isEnabled()).toBeTruthy();
+        browser.executeScript("arguments[0].scrollIntoView();", $$(".mat-raised-button").get(0).getWebElement());
+        browser.wait(EC.elementToBeClickable($$(".mat-raised-button").get(0)),2000);
         $$(".mat-raised-button").get(0).click();
     },
     clickEnabledContinueButtonForAssignEmployeeToOffice: function(){
-        browser.wait(EC.visibilityOf($$(".mat-raised-button").get(1)), 5000);
-        expect($$(".mat-raised-button").get(1).isEnabled()).toBeTruthy();
+        browser.executeScript("arguments[0].scrollIntoView();", $$(".mat-raised-button").get(1).getWebElement());
+        browser.wait(EC.elementToBeClickable($$(".mat-raised-button").get(1)),2000);
         $$(".mat-raised-button").get(1).click();
     },
     clickEnabledCreateEmployeeButton: function(){
-        browser.wait(EC.visibilityOf($$(".mat-raised-button").get(2)), 5000);
-        expect($$(".mat-raised-button").get(2).isEnabled()).toBeTruthy();
-        $$(".mat-raised-button").get(2).click();
+        browser.executeScript("arguments[0].scrollIntoView();", primaryButton.getWebElement());
+        browser.wait(EC.elementToBeClickable(primaryButton),2000);
+        expect(primaryButton.isEnabled()).toBeTruthy();
+        primaryButton.click();
     },
     clickButtonOrLinkCreateNewEmployee: function(){
         browser.wait(EC.visibilityOf(createEmployee), 5000);

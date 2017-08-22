@@ -17,12 +17,10 @@ module.exports = {
         createNewRoleQA.click();
     },
     verifyCardHasTitleCreateRole: function () {
-        form_title = titleRow.getText();
-        expect(form_title).toEqual("Create new role");
+        browser.wait(EC.textToBePresentInElement(titleRow, 'Create new role'), 5000);
     },
     verifyCardHasTitleManageRoles: function () {
-        form_title = titleRow.getText();
-        expect(form_title).toEqual("Manage roles");
+        browser.wait(EC.textToBePresentInElement(titleRow, 'Manage roles'), 5000);
     },
     enterTextIntoRoleIdentifierInput: function (text){
         browser.wait(EC.visibilityOf(identifierInput), 5000);

@@ -19,6 +19,8 @@ var linkCustomers = $$("a[href='/customers']");
 var titleRow = $("fims-layout-card-over .mat-toolbar-row div");
 var depositProductSelect = $("md-select[formcontrolname='productIdentifier']");
 var beneficiaryInput = $("td-chips[formcontrolname='beneficiaries'] input");
+var primaryButton =  $(".mat-raised-button.mat-primary");
+var continueButton = $$(".mat-raised-button.mat-accent");
 
 module.exports = {
     verifyCardHasTitleManageCustomers: function() {
@@ -63,26 +65,26 @@ module.exports = {
         mobileInput.click().sendKeys(text);
     },
     clickEnabledContinueButtonForCustomerDetails: function(){
-        browser.wait(EC.elementToBeClickable($$(".mat-raised-button").get(0)), 5000);
-        expect($$(".mat-raised-button").get(0).isEnabled()).toBeTruthy();
-        $$(".mat-raised-button").get(0).click();
+        browser.wait(EC.elementToBeClickable(continueButton.get(0)), 5000);
+        expect(continueButton.get(0).isEnabled()).toBeTruthy();
+        continueButton.get(0).click();
     },
     clickEnabledContinueButtonForCustomerAddress: function(){
-        browser.wait(EC.elementToBeClickable($$(".mat-raised-button").get(1)), 5000);
-        expect($$(".mat-raised-button").get(1).isEnabled()).toBeTruthy();
-        $$(".mat-raised-button").get(1).click();
+        browser.wait(EC.elementToBeClickable(continueButton.get(1)), 5000);
+        expect(continueButton.get(1).isEnabled()).toBeTruthy();
+        continueButton.get(1).click();
     },
     clickEnabledContinueButtonForCustomerContact: function(){
-
-        browser.wait(EC.elementToBeClickable($$(".mat-raised-button").get(2)), 5000);
-        expect($$(".mat-raised-button").get(2).isEnabled()).toBeTruthy();
-        $$(".mat-raised-button").get(2).click();
+        browser.wait(EC.elementToBeClickable(continueButton.get(2)), 5000);
+        expect(continueButton.get(2).isEnabled()).toBeTruthy();
+        continueButton.get(2).click();
     },
     clickEnabledCreateCustomerButton: function(){
-        browser.executeScript("arguments[0].scrollIntoView();", $(".mat-raised-button.mat-primary").getWebElement());
-        browser.wait(EC.elementToBeClickable($(".mat-raised-button.mat-primary")), 5000);
-        expect($(".mat-raised-button.mat-primary").isEnabled()).toBeTruthy();
-        $(".mat-raised-button.mat-primary").click();
+        browser.executeScript("arguments[0].scrollIntoView();", primaryButton.getWebElement());
+        browser.wait(EC.elementToBeClickable(primaryButton), 5000);
+        expect(primaryButton.isEnabled()).toBeTruthy();
+        browser.wait(EC.elementToBeClickable(primaryButton), 5000);
+        primaryButton.click();
     },
     clickButtonOrLinkCreateNewCustomer: function(){
         browser.wait(EC.visibilityOf($("a[href='/customers/create']")), 5000);
@@ -125,19 +127,19 @@ module.exports = {
         expect(status).toEqual("ACTIVE");
     },
     clickManageDepositAccountsForCustomer: function(customer){
-        link = "/customers/details/" + customer + "/deposits";
-        browser.wait(EC.elementToBeClickable($("a[href=link]")));
-        $("a[href=link]").click();
+        link = "/customers/detail/" + customer + "/deposits";
+        browser.wait(EC.visibilityOf($('a[href="'+ link + '"]')), 5000);
+        $('a[href="'+ link + '"]').click();
     },
     clickCreateDepositAccountForCustomer: function(customer){
-        link = "/customers/details/" + customer + "/deposits/create";
-        browser.wait(EC.elementToBeClickable($("a[href=link]")));
-        $("a[href=link]").click();
+        link = "/customers/detail/" + customer + "/deposits/create";
+        browser.wait(EC.visibilityOf($('a[href="'+ link + '"]')));
+        $('a[href="'+ link + '"]').click();
     },
     selectDepositProduct: function(depositProductName){
         depositProductSelect.click();
         browser.wait(EC.visibilityOf($(".mat-option")), 5000);
-        element(by.cssContainingText('.mat-option', text)).click();
+        element(by.cssContainingText('.mat-option', depositProductName)).click();
     },
     clickEnabledButtonCreateDepositAccount: function(){
         browser.wait(EC.elementToBeClickable($(".mat-raised-button.mat-primary")), 5000);
