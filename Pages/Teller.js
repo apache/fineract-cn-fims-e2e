@@ -23,9 +23,11 @@ module.exports = {
         passwordInput.click().sendKeys(text);
     },
     clickEnabledUnlockTellerButton: function(){
-        browser.wait(EC.visibilityOf(primaryButton.first()), 5000);
-        expect(primaryButton.first().isEnabled()).toBeTruthy();
-        primaryButton.first().click();
+        primaryButton.filter(function(elem, index) {
+            return elem.$("span").getText().then(function(text) {
+                return text === "UNLOCK";
+            });
+        }).click();
     },
     enterTextIntoSearchInputField: function(text){
         browser.wait(EC.visibilityOf($("td-search-input input")), 5000);
@@ -40,6 +42,10 @@ module.exports = {
         browser.wait(EC.presenceOf($('fims-portrait')), 10000);
         form_title = $("fims-layout-card-over .mat-toolbar-row div").getText();
         expect(form_title).toMatch(text);
+    },
+    verifyCardTitleIs: function (text) {
+        form_title = $("fims-layout-card-over .mat-toolbar-row div");
+        browser.wait(EC.textToBePresentInElement(form_title, text),3000);
     },
     pauseTeller: function(){
         $("a[title='Pause']").click();
@@ -92,8 +98,8 @@ module.exports = {
     selectAccountToBeOpened: function(accountIdentifier){
         browser.wait(EC.elementToBeClickable(accountSelect), 3000);
         accountSelect.click();
-        browser.wait(EC.elementToBeClickable($(".mat-option")), 5000);
-        browser.executeScript("arguments[0].scrollIntoView();", element(by.cssContainingText('.mat-option', accountIdentifier)).getWebElement());
+        browser.wait(EC.visibilityOf($(".mat-option")), 5000);
+        //browser.executeScript("arguments[0].scrollIntoView();", element(by.cssContainingText('.mat-option', accountIdentifier)).getWebElement());
         element(by.cssContainingText('.mat-option', accountIdentifier)).click();
     },
     enterTextIntoAmountInputField: function(text) {
@@ -101,16 +107,21 @@ module.exports = {
         amountInput.click().sendKeys(text);
     },
     clickEnabledCreateTransactionButton: function(){
-        browser.wait(EC.visibilityOf(primaryButton.first()), 5000);
-        expect(primaryButton.first().isEnabled()).toBeTruthy();
-        primaryButton.first().click();
+        primaryButton.filter(function(elem, index) {
+            return elem.$("span").getText().then(function(text) {
+                return text === "CREATE TRANSACTION";
+            });
+        }).click();
     },
     clickEnabledConfirmTransactionButton: function(){
         browser.executeScript("arguments[0].scrollIntoView();", primaryButton.get(1).getWebElement());
-        browser.wait(EC.elementToBeClickable(primaryButton.get(1)), 5000);
-        expect(primaryButton.get(1).isEnabled()).toBeTruthy();
-        browser.wait(EC.elementToBeClickable(primaryButton.get(1)), 5000);
+        browser.wait(EC.elementToBeClickable(primaryButton.get(1)), 3000);
         primaryButton.get(1).click();
+        // primaryButton.filter(function(elem, index) {
+        //     return elem.$("span").getText().then(function(text) {
+        //         return text === "CONFIRM TRANSACTION";
+        //     });
+        // }).click();
     },
     verifyChargesPayedInCashCheckboxChecked: function(){
         classCB = checkboxChargesInCash.getAttribute("class");
@@ -120,5 +131,24 @@ module.exports = {
         classCB = checkboxChargesInCash.getAttribute("class");
         expect(classCB).not.toMatch("mat-checkbox-checked");
     },
+    verifyTransactionAmount: function(amount){
+        browser.wait(EC.visibilityOf($("fims-teller-transaction-cost table tbody")), 2000);
+        expect($$("fims-teller-transaction-cost table tbody .td-data-table-row").filter(function(elem, index){
+            return elem.$$(".td-data-table-cell").first().getText().then(function(text){
+                return text === "Transaction amount";
+            });
+        }).$$(".td-data-table-cell").last().getText().then(function(text){
+            return text === amount;
+        })).toBe(true);
+    },
+    verifyTransactionCharge: function(chargeName, chargeAmount){
+        expect($$("fims-teller-transaction-cost table tbody .td-data-table-row").filter(function(elem, index){
+            return elem.$(".td-data-table-cell").getText().then(function(text){
+                return text === chargeName;
+            });
+        }).$$(".td-data-table-cell").last().getText().then(function(text){
+            return text === chargeAmount;
+        })).toBe(true);
+    }
 
 };

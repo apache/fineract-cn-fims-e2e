@@ -142,6 +142,7 @@ module.exports = {
         browser.wait(EC.visibilityOf($(".mat-option")), 5000);
         opt =  element(by.cssContainingText('.mat-option', depositProductName));
         browser.executeScript("arguments[0].scrollIntoView();", opt.getWebElement());
+        browser.wait(EC.elementToBeClickable(opt), 2000);
         opt.click();
     },
     clickEnabledButtonCreateDepositAccount: function(){
@@ -169,14 +170,27 @@ module.exports = {
             return text === expectedBalance;
         });
     },
+    // getDepositAccountIdentifier: function(){
+    //     depAccount = $$("fims-layout-card-over .mat-list-item .mat-list-text").filter(function(elem, index) {
+    //         return elem.$("h3").getText().then(function(text) {
+    //             return text === "Account";
+    //         });
+    //     }).$$("p").first().getText().then(function(text){
+    //         return text;
+    //     });
+    //     return depAccount;
+    // },
     getDepositAccountIdentifier: function(){
-        depAccount = $$("fims-layout-card-over .mat-list-item .mat-list-text").filter(function(elem, index) {
-            return elem.$("h3").getText().then(function(text) {
-                return text === "Account";
+        return $$("md-list p").first().getText();
+    },
+    verifyStateOfDepositAccountWithIdIs: function(identifier, expectedState) {
+        browser.wait(EC.visibilityOf($("tbody tr")), 5000);
+        //if > page of entries, need to implement way to page in order to find correct row
+        actualState = $$('tbody tr').filter(function(elem, index) {
+            return elem.$(".td-data-table-cell").getText().then(function(text) {
+                return text === identifier;
             });
-        }).$$("p").first().getText().then(function(text){
-            return text;
-        });
-        return depAccount;
+        }).$$(".td-data-table-cell").get(3).getText();
+        expect(actualState).toEqual(expectedState);
     },
 };

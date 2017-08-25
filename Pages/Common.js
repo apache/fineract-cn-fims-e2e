@@ -14,8 +14,7 @@ module.exports = {
     },
     verifyFirstRowOfSearchResultHasTextAsId: function(text){
         browser.wait(EC.visibilityOf($(".td-data-table-row .td-data-table-cell")), 5000);
-        firstResult=$(".td-data-table-row .td-data-table-cell").getText();
-        expect(firstResult).toEqual(text);
+        expect($(".td-data-table-row .td-data-table-cell").getText()).toEqual(text);
     },
     waitForThePageToFinishLoading: function(){
         browser.wait(EC.not(EC.presenceOf($('.td-loading'))), 10000);
@@ -29,13 +28,19 @@ module.exports = {
         $$(".mat-toolbar .mat-toolbar-row .mat-icon-button").get(2).click();
     },
     clickLinkShowForRowWithId: function(identifier) {
-        browser.sleep(1000);
-        browser.wait(EC.visibilityOf($("tbody tr")), 5000);
-        //if > page of entries, need to implement way to page in order to find correct row
-        $$('tbody tr').filter(function(elem, index) {
-            return elem.$(".td-data-table-cell").getText().then(function(text) {
+        browser.sleep(2000);
+        browser.wait(EC.invisibilityOf($("div[class='md-padding'] h3")), 5000);
+        browser.wait(EC.textToBePresentInElement($$("tbody tr .td-data-table-cell").last(), "SHOW"), 5000);
+        $$('tbody tr').filter(function (elem, index) {
+            return elem.$(".td-data-table-cell").getText().then(function (text) {
                 return text === identifier;
             });
         }).$$(".td-data-table-cell").last().click();
     },
+    verifyMessagePopupIsDisplayed: function(message){
+        popup = $("simple-snack-bar");
+        browser.wait(EC.visibilityOf(popup), 2000);
+        browser.wait(EC.textToBePresentInElement(popup, message), 5000);
+        browser.wait(EC.invisibilityOf(popup),5000);
+    }
 };

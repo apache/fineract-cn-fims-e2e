@@ -3,9 +3,11 @@
 //Actions specific to the Accounting section
 
 var EC = protractor.ExpectedConditions;
-var usernameInput = $(".mat-input-infix input[placeholder='Username']");
-var firstNameInput = $(".mat-input-infix input[formcontrolname='firstName']");
 var createLedger = $("a[href='/accounting/create']");
+var accountIdentifierInput = $("fims-id-input[controlname=identifier] input");
+var accountNameInput = $("input[formcontrolname=name]");
+var accountBalanceInput = $("input[formcontrolname=balance]");
+var primaryButton = $$(".mat-raised-button.mat-primary");
 
 module.exports = {
     goToAccountingViaSidePanel: function() {
@@ -23,5 +25,71 @@ module.exports = {
         link = "/accounting/accounts/detail/" + accountIdentifier + "/entries";
         browser.wait(EC.visibilityOf($('a[href="'+ link + '"]')));
         $('a[href="'+ link + '"]').click();
-    }
+        browser.sleep(2000);
+    },
+    clickLinkShowForAccountWithName: function(identifier) {
+        browser.sleep(2000);
+        browser.wait(EC.invisibilityOf($("div[class='md-padding'] h3")), 5000);
+        browser.wait(EC.textToBePresentInElement($$("tbody tr .td-data-table-cell").last(), "SHOW"), 5000);
+        $$('tbody tr').filter(function(elem, index) {
+            return elem.$$(".td-data-table-cell").get(1).getText().then(function(text) {
+                return text === identifier;
+            });
+        }).$$(".td-data-table-cell").last().click();
+    },
+    verifyAccountStatus: function(expectedStatus){
+        browser.wait(EC.visibilityOf($("fims-state-display")), 2000);
+        expect($("fims-state-display .mat-list-text .mat-line").getText().then(function(text){
+                return text === expectedStatus;
+            })).toBe(true);
+    },
+    verifyAccountInfo: function(heading, value) {
+        expect($$(".md-list-item .mat-list-text").filter(function (elem, index) {
+            return elem.$("h3").getText().then(function (text) {
+                return text === heading;
+            }).$(p).getText().then(function (text) {
+                return text === value;
+            }).toBe(true);
+        }));
+    },
+    verifyTransactionTypeForRow: function(type, row) {
+        browser.wait(EC.visibilityOf($("table tbody")), 3000);
+        expect($$("table tbody tr").get(row - 1).$$(".td-data-table-cell").get(1).getText()).toEqual(type);
+    },
+    verifyTransactionMessageForRow: function(message, row) {
+        browser.wait(EC.visibilityOf($("table tbody")), 3000);
+        expect($$("table tbody tr").get(row - 1).$$(".td-data-table-cell").get(2).getText()).toEqual(message);
+    },
+    verifyTransactionAmountForRow: function(amount, row) {
+        browser.wait(EC.visibilityOf($("table tbody")), 3000);
+        expect($$("table tbody tr").get(row - 1).$$(".td-data-table-cell").get(3).getText()).toEqual(amount);
+    },
+    verifyTransactionBalanceForRow: function(balance, row) {
+        browser.wait(EC.visibilityOf($("table tbody")), 3000);
+        expect($$("table tbody tr").get(row - 1).$$(".td-data-table-cell").get(4).getText()).toEqual(balance);
+    },
+    clickCreateNewAccountInLedger: function(ledger){
+        link = "/accounting/ledgers/detail/" + ledger + "/accounts/create";
+        browser.wait(EC.visibilityOf($('a[href="'+ link + '"]')));
+        $('a[href="'+ link + '"]').click();
+    },
+    enterTextIntoAccountIdentifierInputField: function(text) {
+        browser.wait(EC.visibilityOf(accountIdentifierInput), 5000);
+        accountIdentifierInput.click().sendKeys(text);
+    },
+    enterTextIntoAccountNameInputField: function(text) {
+        browser.wait(EC.visibilityOf(accountNameInput), 5000);
+        accountNameInput.click().sendKeys(text);
+    },
+    enterTextIntoAccountBalanceInputField: function(text) {
+        browser.wait(EC.visibilityOf(accountBalanceInput), 5000);
+        accountBalanceInput.click().sendKeys(text);
+    },
+    clickEnabledButtonCreateAccount: function(){
+        primaryButton.filter(function(elem, index) {
+            return elem.$("span").getText().then(function(text) {
+                return text === "CREATE ACCOUNT";
+            });
+        }).click();
+    },
 };

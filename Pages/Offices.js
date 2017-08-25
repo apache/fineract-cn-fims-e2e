@@ -11,7 +11,8 @@ var withdrawalLimitInput = $(".mat-input-infix input[formcontrolname='cashdrawLi
 var tellerAccountInput = $(".mat-input-infix input[placeholder='Teller account(Asset accounts only)']");
 var vaultAccountInput = $(".mat-input-infix input[placeholder='Vault account(Asset accounts only)']");
 var assignedEmployeeInput = $(".mat-input-infix input[placeholder='Assigned employee']");
-var buttonPrimary = $(".mat-raised-button.mat-primary");
+var primaryButton = $$(".mat-raised-button.mat-primary");
+var createOfficeButton = $$(".mat-raised-button.mat-primary").first();
 
 
 //Actions specific to the Offices section, including Teller management
@@ -54,9 +55,13 @@ module.exports = {
         $$(".mat-raised-button").get(0).click();
     },
     clickEnabledCreateOfficeButton: function(){
-        browser.wait(EC.visibilityOf($(".mat-raised-button.mat-primary")), 5000);
-        expect($(".mat-raised-button.mat-primary").isEnabled()).toBeTruthy();
-        $(".mat-raised-button.mat-primary").click();
+        browser.executeScript("arguments[0].scrollIntoView();", createOfficeButton.getWebElement());
+        browser.wait(EC.elementToBeClickable(createOfficeButton), 3000);
+        primaryButton.filter(function(elem, index) {
+            return elem.$("span").getText().then(function(text) {
+                return text === "CREATE OFFICE";
+            });
+        }).click();
     },
     clickCreateTellerForOfficeByIdentifier: function(identifier){
         link = '/offices/detail/' + identifier + '/tellers/create';
@@ -87,9 +92,12 @@ module.exports = {
         assignedEmployeeInput.click().sendKeys(text);
     },
     clickEnabledCreateTellerButton: function(){
-        //browser.wait(EC.elementToBeClickable(buttonPrimary), 5000);
-        expect(buttonPrimary.isEnabled()).toBeTruthy();
-        buttonPrimary.click();
+        browser.executeScript("arguments[0].scrollIntoView();", primaryButton.get(0).getWebElement());
+        primaryButton.filter(function(elem, index) {
+            return elem.$("span").getText().then(function(text) {
+                return text === "CREATE TELLER";
+            });
+        }).click();
     },
     clickActionOpenForTellerOfOffice: function(teller, office){
         link = '/offices/detail/' + office + '/tellers/detail/' + teller + '/command?action=OPEN';

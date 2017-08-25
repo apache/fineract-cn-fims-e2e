@@ -31,13 +31,13 @@ var cashAccountInput = $("fims-account-select[formcontrolname='cashAccountIdenti
 var expenseAccountInput = $("fims-account-select[formcontrolname='expenseAccountIdentifier'] input");
 var accrueAccountInput = $("fims-account-select[formcontrolname='accrueAccountIdentifier'] input");
 var equityLedgerInput = $("fims-ledger-select[formcontrolname='equityLedgerIdentifier'] input");
-
 var chargeNameInput = $("fims-deposit-product-charges-form input[formcontrolname='name']");
 var chargeDescriptionInput = $("input[formcontrolname='description']");
 var chargeAmountInput = $("fims-number-input[controlname='amount'] input");
 var chargeTypeSelect = $("md-select[formcontrolname='actionIdentifier']");
 var incomeAccountInput = $("fims-account-select[formcontrolname='incomeAccountIdentifier'] input");
 var checkboxProportional = $("md-checkbox[formcontrolname='proportional']");
+var primaryButton = $$(".mat-raised-button.mat-primary");
 
 module.exports = {
     goToDepositsViaSidePanel: function() {
@@ -178,10 +178,13 @@ module.exports = {
         $$(".mat-raised-button").get(0).click();
     },
     clickEnabledCreateProductButton: function(){
-        browser.executeScript("arguments[0].scrollIntoView();", $(".mat-raised-button.mat-primary").getWebElement());
-        browser.wait(EC.elementToBeClickable($(".mat-raised-button.mat-primary")), 5000);
-        browser.wait($(".mat-raised-button.mat-primary").isEnabled(), 2000);
-        $(".mat-raised-button.mat-primary").click();
+        browser.executeScript("arguments[0].scrollIntoView();", primaryButton.first().getWebElement());
+        browser.wait(EC.elementToBeClickable(primaryButton.first()), 3000);
+        primaryButton.filter(function(elem, index) {
+            return elem.$("span").getText().then(function(text) {
+                return text === "CREATE PRODUCT";
+            });
+        }).click();
     },
     clickButtonEnableProduct: function(){
         browser.wait(EC.elementToBeClickable($("td-message button")), 2000);

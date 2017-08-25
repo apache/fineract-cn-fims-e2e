@@ -35,7 +35,8 @@ describe('Gate 1', function() {
     customerAccount = helper.getRandomString(5);
     depositIdentifier = helper.getRandomString(4);
     depositName = helper.getRandomString(8);
-    depositAccountIdentifierCustomer = '';
+    tellerAccount = helper.getRandomString(4);
+    revenueAccount = helper.getRandomString(4);
 
     it('should create a new administrator role', function () {
         Common.waitForThePageToFinishLoading();
@@ -44,6 +45,7 @@ describe('Gate 1', function() {
         Roles.verifyCardHasTitleCreateRole();
         Roles.selectCheckboxToGiveUserAllPermissions();
         Roles.clickEnabledSaveRoleButton();
+        Common.verifyMessagePopupIsDisplayed("Role is going to be saved");
         Roles.verifyCardHasTitleManageRoles();
     });
     it('should create a new employee with administrator permissions', function () {
@@ -52,8 +54,28 @@ describe('Gate 1', function() {
         Login.signOut();
         Login.logInForFirstTimeWithTenantUserAndPassword("playground", employeeIdentifier, "abc123!!", "abc123??");
     });
+    it('should create new accounts', function () {
+        Accounting.goToAccountingViaSidePanel();
+        Common.clickLinkShowForRowWithId("7000");
+        Common.clickLinkShowForRowWithId("7300");
+        Accounting.clickCreateNewAccountInLedger("7300");
+        //Accounting.verifyAccountTypeAssetSelected();
+        //Accounting.verifyRadioGroupAccountTypesDisabled();
+        Accounting.enterTextIntoAccountIdentifierInputField(tellerAccount);
+        Accounting.enterTextIntoAccountNameInputField("My teller");
+        Accounting.clickEnabledButtonCreateAccount();
+        Common.verifyMessagePopupIsDisplayed("Account is going to be saved");
+        Accounting.goToAccountingViaSidePanel();
+        Common.clickLinkShowForRowWithId("1000");
+        Common.clickLinkShowForRowWithId("1100");
+        Accounting.clickCreateNewAccountInLedger("1100");
+        Accounting.enterTextIntoAccountIdentifierInputField(revenueAccount);
+        Accounting.enterTextIntoAccountNameInputField("Revenue from deposit charges");
+        Accounting.clickEnabledButtonCreateAccount();
+        Common.verifyMessagePopupIsDisplayed("Account is going to be saved");
+    });
     it('should create a headquarter office', function () {
-        Offices.clickViewOfficesFromQuickAccess();
+        Offices.goToManageOfficesViaSidePanel();
         Offices.verifyNoHeadquarterExistingYet();
         Offices.clickButtonCreateHeadquarter();
         Offices.verifyCardHasTitleCreateOffice();
@@ -61,6 +83,7 @@ describe('Gate 1', function() {
         Offices.enterTextIntoOfficeNameInputField("Headquarter Office Playground");
         Offices.clickEnabledContinueButtonForOfficeDetails();
         Offices.clickEnabledCreateOfficeButton();
+        Common.verifyMessagePopupIsDisplayed("Office is going to be saved");
     });
     it('should create a new branch office', function () {
         Offices.clickButtonCreateNewOffice();
@@ -69,7 +92,7 @@ describe('Gate 1', function() {
         Offices.enterTextIntoOfficeNameInputField("Branch " + officeIdentifier);
         Offices.clickEnabledContinueButtonForOfficeDetails();
         Offices.clickEnabledCreateOfficeButton();
-        //Offices.verifyCardHasTitle();
+        Common.verifyMessagePopupIsDisplayed("Office is going to be saved");
         Common.clickSearchButtonToMakeSearchInputFieldAppear();
         Common.enterTextInSearchInputFieldAndApplySearch(officeIdentifier);
         Common.verifyFirstRowOfSearchResultHasTextAsId(officeIdentifier);
@@ -81,10 +104,10 @@ describe('Gate 1', function() {
         Offices.enterTextIntoTellerNumberInputField(tellerIdentifier);
         Offices.enterTextIntoPasswordInputField("qazwsx123!!");
         Offices.enterTextIntoCashWithdrawalLimitInputField("1000");
-        Offices.enterTextIntoTellerAccountInputFieldAndSelectMatchingEntry("7352");
+        Offices.enterTextIntoTellerAccountInputFieldAndSelectMatchingEntry(tellerAccount);
         Offices.enterTextIntoVaultAccountInputFieldAndSelectMatchingEntry("7351");
         Offices.clickEnabledCreateTellerButton();
-
+        Common.verifyMessagePopupIsDisplayed("Teller is going to be saved");
         //workaround for current bug that teller is not always listed immediately
         Common.clickBackButtonInTitleBar();
         Offices.goToManageTellersForOfficeByIdentifier(officeIdentifier);
@@ -96,6 +119,7 @@ describe('Gate 1', function() {
         Offices.enterTextIntoAssignedEmployeeInputField(employeeIdentifier);
         Offices.selectOptionInListByName("Atkinson, Kate");
         Offices.clickEnabledOpenTellerButton();
+        Common.verifyMessagePopupIsDisplayed("Teller is going to be updated");
         Offices.verifyTellerStatusIs("OPEN");
     });
     it('should be able to create customer', function () {
@@ -115,6 +139,7 @@ describe('Gate 1', function() {
         Customers.clickEnabledContinueButtonForCustomerAddress();
         //Customers.clickEnabledContinueButtonForCustomerContact();
         Customers.clickEnabledCreateCustomerButton();
+        Common.verifyMessagePopupIsDisplayed("Customer is going to be saved")
         Customers.verifyCardHasTitleManageCustomers();
         Common.clickSearchButtonToMakeSearchInputFieldAppear();
         Common.enterTextInSearchInputFieldAndApplySearch(customerAccount);
@@ -125,6 +150,7 @@ describe('Gate 1', function() {
         Customers.verifyCustomerHasStatusInactive();
         Customers.clickButtonGoToTasks();
         Customers.clickButtonActivate();
+        Common.verifyMessagePopupIsDisplayed("Command is going to be executed");
         Customers.verifyCustomerHasStatusActive();
     });
     it('assigned employee should be able to unlock teller and view customer', function () {
@@ -139,6 +165,7 @@ describe('Gate 1', function() {
         //verify only appropriate actions are displayed for pending customer without any accounts (work in progress)
         Common.clickBackButtonInTitleBar();
         Teller.pauseTeller();
+        Common.verifyMessagePopupIsDisplayed("Teller drawer is now locked");
         Teller.verifyTellerIsLocked();
     });
     it('should create a deposit account - Checking with charges', function () {
@@ -168,74 +195,112 @@ describe('Gate 1', function() {
         Deposits.selectRadioButtonYear();
         Deposits.clickEnabledContinueButtonForProductDetails();
         Deposits.clickButtonAddCharge();
-        Deposits.enterTextIntoChargeNameInputField("onOpening");
-        Deposits.enterTextIntoIncomeAccountInputField("1104");
+        Deposits.enterTextIntoChargeNameInputField("Account opening charge");
+        Deposits.enterTextIntoIncomeAccountInputField(revenueAccount);
         Deposits.enterTextIntoChargeAmountInputField("5");
         Deposits.selectTypeOfCharge("Account Opening");
         Deposits.clickEnabledCreateProductButton();
+        Common.verifyMessagePopupIsDisplayed("Product is going to be saved");
         Deposits.verifyCardHasTitle("Manage deposit products");
     });
     it('should enable deposit product', function () {
         Common.clickLinkShowForRowWithId(depositIdentifier);
         Deposits.verifyProductHasStatusDisabled();
         Deposits.clickButtonEnableProduct();
+        Common.verifyMessagePopupIsDisplayed("Product is going to be updated");
         Deposits.verifyProductHasStatusEnabled();
     });
     it('should assign deposit product to customer', function () {
         Customers.goToManageCustomersViaSidePanel();
+        Common.clickSearchButtonToMakeSearchInputFieldAppear();
+        Common.enterTextInSearchInputFieldAndApplySearch(customerAccount);
+        Common.verifyFirstRowOfSearchResultHasTextAsId(customerAccount);
         Common.clickLinkShowForRowWithId(customerAccount);
         Customers.clickManageDepositAccountsForCustomer(customerAccount);
         Customers.clickCreateDepositAccountForCustomer(customerAccount);
         Customers.selectDepositProduct(depositName);
         Customers.clickEnabledButtonCreateDepositAccount();
-        //might not be in list immediately always
-        //workaround
-        Common.clickBackButtonInTitleBar();
-        Customers.clickManageDepositAccountsForCustomer(customerAccount);
-        Common.clickBackButtonInTitleBar();
-        Customers.clickManageDepositAccountsForCustomer(customerAccount);
+        Common.verifyMessagePopupIsDisplayed("Deposit account is going to be saved");
 
+        //might not be in list immediately always
+        Common.clickBackButtonInTitleBar();
+        Customers.clickManageDepositAccountsForCustomer(customerAccount);
         Common.clickLinkShowForRowWithId(depositIdentifier);
         Customers.verifyDepositAccountHasStatus("PENDING");
         Customers.verifyDepositAccountBalanceIs("0.00");
-        depositAccountIdentifierCustomer = Customers.getDepositAccountIdentifier();
     });
     it('should be able to open account', function () {
         Teller.goToTellerManagementViaSidePanel();
         Teller.enterTextIntoTellerNumberInputField(tellerIdentifier);
         Teller.enterTextIntoPasswordInputField("qazwsx123!!");
         Teller.clickEnabledUnlockTellerButton();
+        Common.verifyMessagePopupIsDisplayed("Teller drawer unlocked");
         Teller.enterTextIntoSearchInputField(customerAccount);
         //will be successful even if the customer does not exist, clicks one of the buttons too quickly: need to fix
         Teller.clickButtonShowAtIndex(0);
         Teller.verifyCardTitleHasNameOfCustomer("Thomas Pynchon");
         Teller.clickOnOpenAccountForCustomer(customerAccount);
-        Teller.selectAccountToBeOpened(depositAccountIdentifierCustomer);
+        Teller.verifyCardTitleIs("Teller transaction");
+        Teller.selectAccountToBeOpened(customerAccount + ".9100.00001");
         Teller.enterTextIntoAmountInputField("100");
         Teller.clickEnabledCreateTransactionButton();
+        Teller.verifyTransactionAmount("100");
+        Teller.verifyTransactionCharge("Account opening charge", "5");
         Teller.verifyChargesPayedInCashCheckboxChecked();
         Teller.clickEnabledConfirmTransactionButton();
+        Common.verifyMessagePopupIsDisplayed("Transaction successfully confirmed");
         //verify account is active and balance is as expected
         Customers.goToManageCustomersViaSidePanel();
+        Common.clickSearchButtonToMakeSearchInputFieldAppear();
+        Common.enterTextInSearchInputFieldAndApplySearch(customerAccount);
+        Common.verifyFirstRowOfSearchResultHasTextAsId(customerAccount);
         Common.clickLinkShowForRowWithId(customerAccount);
         Customers.clickManageDepositAccountsForCustomer(customerAccount);
         //test might be too fast, account still PENDING here and balance 0.00 (but on leaving and coming back, everything as expected)
-        browser.sleep(5000);
+        Customers.verifyStateOfDepositAccountWithIdIs(depositIdentifier, "ACTIVE");
         Common.clickLinkShowForRowWithId(depositIdentifier);
         Customers.verifyDepositAccountHasStatus("ACTIVE");
         Customers.verifyDepositAccountBalanceIs("100.00");
-        Customers.clickButtonEditDepositAccount(customerAccount, depositAccountIdentifierCustomer);
     });
     it('transaction should have been booked as expected', function () {
         Accounting.goToAccountingViaSidePanel();
-        //verify balance on customer's account
+        //verify balance on customer's account is as expected
         Common.clickLinkShowForRowWithId("9000");
         Common.clickLinkShowForRowWithId("9100");
-        Common.clickLinkShowForRowWithId(depositAccountIdentifierCustomer);
-        Accounting.viewAccountEntriesForAccount(depositAccountIdentifierCustomer);
-        //Accounting.verifyTransactionType("CREDIT");
-        //Accounting.verifyTransactionMessage("ACCO");
-        //Accounting.verifyTransactionAmount("100");
-        //Accounting.verifyAccountBalance("100");
+        Accounting.clickLinkShowForAccountWithName(depositName);
+        Accounting.verifyAccountStatus("OPEN");
+        Accounting.verifyAccountInfo("Balance", "100");
+        Accounting.verifyAccountInfo("Type", "EQUITY");
+        Accounting.viewAccountEntriesForAccount(customerAccount + ".9100.00001");
+        Accounting.verifyTransactionTypeForRow("CREDIT", 1);
+        Accounting.verifyTransactionMessageForRow("ACCO", 1);
+        Accounting.verifyTransactionAmountForRow("100", 1);
+        Accounting.verifyTransactionBalanceForRow("100", 1);
+        //teller account - opening amount + charge have been booked as expected
+        Accounting.goToAccountingViaSidePanel();
+        Common.clickLinkShowForRowWithId("7000");
+        Common.clickLinkShowForRowWithId("7300");
+        Common.clickLinkShowForRowWithId(tellerAccount);
+        Accounting.verifyAccountStatus("OPEN");
+        Accounting.verifyAccountInfo("Balance", "105");
+        Accounting.verifyAccountInfo("Type", "ASSET");
+        Accounting.viewAccountEntriesForAccount(tellerAccount);
+        Accounting.verifyTransactionTypeForRow("DEBIT", 1);
+        Accounting.verifyTransactionMessageForRow("ACCO", 1);
+        Accounting.verifyTransactionAmountForRow("105", 1);
+        Accounting.verifyTransactionBalanceForRow("105", 1);
+        //revenue account - check charges have been booked as expected
+        Accounting.goToAccountingViaSidePanel();
+        Common.clickLinkShowForRowWithId("1000");
+        Common.clickLinkShowForRowWithId("1100");
+        Common.clickLinkShowForRowWithId(revenueAccount);
+        Accounting.verifyAccountStatus("OPEN");
+        Accounting.verifyAccountInfo("Balance", "5");
+        Accounting.verifyAccountInfo("Type", "REVENUE");
+        Accounting.viewAccountEntriesForAccount(revenueAccount);
+        Accounting.verifyTransactionTypeForRow("CREDIT", 1);
+        Accounting.verifyTransactionMessageForRow("ACCO", 1);
+        Accounting.verifyTransactionAmountForRow("5", 1);
+        Accounting.verifyTransactionBalanceForRow("5", 1);
     });
 });

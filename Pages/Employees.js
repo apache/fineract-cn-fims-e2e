@@ -1,6 +1,7 @@
 //Employees.js
 
 //Actions specific to the Employees section
+var Common = require('./Common.js');
 
 var EC = protractor.ExpectedConditions;
 var usernameInput = $(".mat-input-infix input[placeholder='Username']");
@@ -12,8 +13,7 @@ var emailInput = $(".mat-input-infix input[formcontrolname='email']");
 var phoneInput = $(".mat-input-infix input[formcontrolname='phone']");
 var mobileInput = $(".mat-input-infix input[formcontrolname='mobile']");
 var createEmployee = $("a[href='/employees/create']");
-var primaryButton = $(".mat-raised-button.mat-primary");
-
+var primaryButton = $$(".mat-raised-button.mat-primary");
 
 module.exports = {
     verifyCardHasTitleManageEmployees: function() {
@@ -51,18 +51,16 @@ module.exports = {
         $$(".mat-raised-button").get(1).click();
     },
     clickEnabledCreateEmployeeButton: function(){
-        browser.executeScript("arguments[0].scrollIntoView();", primaryButton.getWebElement());
-        browser.wait(EC.elementToBeClickable(primaryButton),2000);
-        expect(primaryButton.isEnabled()).toBeTruthy();
-        primaryButton.click();
+        browser.executeScript("arguments[0].scrollIntoView();", $$("td-step-body").last().getWebElement());
+        primaryButton.filter(function(elem, index) {
+            return elem.$("span").getText().then(function(text) {
+                return text === "CREATE EMPLOYEE";
+            });
+        }).click();
     },
     clickButtonOrLinkCreateNewEmployee: function(){
         browser.wait(EC.visibilityOf(createEmployee), 5000);
         createEmployee.click();
-    },
-    selectRoleByIndex: function(i){
-        roleSelection = $(".mat-select-trigger").click();
-        element.all(by.css('.mat-option')).get(i).click();
     },
     selectRoleByName: function(name){
         roleSelection = $(".mat-select-trigger");
@@ -89,6 +87,7 @@ module.exports = {
         this.clickEnabledContinueButtonForEmployeeDetails();
         this.clickEnabledContinueButtonForAssignEmployeeToOffice();
         this.clickEnabledCreateEmployeeButton();
+        Common.verifyMessagePopupIsDisplayed("Employee is going to be saved");
     },
     deleteEmployee: function() {
         browser.wait(EC.visibilityOf($("button[title='Delete this employee']")), 3000);

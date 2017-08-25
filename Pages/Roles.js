@@ -7,7 +7,7 @@ var identifierInput = $(".mat-input-infix input[placeholder='Identifier']");
 var checkboxAllPermissionsDelete = $$("md-checkbox").get(2);
 var createNewRoleQA =  $("a[href='/roles/create']");
 var titleRow = $("fims-layout-card-over .mat-toolbar-row div");
-var buttonPrimary = $(".mat-raised-button.mat-primary");
+var primaryButton = $$(".mat-raised-button.mat-primary");
 
 
 
@@ -30,8 +30,10 @@ module.exports = {
         checkboxAllPermissionsDelete.click();
     },
     clickEnabledSaveRoleButton: function(){
-        browser.wait(EC.visibilityOf(buttonPrimary), 5000);
-        expect(buttonPrimary.isEnabled()).toBeTruthy();
-        buttonPrimary.click();
-    }
+       primaryButton.filter(function(elem, index) {
+            return elem.$("span").getText().then(function(text) {
+                return text === "SAVE ROLE";
+            });
+        }).click();
+    },
 }
