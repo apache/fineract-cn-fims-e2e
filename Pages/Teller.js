@@ -95,7 +95,7 @@ module.exports = {
         a.click();
         browser.wait(EC.visibilityOf($("fims-teller-transaction-form")), 2000);
     },
-    selectAccountToBeOpened: function(accountIdentifier){
+    selectAccountToBeAffected: function(accountIdentifier){
         browser.wait(EC.elementToBeClickable(accountSelect), 3000);
         accountSelect.click();
         browser.wait(EC.visibilityOf($(".mat-option")), 5000);
@@ -104,7 +104,7 @@ module.exports = {
     },
     enterTextIntoAmountInputField: function(text) {
         browser.wait(EC.elementToBeClickable(amountInput), 5000);
-        amountInput.click().sendKeys(text);
+        amountInput.click().clear().sendKeys(text);
     },
     clickEnabledCreateTransactionButton: function(){
         primaryButton.filter(function(elem, index) {
@@ -112,6 +112,20 @@ module.exports = {
                 return text === "CREATE TRANSACTION";
             });
         }).click();
+    },
+    verifyCreateTransactionButtonIsDisabled: function(){
+        expect(primaryButton.filter(function(elem, index) {
+            return elem.$("span").getText().then(function(text) {
+                return text === "CREATE TRANSACTION";
+            });
+        }).isEnabled()).toBe(false);
+    },
+    verifyCreateTransactionButtonIsEnabled: function(){
+        expect(primaryButton.filter(function(elem, index) {
+            return elem.$("span").getText().then(function(text) {
+                return text === "CREATE TRANSACTION";
+            });
+        }).isEnabled()).toBe(true);
     },
     clickEnabledConfirmTransactionButton: function(){
         browser.executeScript("arguments[0].scrollIntoView();", primaryButton.get(1).getWebElement());
@@ -126,6 +140,10 @@ module.exports = {
     verifyChargesPayedInCashCheckboxChecked: function(){
         classCB = checkboxChargesInCash.getAttribute("class");
         expect(classCB).toMatch("mat-checkbox-checked");
+    },
+    uncheckChargesPayedInCashCheckbox: function(){
+       this.verifyChargesPayedInCashCheckboxChecked();
+       checkboxChargesInCash.click();
     },
     verifyChargesPayedInCashCheckboxNotChecked: function(){
         classCB = checkboxChargesInCash.getAttribute("class");

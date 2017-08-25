@@ -1,18 +1,21 @@
 //test round 1 - admin user can execute basic actions (TBD)
 //1) User operator creates a new role Administrator with all permissions
 //2) User operator creates a new employee with that role
-//3) New employee logs in and creates headoffice
-//4) New employee creates branch office
-//5) New employee creates a teller for the branch office
-//6) New employee opens the teller and assigns it to himself
-//7) New employee creates a customer
-//8) New employee activates the customer
-//9) New employee unlocks the teller, views customer and pauses teller again
-//10) New employee creates a deposit product
-//11) New employee enables deposit product
-//12) New employee assigns deposit product to customer
-//13) New employee opens account in teller and verifies the account is now active
-//14) New employee verifies transaction have been booked as expected (accounting)
+//3) New employee logs in and creates new accounts (asset and revenue)
+//4) New employee creates headoffice
+//5) New employee creates branch office
+//6) New employee creates a teller for the branch office
+//7) New employee opens the teller and assigns it to himself
+//8) New employee creates a customer
+//9) New employee activates the customer
+//10) New employee unlocks the teller, views customer and pauses teller again
+//11) New employee creates a deposit product
+//12) New employee enables deposit product
+//13) New employee assigns deposit product to customer
+//14) New employee opens account in teller and verifies the account is now active
+//15) New employee verifies transaction have been booked as expected (accounting)
+//16) New employee updates deposit product and adds a proportional charge on cash withdrawal
+//17) Teller - Cash is withdrawn from the account
 
 //test 1 and 3 fail if role and headquarter already exist, but other tests should be able to continue
 
@@ -59,17 +62,18 @@ describe('Gate 1', function() {
         Common.clickLinkShowForRowWithId("7000");
         Common.clickLinkShowForRowWithId("7300");
         Accounting.clickCreateNewAccountInLedger("7300");
-        //Accounting.verifyAccountTypeAssetSelected();
-        //Accounting.verifyRadioGroupAccountTypesDisabled();
         Accounting.enterTextIntoAccountIdentifierInputField(tellerAccount);
+        Accounting.verifyRadioAssetToBeSelected();
+        Accounting.verifyRadioAssetToBeDisabled();
         Accounting.enterTextIntoAccountNameInputField("My teller");
         Accounting.clickEnabledButtonCreateAccount();
         Common.verifyMessagePopupIsDisplayed("Account is going to be saved");
         Accounting.goToAccountingViaSidePanel();
         Common.clickLinkShowForRowWithId("1000");
-        Common.clickLinkShowForRowWithId("1100");
-        Accounting.clickCreateNewAccountInLedger("1100");
+        Common.clickLinkShowForRowWithId("1300");
+        Accounting.clickCreateNewAccountInLedger("1300");
         Accounting.enterTextIntoAccountIdentifierInputField(revenueAccount);
+        Accounting.verifyRadioRevenueToBeSelected();
         Accounting.enterTextIntoAccountNameInputField("Revenue from deposit charges");
         Accounting.clickEnabledButtonCreateAccount();
         Common.verifyMessagePopupIsDisplayed("Account is going to be saved");
@@ -131,13 +135,12 @@ describe('Gate 1', function() {
         Customers.enterTextIntoFirstNameInputField("Thomas");
         Customers.enterTextIntoLastNameInputField("Pynchon");
         Customers.enterTextIntoDayOfBirthInputField("09/21/1978");
-        //Customers.verifyMemberCheckboxIsChecked();
+        Customers.verifyIsMemberCheckboxSelected();
         Customers.clickEnabledContinueButtonForCustomerDetails();
         Customers.enterTextIntoStreetInputField("800 Chatham Road #326");
         Customers.enterTextIntoCityInputField("Winston-Salem");
         Customers.selectCountryByName("Germany");
         Customers.clickEnabledContinueButtonForCustomerAddress();
-        //Customers.clickEnabledContinueButtonForCustomerContact();
         Customers.clickEnabledCreateCustomerButton();
         Common.verifyMessagePopupIsDisplayed("Customer is going to be saved")
         Customers.verifyCardHasTitleManageCustomers();
@@ -221,7 +224,6 @@ describe('Gate 1', function() {
         Customers.selectDepositProduct(depositName);
         Customers.clickEnabledButtonCreateDepositAccount();
         Common.verifyMessagePopupIsDisplayed("Deposit account is going to be saved");
-
         //might not be in list immediately always
         Common.clickBackButtonInTitleBar();
         Customers.clickManageDepositAccountsForCustomer(customerAccount);
@@ -241,7 +243,7 @@ describe('Gate 1', function() {
         Teller.verifyCardTitleHasNameOfCustomer("Thomas Pynchon");
         Teller.clickOnOpenAccountForCustomer(customerAccount);
         Teller.verifyCardTitleIs("Teller transaction");
-        Teller.selectAccountToBeOpened(customerAccount + ".9100.00001");
+        Teller.selectAccountToBeAffected(customerAccount + ".9100.00001");
         Teller.enterTextIntoAmountInputField("100");
         Teller.clickEnabledCreateTransactionButton();
         Teller.verifyTransactionAmount("100");
@@ -292,7 +294,7 @@ describe('Gate 1', function() {
         //revenue account - check charges have been booked as expected
         Accounting.goToAccountingViaSidePanel();
         Common.clickLinkShowForRowWithId("1000");
-        Common.clickLinkShowForRowWithId("1100");
+        Common.clickLinkShowForRowWithId("1300");
         Common.clickLinkShowForRowWithId(revenueAccount);
         Accounting.verifyAccountStatus("OPEN");
         Accounting.verifyAccountInfo("Balance", "5");
@@ -302,5 +304,38 @@ describe('Gate 1', function() {
         Accounting.verifyTransactionMessageForRow("ACCO", 1);
         Accounting.verifyTransactionAmountForRow("5", 1);
         Accounting.verifyTransactionBalanceForRow("5", 1);
+    });
+    it('edit deposit product and add a withdrawal charge', function () {
+        Deposits.goToDepositsViaSidePanel();
+        Common.clickLinkShowForRowWithId(depositIdentifier);
+        Deposits.clickButtonEditDepositProduct(depositIdentifier);
+        Deposits.verifyRadioCheckingIsSelected();
+        Deposits.verifyInterestInputFieldHasText("0.05");
+        Deposits.verifyInterestInputFieldIsDisabled();
+        Deposits.clickEnabledContinueButtonForProductDetails();
+        Deposits.clickButtonAddChargeIfThereAlreadyIsACharge();
+        Deposits.enterTextIntoSecondChargeNameInputField("Cash withdrawal charge");
+        Deposits.enterTextIntoSecondChargeAmountInputField("3");
+        Deposits.selectTypeOfSecondCharge("Cash Withdrawal");
+        Deposits.enterTextIntoSecondIncomeAccountInputField(revenueAccount);
+        Deposits.selectSecondCheckboxProportional();
+        Deposits.clickEnabledUpdateProductButton();
+        Common.verifyMessagePopupIsDisplayed("Product is going to be saved");
+    });
+    it('make a cash withdrawal without paying charge in cash', function () {
+        Teller.goToTellerManagementViaSidePanel();
+        Teller.enterTextIntoSearchInputField(customerAccount);
+        //will be successful even if the customer does not exist, clicks one of the buttons too quickly: need to fix
+        Teller.clickButtonShowAtIndex(0);
+        Teller.verifyCardTitleHasNameOfCustomer("Thomas Pynchon");
+        Teller.clickOnCashWithdrawalForCustomer(customerAccount);
+        Teller.selectAccountToBeAffected(customerAccount + ".9100.00001");
+        Teller.enterTextIntoAmountInputField("100");
+        Teller.clickEnabledCreateTransactionButton();
+        Teller.verifyTransactionAmount("100");
+        Teller.verifyTransactionCharge("Cash withdrawal charge", "3");
+        Teller.uncheckChargesPayedInCashCheckbox();
+        Teller.clickEnabledConfirmTransactionButton();
+        Common.verifyMessagePopupIsDisplayed("Transaction successfully confirmed");
     });
 });

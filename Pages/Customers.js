@@ -8,7 +8,7 @@ var firstNameInput = $(".mat-input-infix input[formcontrolname='firstName']");
 var middleNameInput = $(".mat-input-infix input[formcontrolname='middleName']");
 var lastNameInput = $(".mat-input-infix input[formcontrolname='lastName']");
 var birthDayInput = $(".mat-input-infix input[formcontrolname='dayOfBirth']");
-var memberCheckbox = $(".mat-input-infix input[formcontrolname='member']");
+var memberCheckbox = $("md-checkbox[formcontrolname='member']");
 var streetInput = $(".mat-input-infix input[formcontrolname='street']");
 var cityInput = $(".mat-input-infix input[formcontrolname='city']");
 var countrySelect = $(".mat-input-infix input[formcontrolname='country']");
@@ -180,9 +180,9 @@ module.exports = {
     //     });
     //     return depAccount;
     // },
-    getDepositAccountIdentifier: function(){
-        return $$("md-list p").first().getText();
-    },
+    // getDepositAccountIdentifier: function(){
+    //     return $$("md-list p").first().getText();
+    // },
     verifyStateOfDepositAccountWithIdIs: function(identifier, expectedState) {
         browser.wait(EC.visibilityOf($("tbody tr")), 5000);
         //if > page of entries, need to implement way to page in order to find correct row
@@ -192,5 +192,8 @@ module.exports = {
             });
         }).$$(".td-data-table-cell").get(3).getText();
         expect(actualState).toEqual(expectedState);
+    },
+    verifyIsMemberCheckboxSelected: function() {
+        expect(memberCheckbox.getAttribute("class")).toMatch("mat-checkbox-checked");
     },
 };

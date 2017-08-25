@@ -8,6 +8,8 @@ var accountIdentifierInput = $("fims-id-input[controlname=identifier] input");
 var accountNameInput = $("input[formcontrolname=name]");
 var accountBalanceInput = $("input[formcontrolname=balance]");
 var primaryButton = $$(".mat-raised-button.mat-primary");
+var radioButtonAsset = $$("md-radio-button").get(0);
+var radioButtonRevenue = $$("md-radio-button").get(4);
 
 module.exports = {
     goToAccountingViaSidePanel: function() {
@@ -91,5 +93,15 @@ module.exports = {
                 return text === "CREATE ACCOUNT";
             });
         }).click();
+    },
+
+    verifyRadioAssetToBeSelected: function() {
+        expect(radioButtonAsset.getAttribute("class")).toMatch("mat-radio-checked");
+    },
+    verifyRadioAssetToBeDisabled: function() {
+        expect(radioButtonAsset.getAttribute("class")).toMatch("mat-radio-disabled");
+    },
+    verifyRadioRevenueToBeSelected: function() {
+        expect(radioButtonRevenue.getAttribute("class")).toMatch("mat-radio-checked");
     },
 };
