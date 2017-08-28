@@ -27,10 +27,10 @@ module.exports = {
         link = "/accounting/accounts/detail/" + accountIdentifier + "/entries";
         browser.wait(EC.visibilityOf($('a[href="'+ link + '"]')));
         $('a[href="'+ link + '"]').click();
-        browser.sleep(2000);
+        browser.sleep(1000);
     },
     clickLinkShowForAccountWithName: function(identifier) {
-        browser.sleep(2000);
+        browser.sleep(1000);
         browser.wait(EC.invisibilityOf($("div[class='md-padding'] h3")), 5000);
         browser.wait(EC.textToBePresentInElement($$("tbody tr .td-data-table-cell").last(), "SHOW"), 5000);
         $$('tbody tr').filter(function(elem, index) {

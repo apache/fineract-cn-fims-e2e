@@ -43,6 +43,8 @@ describe('Gate 1', function() {
     tellerAccount = helper.getRandomString(4);
     revenueAccount = helper.getRandomString(4);
     loanShortName = helper.getRandomString(6);
+    taskIdentifier = helper.getRandomString(3);
+    loanAccountShortName =  helper.getRandomString(4);
 
     it('should create a new administrator role', function () {
         Common.waitForThePageToFinishLoading();
@@ -224,7 +226,7 @@ describe('Gate 1', function() {
         Common.clickLinkShowForRowWithId(customerAccount);
         Customers.clickManageDepositAccountsForCustomer(customerAccount);
         Customers.clickCreateDepositAccountForCustomer(customerAccount);
-        Customers.selectDepositProduct(depositName);
+        Customers.selectProduct(depositName);
         Customers.clickEnabledButtonCreateDepositAccount();
         Common.verifyMessagePopupIsDisplayed("Deposit account is going to be saved");
         //might not be in list immediately always
@@ -384,6 +386,7 @@ describe('Gate 1', function() {
     Loans.clickButtonCreateLoanProduct();
     Loans.enterTextIntoShortNameInputField(loanShortName);
     Loans.enterTextIntoNameInputField("My loan " + loanShortName);
+    Loans.enterTextIntoDescriptionInputField("My loan " + loanShortName);
     Loans.enterTextIntoMinimumPrincipalInputField("200");
     Loans.enterTextIntoMaximumPrincipalInputField("1000");
     Loans.enterTextIntoTermInputField("12");
@@ -393,11 +396,64 @@ describe('Gate 1', function() {
     Loans.enterTextIntoCustomerLoanLedgerInputField("7900");
     Loans.enterTextIntoPendingDisbursalAccountInputField("7013");
     Loans.clickEnabledContinueButtonForLedgerAndAccountSettings("7810");
-    Loans.enterTextIntoInterestMinimumInputField("3.5");
+    Loans.enterTextIntoInterestMinimumInputField("3.50");
     Loans.enterTextIntoIncomeAccountAccountInputField(revenueAccount);
-    Loans.enterTextIntoAccrualAccountInputField();
+    Loans.enterTextIntoAccrualAccountInputField("7015");
+    Loans.clickEnabledContinueButtonForInterestSettings();
+    Loans.enterTextIntoProcessingFeeIncomeAccountInputField("1312");
+    Loans.enterTextIntoOriginatingFeeIncomeAccountInputField("1310");
+    Loans.enterTextIntoDisbursementFeeIncomeAccountInputField("1390");
+    Loans.enterTextIntoLateFeeIncomeAccountInputField("1311");
+    Loans.enterTextIntoLateFeeAccrualAccountInputField("7840");
+    Loans.clickEnabledContinueButtonForFeeIncomeAccounts("");
+    Loans.enterTextIntoArrearsAllowanceAccountInputField("3040");
+    Loans.clickEnabledCreateProductButton();
+    Common.verifyMessagePopupIsDisplayed("Product is going to be saved");
     });
-
-    //assign loan to customer
-
+    it('should edit charges', function (){
+    Common.clickLinkShowForRowWithId(loanShortName);
+    Loans.clickLinkManageFeesForLoanProduct(loanShortName);
+    Common.clickLinkShowForRowWithId("processing-fee");
+    Loans.clickButtonEditProcessingFeeForLoanProduct(loanShortName);
+    Loans.enterTextIntoFeeAmountInputField("3");
+    Loans.clickEnabledUpdateChargeButton();
+    Common.verifyMessagePopupIsDisplayed("Charge is going to be saved");
+    Common.clickBackButtonInTitleBar();
+    Common.clickBackButtonInTitleBar();
+    });
+    it('should add task', function () {
+    Loans.clickLinkManageTasksForLoanProduct(loanShortName);
+    Loans.clickButtonCreateTaskForLoanProduct(loanShortName);
+    Loans.enterTextIntoTaskIdentifierInputField(taskIdentifier);
+    Loans.enterTextIntoTaskNameInputField("Loan opening task");
+    Loans.enterTextIntoTaskDescriptionInputField("Loan opening task - mandatory");
+    Loans.checkMandatoryCheckbox();
+    Loans.clickButtonAddAction();
+    Loans.selectSecondAction("can be approved");
+    Loans.clickEnabledCreateTaskButton();
+    Common.verifyMessagePopupIsDisplayed("Task is going to be created");
+    Common.clickBackButtonInTitleBar();
+    });
+    it('should enable the loan product', function () {
+    Loans.clickButtonEnableProduct();
+    Common.verifyMessagePopupIsDisplayed("Product is going to be enabled");
+    });
+    it('should assign loan product to customer', function () {
+    Customers.goToManageCustomersViaSidePanel();
+    Common.clickSearchButtonToMakeSearchInputFieldAppear();
+    Common.enterTextInSearchInputFieldAndApplySearch(customerAccount);
+    Common.verifyFirstRowOfSearchResultHasTextAsId(customerAccount);
+    Common.clickLinkShowForRowWithId(customerAccount);
+    Customers.clickManageLoanAccountsForCustomer(customerAccount);
+    Customers.clickCreateLoanAccountForCustomer(customerAccount);
+    Customers.selectProduct("My loan " + loanShortName);
+    Customers.enterTextIntoShortNameInputField(loanAccountShortName);
+    Customers.enterTextIntoPrincipalAmountInputField("5000");
+    //verify interest rate as expected and cannot be changed; currently always 0.00 (bug)
+    Customers.enterTextIntoTermInputField("12");
+    //verify correct radio button selected
+    Customers.selectDepositAccount(customerAccount + ".9100.00001(" + depositIdentifier + ")");
+    Customers.clickEnabledCreateCustomerButton();
+    Common.verifyMessagePopupIsDisplayed("Case is going to be saved");
+    });
 });

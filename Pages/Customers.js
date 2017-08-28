@@ -17,183 +17,219 @@ var phoneInput = $(".mat-input-infix input[formcontrolname='phone']");
 var mobileInput = $(".mat-input-infix input[formcontrolname='mobile']");
 var linkCustomers = $$("a[href='/customers']");
 var titleRow = $("fims-layout-card-over .mat-toolbar-row div");
-var depositProductSelect = $("md-select[formcontrolname='productIdentifier']");
+var productSelect = $("md-select[formcontrolname='productIdentifier']");
 var beneficiaryInput = $("td-chips[formcontrolname='beneficiaries'] input");
 var primaryButton =  $(".mat-raised-button.mat-primary");
 var continueButton = $$(".mat-raised-button.mat-accent");
-var beneficiaryInput = $("td-chips[formcontrolname='beneficiaries'] input");
+var shortNameInput = $("fims-id-input[controlname='identifier'] input");
+var principalAmountInput = $("fims-number-input[controlname='principalAmount'] input");
+var termInput = $("input[formcontrolname='term']");
+var paymentPeriod = $("input[formcontrolname='paymentPeriod']");
+var depositAccountSelect = $("md-select[formcontrolname='depositAccountIdentifier'] .mat-select-trigger");
+
 
 module.exports = {
-    verifyCardHasTitleManageCustomers: function() {
+    verifyCardHasTitleManageCustomers: function () {
         browser.wait(EC.textToBePresentInElement(titleRow, 'Manage customers'), 5000);
     },
-    verifyCardHasTitleCreateCustomer: function() {
-        form_title=$("fims-layout-card-over .mat-toolbar-row div").getText();
+    verifyCardHasTitleCreateCustomer: function () {
+        form_title = $("fims-layout-card-over .mat-toolbar-row div").getText();
         expect(form_title).toEqual("Create new customer");
     },
-    enterTextIntoAccountInputField: function(text) {
+    enterTextIntoAccountInputField: function (text) {
         accountInput.click().sendKeys(text);
     },
-    enterTextIntoFirstNameInputField: function(text) {
+    enterTextIntoFirstNameInputField: function (text) {
         firstNameInput.click().sendKeys(text);
     },
-    enterTextIntoMiddleNameInputField: function(text){
+    enterTextIntoMiddleNameInputField: function (text) {
         middleNameInput.click().sendKeys(text);
     },
-    enterTextIntoLastNameInputField: function(text) {
+    enterTextIntoLastNameInputField: function (text) {
         lastNameInput.click().sendKeys(text);
     },
-   enterTextIntoDayOfBirthInputField: function(){
+    enterTextIntoDayOfBirthInputField: function () {
         birthDayInput.click().sendKeys(protractor.Key.ARROW_LEFT);
         birthDayInput.sendKeys(protractor.Key.ARROW_LEFT);
         birthDayInput.sendKeys("991978");
 
     },
-    enterTextIntoStreetInputField: function(text) {
-        browser.wait(EC.elementToBeClickable(streetInput),3000);
+    enterTextIntoStreetInputField: function (text) {
+        browser.wait(EC.elementToBeClickable(streetInput), 3000);
         streetInput.click().sendKeys(text);
     },
-    enterTextIntoCityInputField: function(text) {
+    enterTextIntoCityInputField: function (text) {
         cityInput.click().sendKeys(text);
     },
-    enterTextIntoEmailInputField: function(text) {
+    enterTextIntoEmailInputField: function (text) {
         emailInput.click().sendKeys(text);
     },
-    enterTextIntoPhoneInputField: function(text) {
+    enterTextIntoPhoneInputField: function (text) {
         phoneInput.click().sendKeys(text);
     },
-    enterTextIntoMobileInputField: function(text) {
+    enterTextIntoMobileInputField: function (text) {
         mobileInput.click().sendKeys(text);
     },
-    clickEnabledContinueButtonForCustomerDetails: function(){
+    clickEnabledContinueButtonForCustomerDetails: function () {
         browser.wait(EC.elementToBeClickable(continueButton.get(0)), 5000);
         expect(continueButton.get(0).isEnabled()).toBeTruthy();
         continueButton.get(0).click();
     },
-    clickEnabledContinueButtonForCustomerAddress: function(){
+    clickEnabledContinueButtonForCustomerAddress: function () {
         browser.wait(EC.elementToBeClickable(continueButton.get(1)), 5000);
         expect(continueButton.get(1).isEnabled()).toBeTruthy();
         continueButton.get(1).click();
     },
-    clickEnabledContinueButtonForCustomerContact: function(){
+    clickEnabledContinueButtonForCustomerContact: function () {
         browser.wait(EC.elementToBeClickable(continueButton.get(2)), 5000);
         expect(continueButton.get(2).isEnabled()).toBeTruthy();
         continueButton.get(2).click();
     },
-    clickEnabledCreateCustomerButton: function(){
+    clickEnabledCreateCustomerButton: function () {
         browser.executeScript("arguments[0].scrollIntoView();", primaryButton.getWebElement());
         browser.wait(EC.elementToBeClickable(primaryButton), 5000);
         expect(primaryButton.isEnabled()).toBeTruthy();
         browser.wait(EC.elementToBeClickable(primaryButton), 5000);
         primaryButton.click();
     },
-    clickButtonOrLinkCreateNewCustomer: function(){
+    clickButtonOrLinkCreateNewCustomer: function () {
         browser.wait(EC.visibilityOf($("a[href='/customers/create']")), 5000);
         $("a[href='/customers/create']").click();
     },
-    selectCountryByIndex: function(i){
+    selectCountryByIndex: function (i) {
         countrySelect.click();
         element.all(by.css('.mat-option')).get(i).click();
     },
-    selectCountryByName: function(name){
+    selectCountryByName: function (name) {
         countrySelect.click();
-        element(by.cssContainingText('.mat-option',name)).click();
+        element(by.cssContainingText('.mat-option', name)).click();
     },
-    goToManageCustomersViaSidePanel: function() {
+    goToManageCustomersViaSidePanel: function () {
         browser.wait(EC.visibilityOf(linkCustomers.first()), 5000);
         linkCustomers.first().click();
     },
-    clickViewCustomersFromQuickAccess: function() {
+    clickViewCustomersFromQuickAccess: function () {
         browser.wait(EC.visibilityOf(linkCustomers.get(1)), 5000);
         linkCustomer.get(1).click();
     },
-    verifyCustomerHasStatusInactive: function(){
+    verifyCustomerHasStatusInactive: function () {
         browser.wait(EC.visibilityOf($("td-message")), 2000);
         color = $("td-message").getAttribute("color");
         message = $("td-message .td-message-label").getText();
         expect(color).toEqual("warn");
         expect(message).toContain("Customer not active");
     },
-    clickButtonGoToTasks: function(){
+    clickButtonGoToTasks: function () {
         browser.wait(EC.elementToBeClickable($("td-message button")), 2000);
         $("td-message button").click();
     },
-    clickButtonActivate: function(){
+    clickButtonActivate: function () {
         browser.wait(EC.elementToBeClickable($(".mat-raised-button.mat-accent")), 2000);
         $(".mat-raised-button.mat-accent").click();
     },
-    verifyCustomerHasStatusActive: function(){
+    verifyCustomerHasStatusActive: function () {
         browser.wait(EC.visibilityOf($("fims-state-display")), 2000);
         status = $("fims-state-display .mat-list-text .mat-line").getText();
         expect(status).toEqual("ACTIVE");
     },
-    clickManageDepositAccountsForCustomer: function(customer){
+    clickManageDepositAccountsForCustomer: function (customer) {
         link = "/customers/detail/" + customer + "/deposits";
-        browser.wait(EC.elementToBeClickable($('a[href="'+ link + '"]')), 6000);
-        $('a[href="'+ link + '"]').click();
+        browser.wait(EC.elementToBeClickable($('a[href="' + link + '"]')), 6000);
+        $('a[href="' + link + '"]').click();
     },
-    clickCreateDepositAccountForCustomer: function(customer){
+    clickManageLoanAccountsForCustomer: function (customer) {
+        link = "/customers/detail/" + customer + "/loans";
+        browser.wait(EC.elementToBeClickable($('a[href="' + link + '"]')), 6000);
+        $('a[href="' + link + '"]').click();
+    },
+    clickCreateDepositAccountForCustomer: function (customer) {
         link = "/customers/detail/" + customer + "/deposits/create";
-        browser.wait(EC.visibilityOf($('a[href="'+ link + '"]')));
-        $('a[href="'+ link + '"]').click();
+        browser.wait(EC.visibilityOf($('a[href="' + link + '"]')));
+        $('a[href="' + link + '"]').click();
     },
-    selectDepositProduct: function(depositProductName){
-        depositProductSelect.click();
+    clickCreateLoanAccountForCustomer: function (customer) {
+        link = "/customers/detail/" + customer + "/loans/create";
+        browser.wait(EC.visibilityOf($('a[href="' + link + '"]')));
+        $('a[href="' + link + '"]').click();
+    },
+    selectProduct: function (productName) {
+        browser.wait(EC.visibilityOf(productSelect), 2000);
+        productSelect.click();
         browser.wait(EC.visibilityOf($(".mat-option")), 5000);
-        opt =  element(by.cssContainingText('.mat-option', depositProductName));
+        opt = element(by.cssContainingText('.mat-option', productName));
         browser.executeScript("arguments[0].scrollIntoView();", opt.getWebElement());
         browser.wait(EC.elementToBeClickable(opt), 2000);
         opt.click();
     },
-    clickEnabledButtonCreateDepositAccount: function(){
+    clickEnabledButtonCreateDepositAccount: function () {
         browser.wait(EC.elementToBeClickable($(".mat-raised-button.mat-primary")), 5000);
         expect($(".mat-raised-button.mat-primary").isEnabled()).toBeTruthy();
         $(".mat-raised-button.mat-primary").click();
     },
-    verifyDepositAccountHasStatus: function(expectedStatus){
+    verifyDepositAccountHasStatus: function (expectedStatus) {
         browser.wait(EC.visibilityOf($("fims-state-display")), 2000);
         status = $("fims-state-display .mat-list-text .mat-line").getText();
         expect(status).toEqual(expectedStatus);
     },
-    clickButtonEditDepositAccount: function(customer, depositAccountIdentifier) {
-        link = "/customers/detail/" + customer + "/deposits/detail/" + depositAccountIdentifier + "/edit" ;
+    clickButtonEditDepositAccount: function (customer, depositAccountIdentifier) {
+        link = "/customers/detail/" + customer + "/deposits/detail/" + depositAccountIdentifier + "/edit";
         browser.wait(EC.visibilityOf($('a[href="' + link + '"]')), 2000);
         $('a[href="' + link + '"]').click();
     },
 
-    verifyDepositAccountBalanceIs: function(expectedBalance){
-        $$("fims-layout-card-over .mat-list-item .mat-list-text").filter(function(elem, index) {
-            return elem.$("h3").getText().then(function(text) {
-                    return text === "Balance";
+    verifyDepositAccountBalanceIs: function (expectedBalance) {
+        $$("fims-layout-card-over .mat-list-item .mat-list-text").filter(function (elem, index) {
+            return elem.$("h3").getText().then(function (text) {
+                return text === "Balance";
             });
-        }).$$("p").first().getText().then(function(text){
+        }).$$("p").first().getText().then(function (text) {
             return text === expectedBalance;
         });
     },
-    // getDepositAccountIdentifier: function(){
-    //     depAccount = $$("fims-layout-card-over .mat-list-item .mat-list-text").filter(function(elem, index) {
-    //         return elem.$("h3").getText().then(function(text) {
-    //             return text === "Account";
-    //         });
-    //     }).$$("p").first().getText().then(function(text){
-    //         return text;
-    //     });
-    //     return depAccount;
-    // },
-    // getDepositAccountIdentifier: function(){
-    //     return $$("md-list p").first().getText();
-    // },
-    verifyStateOfDepositAccountWithIdIs: function(identifier, expectedState) {
+    verifyStateOfDepositAccountWithIdIs: function (identifier, expectedState) {
         browser.wait(EC.visibilityOf($("tbody tr")), 5000);
         //if > page of entries, need to implement way to page in order to find correct row
-        actualState = $$('tbody tr').filter(function(elem, index) {
-            return elem.$(".td-data-table-cell").getText().then(function(text) {
+        actualState = $$('tbody tr').filter(function (elem, index) {
+            return elem.$(".td-data-table-cell").getText().then(function (text) {
                 return text === identifier;
             });
         }).$$(".td-data-table-cell").get(3).getText();
         expect(actualState).toEqual(expectedState);
     },
-    verifyIsMemberCheckboxSelected: function() {
+    verifyIsMemberCheckboxSelected: function () {
         expect(memberCheckbox.getAttribute("class")).toMatch("mat-checkbox-checked");
+    },
+    enterTextIntoShortNameInputField: function (text) {
+        browser.wait(EC.elementToBeClickable(shortNameInput), 3000);
+        shortNameInput.click().sendKeys(text);
+    },
+    enterTextIntoPrincipalAmountInputField: function (text) {
+        principalAmountInput.click().sendKeys(protractor.Key.ARROW_LEFT);
+        principalAmountInput.sendKeys(protractor.Key.ARROW_LEFT);
+        principalAmountInput.sendKeys(protractor.Key.ARROW_LEFT);
+        principalAmountInput.sendKeys(protractor.Key.ARROW_LEFT);
+        principalAmountInput.sendKeys(text);
+    },
+    enterTextIntoTermInputField: function (text) {
+        termInput.click().clear().sendKeys(text);
+    },
+    selectDepositAccount: function (depositAccount) {
+        browser.executeScript("arguments[0].scrollIntoView();", depositAccountSelect.getWebElement());
+        browser.wait(EC.visibilityOf(depositAccountSelect), 2000);
+        productSelect.click();
+        browser.wait(EC.visibilityOf($(".mat-option")), 5000);
+        opt = element(by.cssContainingText('.mat-option', depositAccount));
+        browser.executeScript("arguments[0].scrollIntoView();", opt.getWebElement());
+        browser.wait(EC.elementToBeClickable(opt), 2000);
+        opt.click();
+    },
+    clickEnabledCreateCustomerLoanButton: function(){
+        browser.executeScript("arguments[0].scrollIntoView();", primaryButton.first().getWebElement());
+        browser.wait(EC.elementToBeClickable(primaryButton.first()), 3000);
+        primaryButton.filter(function(elem, index) {
+            return elem.$("span").getText().then(function(text) {
+                return text === "CREATE CUSTOMER LOAN";
+            });
+        }).click();
     },
 };

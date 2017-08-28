@@ -9,7 +9,7 @@ exports.config = {
       'Specs/gate1.js'
   ],
     directConnect: true,
-    allScriptsTimeout: 15000,
+    allScriptsTimeout: 25000,
     capabilities: {
         browserName: 'chrome',
         chromeOptions: {
