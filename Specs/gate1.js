@@ -29,6 +29,8 @@ var Teller = require('../Pages/Teller');
 var Customers = require('../Pages/Customers');
 var Deposits = require('../Pages/Deposits');
 var Accounting = require('../Pages/Accounting');
+var Loans = require('../Pages/Loans');
+
 
 describe('Gate 1', function() {
     var EC = protractor.ExpectedConditions;
@@ -40,6 +42,7 @@ describe('Gate 1', function() {
     depositName = helper.getRandomString(8);
     tellerAccount = helper.getRandomString(4);
     revenueAccount = helper.getRandomString(4);
+    loanShortName = helper.getRandomString(6);
 
     it('should create a new administrator role', function () {
         Common.waitForThePageToFinishLoading();
@@ -171,7 +174,7 @@ describe('Gate 1', function() {
         Common.verifyMessagePopupIsDisplayed("Teller drawer is now locked");
         Teller.verifyTellerIsLocked();
     });
-    it('should create a deposit account - Checking with charges', function () {
+    it('should create a deposit account - Checking with opening charge', function () {
         Deposits.goToDepositsViaSidePanel();
         Deposits.verifyCardHasTitle("Manage deposit products");
         Deposits.clickButtonCreateDepositAccount();
@@ -243,7 +246,7 @@ describe('Gate 1', function() {
         Teller.verifyCardTitleHasNameOfCustomer("Thomas Pynchon");
         Teller.clickOnOpenAccountForCustomer(customerAccount);
         Teller.verifyCardTitleIs("Teller transaction");
-        Teller.selectAccountToBeAffected(customerAccount + ".9100.00001");
+        Teller.selectAccountToBeAffected(customerAccount + ".9100.00001(" + depositIdentifier +")");
         Teller.enterTextIntoAmountInputField("100");
         Teller.clickEnabledCreateTransactionButton();
         Teller.verifyTransactionAmount("100");
@@ -264,7 +267,7 @@ describe('Gate 1', function() {
         Customers.verifyDepositAccountHasStatus("ACTIVE");
         Customers.verifyDepositAccountBalanceIs("100.00");
     });
-    it('transaction should have been booked as expected', function () {
+    it('transaction ACCO should have been booked as expected', function () {
         Accounting.goToAccountingViaSidePanel();
         //verify balance on customer's account is as expected
         Common.clickLinkShowForRowWithId("9000");
@@ -317,8 +320,8 @@ describe('Gate 1', function() {
         Deposits.enterTextIntoSecondChargeNameInputField("Cash withdrawal charge");
         Deposits.enterTextIntoSecondChargeAmountInputField("3");
         Deposits.selectTypeOfSecondCharge("Cash Withdrawal");
-        Deposits.enterTextIntoSecondIncomeAccountInputField(revenueAccount);
         Deposits.selectSecondCheckboxProportional();
+        Deposits.enterTextIntoSecondIncomeAccountInputField(revenueAccount);
         Deposits.clickEnabledUpdateProductButton();
         Common.verifyMessagePopupIsDisplayed("Product is going to be saved");
     });
@@ -330,12 +333,71 @@ describe('Gate 1', function() {
         Teller.verifyCardTitleHasNameOfCustomer("Thomas Pynchon");
         Teller.clickOnCashWithdrawalForCustomer(customerAccount);
         Teller.selectAccountToBeAffected(customerAccount + ".9100.00001");
-        Teller.enterTextIntoAmountInputField("100");
+        Teller.enterTextIntoAmountInputField("50");
         Teller.clickEnabledCreateTransactionButton();
-        Teller.verifyTransactionAmount("100");
-        Teller.verifyTransactionCharge("Cash withdrawal charge", "3");
+        Teller.verifyTransactionAmount("50");
+        Teller.verifyTransactionCharge("Cash withdrawal charge", "1.5");
         Teller.uncheckChargesPayedInCashCheckbox();
         Teller.clickEnabledConfirmTransactionButton();
         Common.verifyMessagePopupIsDisplayed("Transaction successfully confirmed");
     });
+    it('transaction CWDL should have been booked as expected', function () {
+    Accounting.goToAccountingViaSidePanel();
+    //verify balance on customer's account is as expected
+    Common.clickLinkShowForRowWithId("9000");
+    Common.clickLinkShowForRowWithId("9100");
+    Accounting.clickLinkShowForAccountWithName(depositName);
+    Accounting.verifyAccountInfo("Balance", "48.5");
+    Accounting.viewAccountEntriesForAccount(customerAccount + ".9100.00001");
+    Accounting.verifyTransactionTypeForRow("DEBIT", 2);
+    Accounting.verifyTransactionMessageForRow("CWDL", 2);
+    Accounting.verifyTransactionAmountForRow("1.5", 2);
+    Accounting.verifyTransactionBalanceForRow("98.5", 2);
+    Accounting.verifyTransactionTypeForRow("DEBIT", 3);
+    Accounting.verifyTransactionMessageForRow("CWDL", 3);
+    Accounting.verifyTransactionAmountForRow("50", 3);
+    Accounting.verifyTransactionBalanceForRow("48.5", 3);
+    Accounting.goToAccountingViaSidePanel();
+    Common.clickLinkShowForRowWithId("7000");
+    Common.clickLinkShowForRowWithId("7300");
+    Common.clickLinkShowForRowWithId(tellerAccount);
+    Accounting.verifyAccountInfo("Balance", "55");
+    Accounting.viewAccountEntriesForAccount(tellerAccount);
+    Accounting.verifyTransactionTypeForRow("CREDIT", 2);
+    Accounting.verifyTransactionMessageForRow("CWDL", 2);
+    Accounting.verifyTransactionAmountForRow("50", 2);
+    Accounting.verifyTransactionBalanceForRow("55", 2);
+    //revenue account - check charges have been booked as expected
+    Accounting.goToAccountingViaSidePanel();
+    Common.clickLinkShowForRowWithId("1000");
+    Common.clickLinkShowForRowWithId("1300");
+    Common.clickLinkShowForRowWithId(revenueAccount);
+    Accounting.verifyAccountInfo("Balance", "6.5");
+    Accounting.viewAccountEntriesForAccount(revenueAccount);
+    Accounting.verifyTransactionTypeForRow("CREDIT", 2);
+    Accounting.verifyTransactionMessageForRow("CWDL", 2);
+    Accounting.verifyTransactionAmountForRow("1.5", 2);
+    Accounting.verifyTransactionBalanceForRow("6.5", 2);
+    });
+    it('create a loan product', function () {
+    Loans.goToLoanProductsViaSidePanel();
+    Loans.clickButtonCreateLoanProduct();
+    Loans.enterTextIntoShortNameInputField(loanShortName);
+    Loans.enterTextIntoNameInputField("My loan " + loanShortName);
+    Loans.enterTextIntoMinimumPrincipalInputField("200");
+    Loans.enterTextIntoMaximumPrincipalInputField("1000");
+    Loans.enterTextIntoTermInputField("12");
+    Loans.clickEnabledContinueButtonForProductDetails();
+    Loans.enterTextIntoCashAccountInputField(tellerAccount);
+    Loans.enterTextIntoLoanInProcessLedgerInputField("8100");
+    Loans.enterTextIntoCustomerLoanLedgerInputField("7900");
+    Loans.enterTextIntoPendingDisbursalAccountInputField("7013");
+    Loans.clickEnabledContinueButtonForLedgerAndAccountSettings("7810");
+    Loans.enterTextIntoInterestMinimumInputField("3.5");
+    Loans.enterTextIntoIncomeAccountAccountInputField(revenueAccount);
+    Loans.enterTextIntoAccrualAccountInputField();
+    });
+
+    //assign loan to customer
+
 });

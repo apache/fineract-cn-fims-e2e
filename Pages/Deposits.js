@@ -31,6 +31,7 @@ var cashAccountInput = $("fims-account-select[formcontrolname='cashAccountIdenti
 var expenseAccountInput = $("fims-account-select[formcontrolname='expenseAccountIdentifier'] input");
 var accrueAccountInput = $("fims-account-select[formcontrolname='accrueAccountIdentifier'] input");
 var equityLedgerInput = $("fims-ledger-select[formcontrolname='equityLedgerIdentifier'] input");
+
 var chargeNameInput1 = $$("fims-deposit-product-charges-form input[formcontrolname='name']").get(0);
 var chargeNameInput2 = $$("fims-deposit-product-charges-form input[formcontrolname='name']").get(1);
 var chargeDescriptionInput = $("input[formcontrolname='description']");
@@ -41,7 +42,7 @@ var chargeTypeSelect2 = $$("md-select[formcontrolname='actionIdentifier']").get(
 var incomeAccountInput1 = $$("fims-account-select[formcontrolname='incomeAccountIdentifier'] input").get(0);
 var incomeAccountInput2 = $$("fims-account-select[formcontrolname='incomeAccountIdentifier'] input").get(1);
 var checkboxProportional1 = $$("md-checkbox[formcontrolname='proportional']").get(0);
-var checkboxProportional2 = $$("md-checkbox[formcontrolname='proportional']").get(1);
+var checkboxProportional2 = $$("md-checkbox[formcontrolname='proportional'] label").get(1);
 var primaryButton = $$(".mat-raised-button.mat-primary");
 
 module.exports = {
