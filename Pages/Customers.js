@@ -3,6 +3,8 @@
 //Actions specific to the Customers section
 
 var EC = protractor.ExpectedConditions;
+
+//customer creation
 var accountInput = $(".mat-input-infix input[placeholder='Account']");
 var firstNameInput = $(".mat-input-infix input[formcontrolname='firstName']");
 var middleNameInput = $(".mat-input-infix input[formcontrolname='middleName']");
@@ -17,15 +19,29 @@ var phoneInput = $(".mat-input-infix input[formcontrolname='phone']");
 var mobileInput = $(".mat-input-infix input[formcontrolname='mobile']");
 var linkCustomers = $$("a[href='/customers']");
 var titleRow = $("fims-layout-card-over .mat-toolbar-row div");
+
+//deposit account assignment
 var productSelect = $("md-select[formcontrolname='productIdentifier']");
 var beneficiaryInput = $("td-chips[formcontrolname='beneficiaries'] input");
-var primaryButton =  $(".mat-raised-button.mat-primary");
+var primaryButton =  $$(".mat-raised-button.mat-primary");
 var continueButton = $$(".mat-raised-button.mat-accent");
+
+//loan account assignment
 var shortNameInput = $("fims-id-input[controlname='identifier'] input");
 var principalAmountInput = $("fims-number-input[controlname='principalAmount'] input");
+var interestRateInput = $("fims-number-input[controlname='interest'] input");
 var termInput = $("input[formcontrolname='term']");
 var paymentPeriod = $("input[formcontrolname='paymentPeriod']");
+//day 1.-30.
+var dayForMonthlyPaymentSelect = $("md-select[formcontrolname='monthSettingDay']");
+//first, second, third, last
+var dayForMonthlyPaymentSelect2 = $$("md-select[formcontrolname='monthSettingDay']").get(1);
+// Monday, Tuesday, ...
+var weekdaySelect = $("md-select[formcontrolname='monthSettingDayInWeek']");
 var depositAccountSelect = $("md-select[formcontrolname='depositAccountIdentifier'] .mat-select-trigger");
+
+//tasks
+var checkboxExecuteTask = $("md-checkbox[title='Execute task']");
 
 
 module.exports = {
@@ -86,11 +102,13 @@ module.exports = {
         continueButton.get(2).click();
     },
     clickEnabledCreateCustomerButton: function () {
-        browser.executeScript("arguments[0].scrollIntoView();", primaryButton.getWebElement());
-        browser.wait(EC.elementToBeClickable(primaryButton), 5000);
-        expect(primaryButton.isEnabled()).toBeTruthy();
-        browser.wait(EC.elementToBeClickable(primaryButton), 5000);
-        primaryButton.click();
+        browser.executeScript("arguments[0].scrollIntoView();", primaryButton.first().getWebElement());
+        browser.wait(EC.elementToBeClickable(primaryButton.first()), 3000);
+        primaryButton.filter(function(elem, index) {
+            return elem.$("span").getText().then(function(text) {
+                return text === "CREATE CUSTOMER";
+            });
+        }).click();
     },
     clickButtonOrLinkCreateNewCustomer: function () {
         browser.wait(EC.visibilityOf($("a[href='/customers/create']")), 5000);
@@ -132,6 +150,11 @@ module.exports = {
         status = $("fims-state-display .mat-list-text .mat-line").getText();
         expect(status).toEqual("ACTIVE");
     },
+    verifyLoanAccountHasStatus: function (expectedStatus) {
+        browser.wait(EC.visibilityOf($("fims-state-display")), 2000);
+        status = $("fims-state-display .mat-list-text .mat-line").getText();
+        expect(status).toEqual(expectedStatus);
+    },
     clickManageDepositAccountsForCustomer: function (customer) {
         link = "/customers/detail/" + customer + "/deposits";
         browser.wait(EC.elementToBeClickable($('a[href="' + link + '"]')), 6000);
@@ -160,6 +183,7 @@ module.exports = {
         browser.executeScript("arguments[0].scrollIntoView();", opt.getWebElement());
         browser.wait(EC.elementToBeClickable(opt), 2000);
         opt.click();
+        browser.wait(EC.invisibilityOf($("md-tooltip-component")), 3000);
     },
     clickEnabledButtonCreateDepositAccount: function () {
         browser.wait(EC.elementToBeClickable($(".mat-raised-button.mat-primary")), 5000);
@@ -186,7 +210,17 @@ module.exports = {
             return text === expectedBalance;
         });
     },
-    verifyStateOfDepositAccountWithIdIs: function (identifier, expectedState) {
+    verifyStateOfDepositAccountWithId: function (identifier, expectedState) {
+        browser.wait(EC.visibilityOf($("tbody tr")), 5000);
+        //if > page of entries, need to implement way to page in order to find correct row
+        actualState = $$('tbody tr').filter(function (elem, index) {
+            return elem.$(".td-data-table-cell").getText().then(function (text) {
+                return text === identifier;
+            });
+        }).$$(".td-data-table-cell").get(3).getText();
+        expect(actualState).toEqual(expectedState);
+    },
+    verifyStateOfLoanAccountWithId: function (identifier, expectedState) {
         browser.wait(EC.visibilityOf($("tbody tr")), 5000);
         //if > page of entries, need to implement way to page in order to find correct row
         actualState = $$('tbody tr').filter(function (elem, index) {
@@ -204,10 +238,10 @@ module.exports = {
         shortNameInput.click().sendKeys(text);
     },
     enterTextIntoPrincipalAmountInputField: function (text) {
-        principalAmountInput.click().sendKeys(protractor.Key.ARROW_LEFT);
-        principalAmountInput.sendKeys(protractor.Key.ARROW_LEFT);
-        principalAmountInput.sendKeys(protractor.Key.ARROW_LEFT);
-        principalAmountInput.sendKeys(protractor.Key.ARROW_LEFT);
+        principalAmountInput.click().sendKeys(protractor.Key.BACK_SPACE);
+        principalAmountInput.sendKeys(protractor.Key.BACK_SPACE);
+        principalAmountInput.sendKeys(protractor.Key.BACK_SPACE);
+        principalAmountInput.sendKeys(protractor.Key.BACK_SPACE);
         principalAmountInput.sendKeys(text);
     },
     enterTextIntoTermInputField: function (text) {
@@ -216,7 +250,7 @@ module.exports = {
     selectDepositAccount: function (depositAccount) {
         browser.executeScript("arguments[0].scrollIntoView();", depositAccountSelect.getWebElement());
         browser.wait(EC.visibilityOf(depositAccountSelect), 2000);
-        productSelect.click();
+        depositAccountSelect.click();
         browser.wait(EC.visibilityOf($(".mat-option")), 5000);
         opt = element(by.cssContainingText('.mat-option', depositAccount));
         browser.executeScript("arguments[0].scrollIntoView();", opt.getWebElement());
@@ -232,4 +266,63 @@ module.exports = {
             });
         }).click();
     },
+    verifyInterestRateSetTo: function(interestRate){
+        expect(interestRateInput.getAttribute("value")).toEqual(interestRate);
+    },
+    verifyInterestRateCannotBeChanged: function(){
+        expect(interestRateInput.isEnabled).toBe(false);
+    },
+    selectDayForMonthlyRepayment: function(day){
+        dayForMonthlyPaymentSelect.click();
+        browser.wait(EC.visibilityOf($(".mat-option")), 5000);
+        opt = element(by.cssContainingText('.mat-option', day));
+        browser.executeScript("arguments[0].scrollIntoView();", opt.getWebElement());
+        browser.wait(EC.elementToBeClickable(opt), 2000);
+        opt.click();
+    },
+    clickLinkTasks: function(){
+        browser.wait(EC.elementToBeClickable($("a[ng-reflect-router-link='./tasks']")), 2000);
+        $("a[ng-reflect-router-link='./tasks']").click();
+    },
+    selectCheckboxToExecuteMandatoryTask: function(){
+        browser.wait(EC.elementToBeClickable(checkboxExecuteTask), 2000);
+        checkboxExecuteTask.click();
+        expect(checkboxExecuteTask.getAttribute("class")).toMatch("mat-checkbox-checked");
+    },
+    verifyCheckboxExecuteTaskIsChecked: function(){
+        browser.wait(EC.visibilityOf(checkboxExecuteTask), 2000);
+        expect(checkboxExecuteTask.getAttribute("class")).toMatch("mat-checkbox-checked");
+    },
+    deselectCheckboxToExecuteMandatoryTask: function(){
+        expect(checkboxExecuteTask.getAttribute("class")).toMatch("mat-checkbox-checked");
+        browser.wait(EC.elementToBeClickable(checkboxExecuteTask), 2000);
+        checkboxExecuteTask.click();
+    },
+    clickButtonForAction: function(action){
+        browser.wait(EC.elementToBeClickable(continueButton.first()), 5000);
+        continueButton.filter(function(elem, index) {
+            return elem.$("span").getText().then(function(text) {
+                return text === action;
+            });
+        }).click();
+    },
+    clickButtonForTransaction: function(action){
+        browser.wait(EC.elementToBeClickable(primaryButton.first()), 3000);
+        primaryButton.filter(function(elem, index) {
+            return elem.$("span").getText().then(function(text) {
+                return text === action;
+            });
+        }).click();
+    },
+    verifyTransactionCharge: function(chargeName, chargeAmount){
+        browser.wait(EC.visibilityOf($("fims-case-command-confirmation-form table tbody")), 2000);
+        browser.sleep(2000);
+        expect($$("fims-case-command-confirmation-form table tbody .td-data-table-row").filter(function(elem, index){
+            return elem.$(".td-data-table-cell").getText().then(function(text){
+                return text === chargeName;
+            });
+        }).$$(".td-data-table-cell").last().getText().then(function(text){
+            return text === chargeAmount;
+        })).toBe(true);
+    }
 };
