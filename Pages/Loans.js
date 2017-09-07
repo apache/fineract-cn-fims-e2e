@@ -159,6 +159,7 @@ module.exports = {
     },
     enterTextIntoArrearsAllowanceAccountInputField: function(text) {
         browser.executeScript("arguments[0].scrollIntoView();", arrearsAllowanceAccountInput.getWebElement());
+        browser.wait(EC.elementToBeClickable(arrearsAllowanceAccountInput), 3000);
         arrearsAllowanceAccountInput.click().sendKeys(text);
     },
     clickEnabledCreateProductButton: function(){
