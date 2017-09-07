@@ -88,6 +88,14 @@ module.exports = {
         a.click();
         browser.wait(EC.visibilityOf($("fims-teller-transaction-form")), 2000);
     },
+    clickOnCashChequeForCustomer: function(customerAccount){
+        link = "/teller/customers/detail/" + customerAccount + "/transaction/cheque";
+        a = $('a[href= "' + link +'"]');
+        browser.executeScript("arguments[0].scrollIntoView();", a.getWebElement());
+        browser.wait(EC.elementToBeClickable(a), 5000);
+        a.click();
+        browser.wait(EC.presenceOf($("fims-cheque-transaction-form")), 4000);
+    },
     clickOnRepayLoanForCustomer: function(customerAccount){
         link = "/teller/customers/detail/" + customerAccount + "/transaction/loan?transactionType=PPAY";
         a = $('a[href= "' + link +'"]');
@@ -96,6 +104,7 @@ module.exports = {
         browser.wait(EC.visibilityOf($("fims-teller-transaction-form")), 2000);
     },
     selectAccountToBeAffected: function(accountIdentifier){
+        browser.sleep(2000);
         browser.wait(EC.elementToBeClickable(accountSelect), 3000);
         accountSelect.click();
         browser.wait(EC.visibilityOf($(".mat-option")), 5000);

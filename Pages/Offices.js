@@ -21,6 +21,7 @@ var EC = protractor.ExpectedConditions;
 
 module.exports = {
     goToManageOfficesViaSidePanel: function() {
+        browser.wait(EC.visibilityOf($$("a[href='/offices']").get(0)), 5000);
         $$("a[href='/offices']").first().click();
     },
     clickViewOfficesFromQuickAccess: function() {

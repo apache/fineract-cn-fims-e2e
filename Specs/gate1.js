@@ -16,6 +16,11 @@
 //15) New employee verifies transaction have been booked as expected (accounting)
 //16) New employee updates deposit product and adds a proportional charge on cash withdrawal
 //17) Teller - Cash is withdrawn from the account
+//18) Employee creates a loan product
+//19) Employee edits a charge
+//20) Employee adds two tasks
+//21) Employee enables loan product
+//22) Employee assigns the product to a customer
 
 //test 1 and 3 fail if role and headquarter already exist, but other tests should be able to continue
 
@@ -139,7 +144,7 @@ describe('Gate 1', function() {
         Customers.enterTextIntoAccountInputField(customerAccount);
         Customers.enterTextIntoFirstNameInputField("Thomas");
         Customers.enterTextIntoLastNameInputField("Pynchon");
-        Customers.enterTextIntoDayOfBirthInputField("09/21/1978");
+        Customers.enterTextIntoDayOfBirthInputField("9211978");
         Customers.verifyIsMemberCheckboxSelected();
         Customers.clickEnabledContinueButtonForCustomerDetails();
         Customers.enterTextIntoStreetInputField("800 Chatham Road #326");
@@ -402,7 +407,7 @@ describe('Gate 1', function() {
     Loans.clickEnabledContinueButtonForInterestSettings();
     Loans.enterTextIntoProcessingFeeIncomeAccountInputField("1312");
     Loans.enterTextIntoOriginatingFeeIncomeAccountInputField("1310");
-    Loans.enterTextIntoDisbursementFeeIncomeAccountInputField("1390");
+    Loans.enterTextIntoDisbursementFeeIncomeAccountInputField("1313");
     Loans.enterTextIntoLateFeeIncomeAccountInputField("1311");
     Loans.enterTextIntoLateFeeAccrualAccountInputField("7840");
     Loans.clickEnabledContinueButtonForFeeIncomeAccounts("");
@@ -449,11 +454,94 @@ describe('Gate 1', function() {
     Customers.selectProduct("My loan " + loanShortName);
     Customers.enterTextIntoShortNameInputField(loanAccountShortName);
     Customers.enterTextIntoPrincipalAmountInputField("5000");
-    //verify interest rate as expected and cannot be changed; currently always 0.00 (bug)
     Customers.enterTextIntoTermInputField("12");
-    //verify correct radio button selected
+    //verify correct radio button selected; BUG
+    Customers.selectDayForMonthlyRepayment("3.");
     Customers.selectDepositAccount(customerAccount + ".9100.00001(" + depositIdentifier + ")");
-    Customers.clickEnabledCreateCustomerButton();
+    Customers.clickEnabledCreateCustomerLoanButton();
     Common.verifyMessagePopupIsDisplayed("Case is going to be saved");
+    Customers.verifyStateOfLoanAccountWithIdIs(loanAccountShortName, "CREATED");
+    });
+    it('should be able to open loan - mandatory task', function () {
+        Common.clickLinkShowForRowWithId(loanAccountShortName);
+        Customers.clickLinkTasks();
+        Customers.selectExecuteTaskCheckbox();
+        Common.verifyMessagePopupIsDisplayed("Task executed successfully");
+        Customers.clickButtonForTask("OPEN");
+        //verify correct processing fee
+        Customers.verifyTransactionCharge("processing-fee", "150.00");
+        Customers.clickButtonForTransaction("OPEN");
+        Common.verifyMessagePopupIsDisplayed("Case is going to be updated");
+    });
+    it('should be able to approve loan - mandatory task already executed', function () {
+        Customers.clickLinkTasks();
+        //checkbox already selected since one task only that already has been executed
+        Customers.clickButtonForTask("APPROVE");
+        Customers.verifyTransactionCharge("loan-origination-fee", "50.00");
+        Customers.clickButtonForTransaction("APPROVE");
+        Common.verifyMessagePopupIsDisplayed("Case is going to be updated");
+        Customers.verifyLoanHasStatus("APPROVED");
+    });
+    it('should be able to disburse loan - no task', function () {
+        Customers.clickLinkTasks();
+        Customers.clickButtonForTask("DISBURSE");
+        Customers.verifyTransactionCharge("disbursement-fee", "05.00");
+        Customers.clickButtonForTransaction("DISBURSE");
+        Common.verifyMessagePopupIsDisplayed("Case is going to be updated");
+        Customers.verifyLoanHasStatus("ACTIVE");
+    });
+    it('bookings should be as expected (open/approve/disburse loan)', function () {
+        //verify fees have been booked as expected
+        Accounting.goToAccountingViaSidePanel();
+        Accounting.clickLinkShowForAccountWithName("1000");
+        Accounting.clickLinkShowForAccountWithName("1300");
+        Accounting.clickLinkShowForAccountWithName("1312");
+        browser.pause();
+        Accounting.viewAccountEntriesForAccount("1312");
+        Accounting.verifyTransactionTypeForRow("CREDIT", 1);
+        Accounting.verifyTransactionAmountForRow("150", 1);
+        Accounting.verifyTransactionBalanceForRow("150", 1);
+        Common.clickBackButtonInTitleBar();
+        Common.clickBackButtonInTitleBar();
+        Accounting.clickLinkShowForAccountWithName("1310");
+        Accounting.viewAccountEntriesForAccount("1310");
+        Accounting.verifyTransactionTypeForRow("CREDIT", 1);
+        Accounting.verifyTransactionAmountForRow("50", 1);
+        Accounting.verifyTransactionBalanceForRow("50", 1);
+        Common.clickBackButtonInTitleBar();
+        Common.clickBackButtonInTitleBar();
+        Accounting.clickLinkShowForAccountWithName("1313");
+        Accounting.viewAccountEntriesForAccount("1313");
+        Accounting.verifyTransactionTypeForRow("CREDIT", 1);
+        Accounting.verifyTransactionAmountForRow("5", 1);
+        Accounting.verifyTransactionBalanceForRow("5", 1);
+        Common.clickBackButtonInTitleBar();
+        Common.clickBackButtonInTitleBar();
+        Common.clickBackButtonInTitleBar();
+        Common.clickBackButtonInTitleBar();
+        //verify principal has been transferred to customer's deposit account and the fees substracted
+        Accounting.clickLinkShowForAccountWithName("9000");
+        Accounting.clickLinkShowForAccountWithName("9100");
+        Accounting.clickLinkShowForAccountWithName(depositName);
+        Accounting.verifyAccountInfo("Balance", "4843.5");
+        Accounting.viewAccountEntriesForAccount(customerAccount + ".9100.00001");
+        Accounting.verifyTransactionTypeForRow("DEBIT",4);
+        Accounting.verifyTransactionAmountForRow("150", 4);
+        Accounting.verifyTransactionBalanceForRow("-101.5", 4);
+        Accounting.verifyTransactionTypeForRow("DEBIT",5);
+        Accounting.verifyTransactionAmountForRow("50", 5);
+        Accounting.verifyTransactionBalanceForRow("-151.5", 5);
+        Accounting.verifyTransactionTypeForRow("DEBIT",6);
+        Accounting.verifyTransactionAmountForRow("5", 6);
+        Accounting.verifyTransactionBalanceForRow("-156.5", 6);
+        Accounting.verifyTransactionTypeForRow("CREDIT",7);
+        Accounting.verifyTransactionAmountForRow("5000", 7);
+        Accounting.verifyTransactionBalanceForRow("4843.5", 7);
+    });
+    it('should be able to repay loan', function () {
+
+    });
+    it('bookings should be as expected (repay loan)', function () {
+
     });
 });

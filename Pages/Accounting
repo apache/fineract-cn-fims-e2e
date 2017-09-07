@@ -13,7 +13,7 @@ var radioButtonRevenue = $$("md-radio-button").get(4);
 
 module.exports = {
     goToAccountingViaSidePanel: function() {
-        $$("a[href='/accounting']").first().click();
+        $$("a[href='/accounting']").first().click();$$("a[href='/accounting']").first().click();
     },
     verifyCardHasTitleGeneralLedger: function() {
         form_title=$("fims-layout-card-over .mat-toolbar-row div").getText();
@@ -22,6 +22,30 @@ module.exports = {
     clickButtonOrLinkCreateNewLedger: function(){
         browser.wait(EC.visibilityOf(createLedger), 5000);
         createLedger.click();
+    },
+    goToTransactionTypes: function() {
+        browser.wait(EC.visibilityOf($("a[href='/accounting/transactiontypes']")), 3000);
+        $("a[href='/accounting/transactiontypes']").click();
+    },
+    goToChartOfAccounts: function() {
+        browser.wait(EC.visibilityOf($("a[href='/accounting/chartOfAccounts']")), 3000);
+        $("a[href='/accounting/chartOfAccounts']").click();
+    },
+    goToJournalEntries: function() {
+        browser.wait(EC.visibilityOf($("a[href='/accounting/journalEntries']")), 3000);
+        $("a[href='/accounting/journalEntries']").click();
+    },
+    goToChequeClearing: function() {
+        browser.wait(EC.visibilityOf($("a[href='/accounting/cheques']")), 3000);
+        $("a[href='/accounting/cheques']").click();
+    },
+    goToTrialBalance: function() {
+        browser.wait(EC.visibilityOf($("a[href='/accounting/trialBalance']")), 3000);
+        $("a[href='/accounting/trialBalance']").click();
+    },
+    goToPayrolls: function() {
+        browser.wait(EC.visibilityOf($("a[href='/accounting/payrolls']")), 3000);
+        $("a[href='/accounting/payrolls']").click();
     },
     viewAccountEntriesForAccount: function(accountIdentifier){
         link = "/accounting/accounts/detail/" + accountIdentifier + "/entries";
@@ -94,7 +118,6 @@ module.exports = {
             });
         }).click();
     },
-
     verifyRadioAssetToBeSelected: function() {
         expect(radioButtonAsset.getAttribute("class")).toMatch("mat-radio-checked");
     },

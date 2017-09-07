@@ -17,15 +17,16 @@ var phoneInput = $(".mat-input-infix input[formcontrolname='phone']");
 var mobileInput = $(".mat-input-infix input[formcontrolname='mobile']");
 var linkCustomers = $$("a[href='/customers']");
 var titleRow = $("fims-layout-card-over .mat-toolbar-row div");
-var productSelect = $("md-select[formcontrolname='productIdentifier']");
+var productSelect = $("md-select[formcontrolname='productIdentifier'] .mat-select-trigger");
 var beneficiaryInput = $("td-chips[formcontrolname='beneficiaries'] input");
-var primaryButton =  $(".mat-raised-button.mat-primary");
+var primaryButton =  $$(".mat-raised-button.mat-primary");
 var continueButton = $$(".mat-raised-button.mat-accent");
 var shortNameInput = $("fims-id-input[controlname='identifier'] input");
 var principalAmountInput = $("fims-number-input[controlname='principalAmount'] input");
 var termInput = $("input[formcontrolname='term']");
 var paymentPeriod = $("input[formcontrolname='paymentPeriod']");
 var depositAccountSelect = $("md-select[formcontrolname='depositAccountIdentifier'] .mat-select-trigger");
+var dayForMonthlyRepaySelect = $("md-select[formcontrolname='monthSettingDay'] .mat-select-trigger");
 
 
 module.exports = {
@@ -48,11 +49,10 @@ module.exports = {
     enterTextIntoLastNameInputField: function (text) {
         lastNameInput.click().sendKeys(text);
     },
-    enterTextIntoDayOfBirthInputField: function () {
+    enterTextIntoDayOfBirthInputField: function (date) {
         birthDayInput.click().sendKeys(protractor.Key.ARROW_LEFT);
         birthDayInput.sendKeys(protractor.Key.ARROW_LEFT);
-        birthDayInput.sendKeys("991978");
-
+        birthDayInput.sendKeys(date);
     },
     enterTextIntoStreetInputField: function (text) {
         browser.wait(EC.elementToBeClickable(streetInput), 3000);
@@ -86,11 +86,11 @@ module.exports = {
         continueButton.get(2).click();
     },
     clickEnabledCreateCustomerButton: function () {
-        browser.executeScript("arguments[0].scrollIntoView();", primaryButton.getWebElement());
-        browser.wait(EC.elementToBeClickable(primaryButton), 5000);
-        expect(primaryButton.isEnabled()).toBeTruthy();
-        browser.wait(EC.elementToBeClickable(primaryButton), 5000);
-        primaryButton.click();
+        browser.executeScript("arguments[0].scrollIntoView();", primaryButton.first().getWebElement());
+        browser.wait(EC.elementToBeClickable(primaryButton.first()), 5000);
+        expect(primaryButton.first().isEnabled()).toBeTruthy();
+        browser.wait(EC.elementToBeClickable(primaryButton.first()), 5000);
+        primaryButton.first().click();
     },
     clickButtonOrLinkCreateNewCustomer: function () {
         browser.wait(EC.visibilityOf($("a[href='/customers/create']")), 5000);
@@ -153,13 +153,15 @@ module.exports = {
         $('a[href="' + link + '"]').click();
     },
     selectProduct: function (productName) {
-        browser.wait(EC.visibilityOf(productSelect), 2000);
+        browser.sleep(2000);
+        browser.wait(EC.elementToBeClickable(productSelect), 3000);
         productSelect.click();
         browser.wait(EC.visibilityOf($(".mat-option")), 5000);
         opt = element(by.cssContainingText('.mat-option', productName));
         browser.executeScript("arguments[0].scrollIntoView();", opt.getWebElement());
         browser.wait(EC.elementToBeClickable(opt), 2000);
         opt.click();
+        browser.wait(EC.invisibilityOf($("md-tooltip-component")), 4000);
     },
     clickEnabledButtonCreateDepositAccount: function () {
         browser.wait(EC.elementToBeClickable($(".mat-raised-button.mat-primary")), 5000);
@@ -186,6 +188,16 @@ module.exports = {
             return text === expectedBalance;
         });
     },
+    verifyStateOfLoanAccountWithIdIs: function (identifier, expectedState) {
+        browser.wait(EC.visibilityOf($("tbody tr")), 5000);
+        //if > page of entries, need to implement way to page in order to find correct row
+        actualState = $$('tbody tr').filter(function (elem, index) {
+            return elem.$(".td-data-table-cell").getText().then(function (text) {
+                return text === identifier;
+            });
+        }).$$(".td-data-table-cell").get(3).getText();
+        expect(actualState).toEqual(expectedState);
+    },
     verifyStateOfDepositAccountWithIdIs: function (identifier, expectedState) {
         browser.wait(EC.visibilityOf($("tbody tr")), 5000);
         //if > page of entries, need to implement way to page in order to find correct row
@@ -200,23 +212,33 @@ module.exports = {
         expect(memberCheckbox.getAttribute("class")).toMatch("mat-checkbox-checked");
     },
     enterTextIntoShortNameInputField: function (text) {
-        browser.wait(EC.elementToBeClickable(shortNameInput), 3000);
+        browser.wait(EC.elementToBeClickable(shortNameInput), 5000);
         shortNameInput.click().sendKeys(text);
     },
     enterTextIntoPrincipalAmountInputField: function (text) {
-        principalAmountInput.click().sendKeys(protractor.Key.ARROW_LEFT);
-        principalAmountInput.sendKeys(protractor.Key.ARROW_LEFT);
-        principalAmountInput.sendKeys(protractor.Key.ARROW_LEFT);
-        principalAmountInput.sendKeys(protractor.Key.ARROW_LEFT);
+        principalAmountInput.click().sendKeys(protractor.Key.BACK_SPACE);
+        principalAmountInput.sendKeys(protractor.Key.BACK_SPACE);
+        principalAmountInput.sendKeys(protractor.Key.BACK_SPACE);
+        principalAmountInput.sendKeys(protractor.Key.BACK_SPACE);
         principalAmountInput.sendKeys(text);
     },
     enterTextIntoTermInputField: function (text) {
         termInput.click().clear().sendKeys(text);
     },
+    selectDayForMonthlyRepayment: function (day) {
+        browser.executeScript("arguments[0].scrollIntoView();", dayForMonthlyRepaySelect.getWebElement());
+        browser.wait(EC.visibilityOf(dayForMonthlyRepaySelect), 2000);
+        dayForMonthlyRepaySelect.click();
+        browser.wait(EC.visibilityOf($(".mat-option")), 5000);
+        opt = element(by.cssContainingText('.mat-option', day));
+        browser.executeScript("arguments[0].scrollIntoView();", opt.getWebElement());
+        browser.wait(EC.elementToBeClickable(opt), 2000);
+        opt.click();
+    },
     selectDepositAccount: function (depositAccount) {
         browser.executeScript("arguments[0].scrollIntoView();", depositAccountSelect.getWebElement());
         browser.wait(EC.visibilityOf(depositAccountSelect), 2000);
-        productSelect.click();
+        depositAccountSelect.click();
         browser.wait(EC.visibilityOf($(".mat-option")), 5000);
         opt = element(by.cssContainingText('.mat-option', depositAccount));
         browser.executeScript("arguments[0].scrollIntoView();", opt.getWebElement());
@@ -231,5 +253,44 @@ module.exports = {
                 return text === "CREATE CUSTOMER LOAN";
             });
         }).click();
+    },
+    clickLinkTasks: function (customer, depositAccountIdentifier) {
+        link = "./tasks";
+        browser.wait(EC.elementToBeClickable($('a[ng-reflect-router-link="' + link + '"]')), 5000);
+        $('a[ng-reflect-router-link="' + link + '"]').click();
+    },
+    selectExecuteTaskCheckbox: function(){
+        browser.wait(EC.visibilityOf($("md-checkbox[title='Execute task']")), 3000);
+        $("md-checkbox[title='Execute task']").click();
+        expect($("md-checkbox[title='Execute task']").getAttribute("class")).toMatch("mat-checkbox-checked");
+    },
+    clickButtonForTask: function (action) {
+        $$('.mat-raised-button.mat-accent').filter(function (elem, index) {
+            return elem.$("span").getText().then(function (text) {
+                return text === action;
+            });
+        }).click();
+    },
+    verifyTransactionCharge: function(chargeName, chargeAmount){
+        browser.wait(EC.visibilityOf($("fims-case-command-confirmation-form table tbody")), 3000);
+        expect($$("fims-case-command-confirmation-form table tbody .td-data-table-row").filter(function(elem, index){
+            return elem.$(".td-data-table-cell").getText().then(function(text){
+                return text === chargeName;
+            });
+        }).$$(".td-data-table-cell").last().getText().then(function(text){
+            return text === chargeAmount;
+        })).toBe(true);
+    },
+    clickButtonForTransaction: function (transaction) {
+        $$('.mat-raised-button.mat-primary').filter(function (elem, index) {
+            return elem.$("span").getText().then(function (text) {
+                return text === transaction;
+            });
+        }).click();
+    },
+    verifyLoanHasStatus: function (expectedStatus) {
+        browser.wait(EC.visibilityOf($("fims-state-display")), 2000);
+        status = $("fims-state-display .mat-list-text .mat-line").getText();
+        expect(status).toEqual(expectedStatus);
     },
 };
