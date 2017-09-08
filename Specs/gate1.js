@@ -281,7 +281,7 @@ describe('Gate 1', function() {
         //verify balance on customer's account is as expected
         Common.clickLinkShowForRowWithId("9000");
         Common.clickLinkShowForRowWithId("9100");
-        Accounting.clickLinkShowForAccountWithName(depositName);
+        Common.clickLinkShowForRowWithId2(depositName);
         Accounting.verifyAccountStatus("OPEN");
         Accounting.verifyAccountInfo("Balance", "100");
         Accounting.verifyAccountInfo("Type", "EQUITY");

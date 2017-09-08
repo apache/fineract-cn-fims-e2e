@@ -43,5 +43,41 @@ module.exports = {
         browser.wait(EC.visibilityOf(popup), 2000);
         browser.wait(EC.textToBePresentInElement(popup, message), 5000);
         browser.wait(EC.invisibilityOf(popup),5000);
-    }
+    },
+    clickLinkShowForRowWithId2: function(identifier) {
+        numberPages = 1;
+        i = 1;
+        browser.wait(EC.invisibilityOf($("div[class='md-padding'] h3")), 5000);
+        browser.sleep(1000);
+        numberAccounts = $$("td-paging-bar div div span").get(6).getText();
+        numberAccountsNoSpace = numberAccounts.trim();
+        numberAccountsInt = numberAccountsNoSpace.parseInt();
+        if (numberAccountsInt > 10) {
+            numberPages = numberAccountsInt - (numberAccountsInt % 10) / 10;
+        }
+        if (numberPages === 1) {
+            browser.wait(EC.textToBePresentInElement($$("tbody tr .td-data-table-cell").last(), "SHOW"), 5000);
+            $$('tbody tr').filter(function (elem, index) {
+                return elem.$(".td-data-table-cell").getText().then(function (text) {
+                    return text === identifier;
+                });
+            }).$$(".td-data-table-cell").last().click();
+        } else {
+            while(i <= numberPages) {
+                i++;
+                browser.wait(EC.textToBePresentInElement($$("tbody tr .td-data-table-cell").last(), "SHOW"), 5000);
+                rowIamLookingFor = $$('tbody tr').filter(function (elem, index) {
+                    return elem.$(".td-data-table-cell").getText().then(function (text) {
+                        return text === identifier;
+                    });
+                });
+                if (rowIamLookingFor.count() === 0) {
+                    $$(".td-paging-bar-navigation button").get(2).click();
+                } else {
+                    rowIamLookingFor.$$(".td-data-table-cell").last().click();
+                }
+                ;
+            }
+        }
+    },
 };
