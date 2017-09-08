@@ -26,6 +26,7 @@ module.exports = {
         $("tr td.td-data-table-cell button").click();
     },
     clickBackButtonInTitleBar: function() {
+        browser.sleep(500);
         browser.wait(EC.visibilityOf($$(".mat-toolbar .mat-toolbar-row .mat-icon-button").get(2)), 5000);
         $$(".mat-toolbar .mat-toolbar-row .mat-icon-button").get(2).click();
     },

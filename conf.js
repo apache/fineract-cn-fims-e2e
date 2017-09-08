@@ -28,7 +28,7 @@ exports.config = {
             })
         );
         browser.ignoreSynchronization = true;
-        browser.driver.get('https://pilot.kuelap.io/index.html');
+        browser.driver.get('http://localhost:4200');
 
         browser.driver.findElement(by.css(".mat-input-element[formcontrolname='tenant']")).sendKeys('playground');
         browser.driver.findElement(by.css(".mat-input-element[formcontrolname='username']")).sendKeys('operator');

@@ -122,7 +122,7 @@ describe('Gate 1', function() {
         Offices.enterTextIntoCashWithdrawalLimitInputField("1000");
         Offices.enterTextIntoTellerAccountInputFieldAndSelectMatchingEntry(tellerAccount);
         Offices.enterTextIntoVaultAccountInputFieldAndSelectMatchingEntry("7351");
-        Offices.enterTextIntoChequesReceivableAccountInputFieldAndSelectMatchingEntry("7290");
+        Offices.enterTextIntoChequesReceivableAccountInputFieldAndSelectMatchingEntry("7310.1");
         Offices.clickEnabledCreateTellerButton();
         Common.verifyMessagePopupIsDisplayed("Teller is going to be saved");
         //workaround for current bug that teller is not always listed immediately
@@ -282,7 +282,7 @@ describe('Gate 1', function() {
         //verify balance on customer's account is as expected
         Common.clickLinkShowForRowWithId("9000");
         Common.clickLinkShowForRowWithId("9100");
-        Common.clickLinkShowForRowWithId(depositName);
+        Accounting.clickLinkShowForAccountWithName(depositName);
         Accounting.verifyAccountStatus("OPEN");
         Accounting.verifyAccountInfo("Balance", "100");
         Accounting.verifyAccountInfo("Type", "EQUITY");
