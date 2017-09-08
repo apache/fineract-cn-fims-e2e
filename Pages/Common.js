@@ -1,4 +1,5 @@
 //Common.js
+var helper = require('../helper.js');
 
 var EC = protractor.ExpectedConditions;
 
@@ -49,11 +50,23 @@ module.exports = {
         i = 1;
         browser.wait(EC.invisibilityOf($("div[class='md-padding'] h3")), 5000);
         browser.sleep(1000);
-        numberAccounts = $$("td-paging-bar div div span").get(6).getText();
-        numberAccountsNoSpace = numberAccounts.trim();
-        numberAccountsInt = numberAccountsNoSpace.parseInt();
-        if (numberAccountsInt > 10) {
-            numberPages = numberAccountsInt - (numberAccountsInt % 10) / 10;
+        numberAccounts = $$("td-paging-bar div div span").get(6).getText().then(function(text){
+           console.log(text);
+        });
+        numberAccountsTrimmed = numberAccounts.trim();
+        numberAccountsInt = parseInt(numberAccountsTrimmed);
+        console.log(numberAccounts);
+        console.log(numberAccountsTrimmed);
+        console.log(numberAccountsInt);
+;       if (numberAccountsInt > 10) {
+            console.log(numberAccountsInt);
+            x = numberAccounts%10;
+            console.log(x);
+            if(x>0){
+                numberPages = (numberAccounts-x)/10 + 1;
+            } else {
+                numberPages = numberAccounts/10;
+            }
         }
         if (numberPages === 1) {
             browser.wait(EC.textToBePresentInElement($$("tbody tr .td-data-table-cell").last(), "SHOW"), 5000);

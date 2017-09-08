@@ -30,12 +30,12 @@ var dayForMonthlyRepaySelect = $("md-select[formcontrolname='monthSettingDay'] .
 
 
 module.exports = {
-    verifyCardHasTitleManageCustomers: function () {
-        browser.wait(EC.textToBePresentInElement(titleRow, 'Manage customers'), 5000);
+    verifyCardHasTitleManageMembers: function () {
+        browser.wait(EC.textToBePresentInElement(titleRow, 'Manage members'), 5000);
     },
-    verifyCardHasTitleCreateCustomer: function () {
+    verifyCardHasTitleCreateMember: function () {
         form_title = $("fims-layout-card-over .mat-toolbar-row div").getText();
-        expect(form_title).toEqual("Create new customer");
+        expect(form_title).toEqual("Create new member");
     },
     enterTextIntoAccountInputField: function (text) {
         accountInput.click().sendKeys(text);
@@ -112,12 +112,12 @@ module.exports = {
         browser.wait(EC.visibilityOf(linkCustomers.get(1)), 5000);
         linkCustomer.get(1).click();
     },
-    verifyCustomerHasStatusInactive: function () {
+    verifyMemberHasStatusInactive: function () {
         browser.wait(EC.visibilityOf($("td-message")), 2000);
         color = $("td-message").getAttribute("color");
         message = $("td-message .td-message-label").getText();
         expect(color).toEqual("warn");
-        expect(message).toContain("Customer not active");
+        expect(message).toContain("Member not active");
     },
     clickButtonGoToTasks: function () {
         browser.wait(EC.elementToBeClickable($("td-message button")), 2000);
@@ -127,27 +127,27 @@ module.exports = {
         browser.wait(EC.elementToBeClickable($(".mat-raised-button.mat-accent")), 2000);
         $(".mat-raised-button.mat-accent").click();
     },
-    verifyCustomerHasStatusActive: function () {
+    verifyMemberHasStatusActive: function () {
         browser.wait(EC.visibilityOf($("fims-state-display")), 2000);
         status = $("fims-state-display .mat-list-text .mat-line").getText();
         expect(status).toEqual("ACTIVE");
     },
-    clickManageDepositAccountsForCustomer: function (customer) {
+    clickManageDepositAccountsForMember: function (customer) {
         link = "/customers/detail/" + customer + "/deposits";
         browser.wait(EC.elementToBeClickable($('a[href="' + link + '"]')), 6000);
         $('a[href="' + link + '"]').click();
     },
-    clickManageLoanAccountsForCustomer: function (customer) {
+    clickManageLoanAccountsForMember: function (customer) {
         link = "/customers/detail/" + customer + "/loans";
         browser.wait(EC.elementToBeClickable($('a[href="' + link + '"]')), 6000);
         $('a[href="' + link + '"]').click();
     },
-    clickCreateDepositAccountForCustomer: function (customer) {
+    clickCreateDepositAccountForMember: function (customer) {
         link = "/customers/detail/" + customer + "/deposits/create";
         browser.wait(EC.visibilityOf($('a[href="' + link + '"]')));
         $('a[href="' + link + '"]').click();
     },
-    clickCreateLoanAccountForCustomer: function (customer) {
+    clickCreateLoanAccountForMember: function (customer) {
         link = "/customers/detail/" + customer + "/loans/create";
         browser.wait(EC.visibilityOf($('a[href="' + link + '"]')));
         $('a[href="' + link + '"]').click();
@@ -245,12 +245,12 @@ module.exports = {
         browser.wait(EC.elementToBeClickable(opt), 2000);
         opt.click();
     },
-    clickEnabledCreateCustomerLoanButton: function(){
+    clickEnabledCreateMemberLoanButton: function(){
         browser.executeScript("arguments[0].scrollIntoView();", primaryButton.first().getWebElement());
         browser.wait(EC.elementToBeClickable(primaryButton.first()), 3000);
         primaryButton.filter(function(elem, index) {
             return elem.$("span").getText().then(function(text) {
-                return text === "CREATE CUSTOMER LOAN";
+                return text === "CREATE MEMBER LOAN";
             });
         }).click();
     },

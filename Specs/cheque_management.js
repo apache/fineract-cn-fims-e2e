@@ -103,6 +103,7 @@ describe('cheque_management', function() {
         Offices.enterTextIntoCashWithdrawalLimitInputField("1000");
         Offices.enterTextIntoTellerAccountInputFieldAndSelectMatchingEntry(tellerAccount);
         Offices.enterTextIntoVaultAccountInputFieldAndSelectMatchingEntry("7351");
+        Offices.enterTextIntoChequesReceivableAccountInputFieldAndSelectMatchingEntry("7290");
         Offices.clickEnabledCreateTellerButton();
         Common.verifyMessagePopupIsDisplayed("Teller is going to be saved");
         //workaround for current bug that teller is not always listed immediately
@@ -121,9 +122,9 @@ describe('cheque_management', function() {
     });
     it('should be able to create customer', function () {
         Customers.goToManageCustomersViaSidePanel();
-        Customers.verifyCardHasTitleManageCustomers();
+        Customers.verifyCardHasTitleManageMembers();
         Customers.clickButtonOrLinkCreateNewCustomer();
-        Customers.verifyCardHasTitleCreateCustomer();
+        Customers.verifyCardHasTitleCreateMember();
         Customers.enterTextIntoAccountInputField(customerAccount);
         Customers.enterTextIntoFirstNameInputField("Thomas");
         Customers.enterTextIntoLastNameInputField("Pynchon");
@@ -136,18 +137,18 @@ describe('cheque_management', function() {
         Customers.clickEnabledContinueButtonForCustomerAddress();
         Customers.clickEnabledCreateCustomerButton();
         Common.verifyMessagePopupIsDisplayed("Customer is going to be saved")
-        Customers.verifyCardHasTitleManageCustomers();
+        Customers.verifyCardHasTitleManageMembers();
         Common.clickSearchButtonToMakeSearchInputFieldAppear();
         Common.enterTextInSearchInputFieldAndApplySearch(customerAccount);
         Common.verifyFirstRowOfSearchResultHasTextAsId(customerAccount);
     });
     it('should activate the customer', function () {
         Common.clickLinkShowForFirstRowInTable();
-        Customers.verifyCustomerHasStatusInactive();
+        Customers.verifyMemberHasStatusInactive();
         Customers.clickButtonGoToTasks();
         Customers.clickButtonActivate();
         Common.verifyMessagePopupIsDisplayed("Command is going to be executed");
-        Customers.verifyCustomerHasStatusActive();
+        Customers.verifyMemberHasStatusActive();
     });
     it('should create a deposit account - Checking with opening charge', function () {
         Deposits.goToDepositsViaSidePanel();
@@ -192,14 +193,14 @@ describe('cheque_management', function() {
         Common.enterTextInSearchInputFieldAndApplySearch(customerAccount);
         Common.verifyFirstRowOfSearchResultHasTextAsId(customerAccount);
         Common.clickLinkShowForRowWithId(customerAccount);
-        Customers.clickManageDepositAccountsForCustomer(customerAccount);
-        Customers.clickCreateDepositAccountForCustomer(customerAccount);
+        Customers.clickManageDepositAccountsForMember(customerAccount);
+        Customers.clickCreateDepositAccountForMember(customerAccount);
         Customers.selectProduct(depositName);
         Customers.clickEnabledButtonCreateDepositAccount();
         Common.verifyMessagePopupIsDisplayed("Deposit account is going to be saved");
         //might not be in list immediately always
         Common.clickBackButtonInTitleBar();
-        Customers.clickManageDepositAccountsForCustomer(customerAccount);
+        Customers.clickManageDepositAccountsForMember(customerAccount);
         Common.clickLinkShowForRowWithId(depositIdentifier);
         Customers.verifyDepositAccountHasStatus("PENDING");
         Customers.verifyDepositAccountBalanceIs("0.00");

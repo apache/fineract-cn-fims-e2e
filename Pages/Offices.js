@@ -8,8 +8,9 @@ var streetInput = $(".mat-input-infix input[formcontrolname='street']");
 var numberInput = $(".mat-input-infix input[placeholder='Number']");
 var passwordInput = $(".mat-input-infix input[formcontrolname='password']");
 var withdrawalLimitInput = $(".mat-input-infix input[formcontrolname='cashdrawLimit']");
-var tellerAccountInput = $(".mat-input-infix input[placeholder='Teller account(Asset accounts only)']");
-var vaultAccountInput = $(".mat-input-infix input[placeholder='Vault account(Asset accounts only)']");
+var tellerAccountInput = $("fims-account-select[formcontrolname='tellerAccountIdentifier'] input");
+var vaultAccountInput =$("fims-account-select[formcontrolname='vaultAccountIdentifier'] input");
+var chequesReceivableAccountInput = $("fims-account-select[formcontrolname='chequesReceivableAccount'] input");
 var assignedEmployeeInput = $(".mat-input-infix input[placeholder='Assigned employee']");
 var primaryButton = $$(".mat-raised-button.mat-primary");
 var createOfficeButton = $$(".mat-raised-button.mat-primary").first();
@@ -86,6 +87,11 @@ module.exports = {
     },
     enterTextIntoVaultAccountInputFieldAndSelectMatchingEntry: function(text) {
         vaultAccountInput.click().sendKeys(text);
+        browser.wait(EC.visibilityOf($(".mat-option")), 5000);
+        $$(".mat-option").first().click();
+    },
+    enterTextIntoChequesReceivableAccountInputFieldAndSelectMatchingEntry: function(text) {
+        chequesReceivableAccountInput.click().sendKeys(text);
         browser.wait(EC.visibilityOf($(".mat-option")), 5000);
         $$(".mat-option").first().click();
     },

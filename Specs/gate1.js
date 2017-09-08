@@ -122,6 +122,7 @@ describe('Gate 1', function() {
         Offices.enterTextIntoCashWithdrawalLimitInputField("1000");
         Offices.enterTextIntoTellerAccountInputFieldAndSelectMatchingEntry(tellerAccount);
         Offices.enterTextIntoVaultAccountInputFieldAndSelectMatchingEntry("7351");
+        Offices.enterTextIntoChequesReceivableAccountInputFieldAndSelectMatchingEntry("7290");
         Offices.clickEnabledCreateTellerButton();
         Common.verifyMessagePopupIsDisplayed("Teller is going to be saved");
         //workaround for current bug that teller is not always listed immediately
@@ -140,9 +141,9 @@ describe('Gate 1', function() {
     });
     it('should be able to create customer', function () {
         Customers.goToManageCustomersViaSidePanel();
-        Customers.verifyCardHasTitleManageCustomers();
+        Customers.verifyCardHasTitleManageMembers();
         Customers.clickButtonOrLinkCreateNewCustomer();
-        Customers.verifyCardHasTitleCreateCustomer();
+        Customers.verifyCardHasTitleCreateMember();
         Customers.enterTextIntoAccountInputField(customerAccount);
         Customers.enterTextIntoFirstNameInputField("Thomas");
         Customers.enterTextIntoLastNameInputField("Pynchon");
@@ -154,19 +155,19 @@ describe('Gate 1', function() {
         Customers.selectCountryByName("Germany");
         Customers.clickEnabledContinueButtonForCustomerAddress();
         Customers.clickEnabledCreateCustomerButton();
-        Common.verifyMessagePopupIsDisplayed("Customer is going to be saved")
-        Customers.verifyCardHasTitleManageCustomers();
+        Common.verifyMessagePopupIsDisplayed("Member is going to be saved")
+        Customers.verifyCardHasTitleManageMembers();
         Common.clickSearchButtonToMakeSearchInputFieldAppear();
         Common.enterTextInSearchInputFieldAndApplySearch(customerAccount);
         Common.verifyFirstRowOfSearchResultHasTextAsId(customerAccount);
     });
     it('should activate the customer', function () {
         Common.clickLinkShowForFirstRowInTable();
-        Customers.verifyCustomerHasStatusInactive();
+        Customers.verifyMemberHasStatusInactive();
         Customers.clickButtonGoToTasks();
         Customers.clickButtonActivate();
         Common.verifyMessagePopupIsDisplayed("Command is going to be executed");
-        Customers.verifyCustomerHasStatusActive();
+        Customers.verifyMemberHasStatusActive();
     });
     it('assigned employee should be able to unlock teller and view customer', function () {
         Teller.goToTellerManagementViaSidePanel();
@@ -231,14 +232,14 @@ describe('Gate 1', function() {
         Common.enterTextInSearchInputFieldAndApplySearch(customerAccount);
         Common.verifyFirstRowOfSearchResultHasTextAsId(customerAccount);
         Common.clickLinkShowForRowWithId(customerAccount);
-        Customers.clickManageDepositAccountsForCustomer(customerAccount);
-        Customers.clickCreateDepositAccountForCustomer(customerAccount);
+        Customers.clickManageDepositAccountsForMember(customerAccount);
+        Customers.clickCreateDepositAccountForMember(customerAccount);
         Customers.selectProduct(depositName);
         Customers.clickEnabledButtonCreateDepositAccount();
         Common.verifyMessagePopupIsDisplayed("Deposit account is going to be saved");
         //might not be in list immediately always
         Common.clickBackButtonInTitleBar();
-        Customers.clickManageDepositAccountsForCustomer(customerAccount);
+        Customers.clickManageDepositAccountsForMember(customerAccount);
         Common.clickLinkShowForRowWithId(depositIdentifier);
         Customers.verifyDepositAccountHasStatus("PENDING");
         Customers.verifyDepositAccountBalanceIs("0.00");
@@ -269,7 +270,7 @@ describe('Gate 1', function() {
         Common.enterTextInSearchInputFieldAndApplySearch(customerAccount);
         Common.verifyFirstRowOfSearchResultHasTextAsId(customerAccount);
         Common.clickLinkShowForRowWithId(customerAccount);
-        Customers.clickManageDepositAccountsForCustomer(customerAccount);
+        Customers.clickManageDepositAccountsForMember(customerAccount);
         //test might be too fast, account still PENDING here and balance 0.00 (but on leaving and coming back, everything as expected)
         Customers.verifyStateOfDepositAccountWithIdIs(depositIdentifier, "ACTIVE");
         Common.clickLinkShowForRowWithId(depositIdentifier);
@@ -281,7 +282,7 @@ describe('Gate 1', function() {
         //verify balance on customer's account is as expected
         Common.clickLinkShowForRowWithId("9000");
         Common.clickLinkShowForRowWithId("9100");
-        Common.clickLinkShowForRowWithId2(depositName);
+        Common.clickLinkShowForRowWithId(depositName);
         Accounting.verifyAccountStatus("OPEN");
         Accounting.verifyAccountInfo("Balance", "100");
         Accounting.verifyAccountInfo("Type", "EQUITY");
@@ -451,8 +452,8 @@ describe('Gate 1', function() {
     Common.enterTextInSearchInputFieldAndApplySearch(customerAccount);
     Common.verifyFirstRowOfSearchResultHasTextAsId(customerAccount);
     Common.clickLinkShowForRowWithId(customerAccount);
-    Customers.clickManageLoanAccountsForCustomer(customerAccount);
-    Customers.clickCreateLoanAccountForCustomer(customerAccount);
+    Customers.clickManageLoanAccountsForMember(customerAccount);
+    Customers.clickCreateLoanAccountForMember(customerAccount);
     Customers.selectProduct("My loan " + loanShortName);
     Customers.enterTextIntoShortNameInputField(loanAccountShortName);
     Customers.enterTextIntoPrincipalAmountInputField("5000");
@@ -460,7 +461,7 @@ describe('Gate 1', function() {
     //verify correct radio button selected; BUG
     Customers.selectDayForMonthlyRepayment("3.");
     Customers.selectDepositAccount(customerAccount + ".9100.00001(" + depositIdentifier + ")");
-    Customers.clickEnabledCreateCustomerLoanButton();
+    Customers.clickEnabledCreateMemberLoanButton();
     Common.verifyMessagePopupIsDisplayed("Case is going to be saved");
     Customers.verifyStateOfLoanAccountWithIdIs(loanAccountShortName, "CREATED");
     });
