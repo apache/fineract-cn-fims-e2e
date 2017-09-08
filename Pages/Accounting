@@ -13,6 +13,7 @@ var radioButtonRevenue = $$("md-radio-button").get(4);
 
 module.exports = {
     goToAccountingViaSidePanel: function() {
+        browser.wait(EC.visibilityOf($$("a[href='/accounting']").first()), 3000);
         $$("a[href='/accounting']").first().click();$$("a[href='/accounting']").first().click();
     },
     verifyCardHasTitleGeneralLedger: function() {
@@ -53,12 +54,22 @@ module.exports = {
         $('a[href="'+ link + '"]').click();
         browser.sleep(1000);
     },
-    clickLinkShowForAccountWithName: function(identifier) {
-        browser.sleep(2000);
+    clickLinkShowForAccountWithName: function(name) {
         browser.wait(EC.invisibilityOf($("div[class='md-padding'] h3")), 5000);
+        browser.sleep(1000);
         browser.wait(EC.textToBePresentInElement($$("tbody tr .td-data-table-cell").last(), "SHOW"), 5000);
         $$('tbody tr').filter(function(elem, index) {
             return elem.$$(".td-data-table-cell").get(1).getText().then(function(text) {
+                return text === name;
+            });
+        }).$$(".td-data-table-cell").last().click();
+    },
+    clickLinkShowForAccountWithIdentifier: function(identifier) {
+        browser.wait(EC.invisibilityOf($("div[class='md-padding'] h3")), 5000);
+        browser.sleep(1000);
+        browser.wait(EC.textToBePresentInElement($$("tbody tr .td-data-table-cell").last(), "SHOW"), 5000);
+        $$('tbody tr').filter(function(elem, index) {
+            return elem.$$(".td-data-table-cell").get(0).getText().then(function(text) {
                 return text === identifier;
             });
         }).$$(".td-data-table-cell").last().click();

@@ -13,7 +13,7 @@
 //12) New employee enables deposit product
 //13) New employee assigns deposit product to customer
 //14) New employee opens account in teller and verifies the account is now active
-//15) New employee verifies transaction have been booked as expected (accounting)
+//15) New employee verifies transactions have been booked as expected (accounting)
 //16) New employee updates deposit product and adds a proportional charge on cash withdrawal
 //17) Teller - Cash is withdrawn from the account
 //18) Employee creates a loan product
@@ -21,6 +21,8 @@
 //20) Employee adds two tasks
 //21) Employee enables loan product
 //22) Employee assigns the product to a customer
+//23) Employee opens, approves and disburses the loan
+//24) Employee verifies transactions have been booked as expected
 
 //test 1 and 3 fail if role and headquarter already exist, but other tests should be able to continue
 
@@ -464,7 +466,7 @@ describe('Gate 1', function() {
     });
     it('should be able to open loan - mandatory task', function () {
         Common.clickLinkShowForRowWithId(loanAccountShortName);
-        Customers.clickLinkTasks();
+        Customers.clickLinkTasks(customerAccount, loanShortName, loanAccountShortName);
         Customers.selectExecuteTaskCheckbox();
         Common.verifyMessagePopupIsDisplayed("Task executed successfully");
         Customers.clickButtonForTask("OPEN");
@@ -474,7 +476,7 @@ describe('Gate 1', function() {
         Common.verifyMessagePopupIsDisplayed("Case is going to be updated");
     });
     it('should be able to approve loan - mandatory task already executed', function () {
-        Customers.clickLinkTasks();
+        Customers.clickLinkTasks(customerAccount, loanShortName, loanAccountShortName);
         //checkbox already selected since one task only that already has been executed
         Customers.clickButtonForTask("APPROVE");
         Customers.verifyTransactionCharge("loan-origination-fee", "50.00");
@@ -483,7 +485,7 @@ describe('Gate 1', function() {
         Customers.verifyLoanHasStatus("APPROVED");
     });
     it('should be able to disburse loan - no task', function () {
-        Customers.clickLinkTasks();
+        Customers.clickLinkTasks(customerAccount, loanShortName, loanAccountShortName);
         Customers.clickButtonForTask("DISBURSE");
         Customers.verifyTransactionCharge("disbursement-fee", "05.00");
         Customers.clickButtonForTransaction("DISBURSE");
@@ -493,24 +495,23 @@ describe('Gate 1', function() {
     it('bookings should be as expected (open/approve/disburse loan)', function () {
         //verify fees have been booked as expected
         Accounting.goToAccountingViaSidePanel();
-        Accounting.clickLinkShowForAccountWithName("1000");
-        Accounting.clickLinkShowForAccountWithName("1300");
-        Accounting.clickLinkShowForAccountWithName("1312");
-        browser.pause();
+        Accounting.clickLinkShowForAccountWithIdentifier("1000");
+        Accounting.clickLinkShowForAccountWithIdentifier("1300");
+        Accounting.clickLinkShowForAccountWithIdentifier("1312");
         Accounting.viewAccountEntriesForAccount("1312");
         Accounting.verifyTransactionTypeForRow("CREDIT", 1);
         Accounting.verifyTransactionAmountForRow("150", 1);
         Accounting.verifyTransactionBalanceForRow("150", 1);
         Common.clickBackButtonInTitleBar();
         Common.clickBackButtonInTitleBar();
-        Accounting.clickLinkShowForAccountWithName("1310");
+        Accounting.clickLinkShowForAccountWithIdentifier("1310");
         Accounting.viewAccountEntriesForAccount("1310");
         Accounting.verifyTransactionTypeForRow("CREDIT", 1);
         Accounting.verifyTransactionAmountForRow("50", 1);
         Accounting.verifyTransactionBalanceForRow("50", 1);
         Common.clickBackButtonInTitleBar();
         Common.clickBackButtonInTitleBar();
-        Accounting.clickLinkShowForAccountWithName("1313");
+        Accounting.clickLinkShowForAccountWithIdentifier("1313");
         Accounting.viewAccountEntriesForAccount("1313");
         Accounting.verifyTransactionTypeForRow("CREDIT", 1);
         Accounting.verifyTransactionAmountForRow("5", 1);
@@ -520,8 +521,8 @@ describe('Gate 1', function() {
         Common.clickBackButtonInTitleBar();
         Common.clickBackButtonInTitleBar();
         //verify principal has been transferred to customer's deposit account and the fees substracted
-        Accounting.clickLinkShowForAccountWithName("9000");
-        Accounting.clickLinkShowForAccountWithName("9100");
+        Accounting.clickLinkShowForAccountWithIdentifier("9000");
+        Accounting.clickLinkShowForAccountWithIdentifier("9100");
         Accounting.clickLinkShowForAccountWithName(depositName);
         Accounting.verifyAccountInfo("Balance", "4843.5");
         Accounting.viewAccountEntriesForAccount(customerAccount + ".9100.00001");

@@ -254,10 +254,10 @@ module.exports = {
             });
         }).click();
     },
-    clickLinkTasks: function (customer, depositAccountIdentifier) {
-        link = "./tasks";
-        browser.wait(EC.elementToBeClickable($('a[ng-reflect-router-link="' + link + '"]')), 5000);
-        $('a[ng-reflect-router-link="' + link + '"]').click();
+    clickLinkTasks: function (customer, productIdentifier, accountIdentifier) {
+        link = "/customers/detail/" + customer + "/loans/products/" + productIdentifier + "/detail/" + accountIdentifier + "/tasks";
+        browser.wait(EC.elementToBeClickable($('a[href="' + link + '"]')), 5000);
+        $('a[href="' + link + '"]').click();
     },
     selectExecuteTaskCheckbox: function(){
         browser.wait(EC.visibilityOf($("md-checkbox[title='Execute task']")), 3000);
@@ -272,6 +272,7 @@ module.exports = {
         }).click();
     },
     verifyTransactionCharge: function(chargeName, chargeAmount){
+        browser.sleep(1000);
         browser.wait(EC.visibilityOf($("fims-case-command-confirmation-form table tbody")), 3000);
         expect($$("fims-case-command-confirmation-form table tbody .td-data-table-row").filter(function(elem, index){
             return elem.$(".td-data-table-cell").getText().then(function(text){

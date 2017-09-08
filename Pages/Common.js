@@ -20,6 +20,7 @@ module.exports = {
         browser.wait(EC.not(EC.presenceOf($('.td-loading'))), 5000);
     },
     clickLinkShowForFirstRowInTable: function() {
+        browser.sleep(2000);
         browser.wait(EC.visibilityOf($("tr td.td-data-table-cell button")), 5000);
         $("tr td.td-data-table-cell button").click();
     },

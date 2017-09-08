@@ -264,9 +264,16 @@ describe('cheque_management', function() {
         Cheques.clickConfirmTransactionButton();
         Common.verifyMessagePopupIsDisplayed("Transaction successfully confirmed");
     });
+    //verify transactions
     it('cheques should be pending clearance - approve first cheque', function () {
         Accounting.goToAccountingViaSidePanel();
         Accounting.goToChequeClearing();
+        Cheques.verifyStateForChequeInRow("PENDING", 1);
+        //Cheques.verifyStateForChequeInRow("PENDING", 2);
+        Cheques.clickButtonApproveForChequeWithIdentifier("123456~" + sortBranchCode + "~789789");
+        Cheques.cancelAction();
+        Cheques.clickButtonApproveForChequeWithIdentifier("123456~" + sortBranchCode + "~789789");
+        Cheques.confirmAction();
         browser.pause();
     });
 
