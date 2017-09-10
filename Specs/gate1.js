@@ -78,7 +78,7 @@ describe('Gate 1', function() {
         Accounting.verifyRadioAssetToBeSelected();
         Accounting.verifyRadioAssetToBeDisabled();
         Accounting.enterTextIntoAccountNameInputField("My teller");
-        Accounting.clickEnabledButtonCreateAccount();
+        Accounting.clickButtonCreateAccount();
         Common.verifyMessagePopupIsDisplayed("Account is going to be saved");
         Accounting.goToAccountingViaSidePanel();
         Common.clickLinkShowForRowWithId("1000");
@@ -87,7 +87,7 @@ describe('Gate 1', function() {
         Accounting.enterTextIntoAccountIdentifierInputField(revenueAccount);
         Accounting.verifyRadioRevenueToBeSelected();
         Accounting.enterTextIntoAccountNameInputField("Revenue from deposit charges");
-        Accounting.clickEnabledButtonCreateAccount();
+        Accounting.clickButtonCreateAccount();
         Common.verifyMessagePopupIsDisplayed("Account is going to be saved");
     });
     it('should create a headquarter office', function () {

@@ -4,12 +4,15 @@
 
 var EC = protractor.ExpectedConditions;
 var createLedger = $("a[href='/accounting/create']");
-var accountIdentifierInput = $("fims-id-input[controlname=identifier] input");
-var accountNameInput = $("input[formcontrolname=name]");
-var accountBalanceInput = $("input[formcontrolname=balance]");
+var accountIdentifierInput = $("fims-id-input[controlname='identifier'] input");
+var accountNameInput = $("input[formcontrolname='name']");
+var accountBalanceInput = $("input[formcontrolname='balance']");
 var primaryButton = $$(".mat-raised-button.mat-primary");
 var radioButtonAsset = $$("md-radio-button").get(0);
 var radioButtonRevenue = $$("md-radio-button").get(4);
+
+//journal entries
+var accountSearchInputField = $("input[formcontrolname='account']");
 
 module.exports = {
     goToAccountingViaSidePanel: function() {
@@ -122,7 +125,7 @@ module.exports = {
         browser.wait(EC.visibilityOf(accountBalanceInput), 5000);
         accountBalanceInput.click().sendKeys(text);
     },
-    clickEnabledButtonCreateAccount: function(){
+    clickButtonCreateAccount: function(){
         primaryButton.filter(function(elem, index) {
             return elem.$("span").getText().then(function(text) {
                 return text === "CREATE ACCOUNT";
@@ -138,4 +141,39 @@ module.exports = {
     verifyRadioRevenueToBeSelected: function() {
         expect(radioButtonRevenue.getAttribute("class")).toMatch("mat-radio-checked");
     },
+    enterTextIntoSearchAccountInputField: function(account) {
+        browser.wait(EC.visibilityOf(accountSearchInputField), 5000);
+        accountSearchInputField.click().sendKeys(account);
+    },
+    clickSearchButton: function(){
+       $$("button").filter(function(elem, index) {
+            return elem.$("span md-icon").getText().then(function(text) {
+                return text === "search";
+            });
+        }).click();
+    },
+    verifyFirstJournalEntry: function(transactionType, transactionAmount){
+        expect($$("fims-layout-card-over .mat-list-item .mat-list-text p").first().getText().then(function(text){
+            return text === transactionType;
+        })).toBe(true);
+        expect($$("fims-layout-card-over .mat-list-item .mat-list-text p").get(1).getText().then(function(text){
+            return text === transactionAmount;
+        })).toBe(true);
+    },
+    verifySecondJournalEntry: function(transactionType, transactionAmount){
+        expect($$("fims-layout-card-over .mat-list-item .mat-list-text p").get(2).getText().then(function(text){
+            return text === transactionType;
+        })).toBe(true);
+        expect($$("fims-layout-card-over .mat-list-item .mat-list-text p").get(3).getText().then(function(text){
+            return text === transactionAmount;
+        })).toBe(true);
+    },
+    verifyThirdJournalEntry: function(transactionType, transactionAmount){
+        expect($$("fims-layout-card-over .mat-list-item .mat-list-text p").get(4).getText().then(function(text){
+            return text === transactionType;
+        })).toBe(true);
+        expect($$("fims-layout-card-over .mat-list-item .mat-list-text p").get(5).getText().then(function(text){
+            return text === transactionAmount;
+        })).toBe(true);
+    }
 };

@@ -13,7 +13,7 @@ var payeeInput = $("input[formcontrolname='payee']");
 var dateIssuedInput = $("input[formcontrolname='dateIssued']");
 var checkboxIsChequeOpen = $("md-checkbox[formcontrolname='openCheque']");
 var warningIssuingBankIssuerCouldNotBeDetermined = $("td-message[label='Issuing Bank/Issuer could not be determined in our system from the MICR your entered.']");
-var warningToCheckCustomerID = $("td-message[label='Please check identification card of customer']");
+var warningToCheckCustomerID = $("td-message[label='Please check identification card of member']");
 var amountInput = $("input[formcontrolname='amount']");
 var accountSelect = $("md-select[formcontrolname='productInstance'] .mat-select-trigger");
 // three buttons (DETERMINE FROM MICR, CREATE TRANSACTION, CONFIRM TRANSACTION
@@ -83,7 +83,7 @@ module.exports = {
        checkboxIsChequeOpen.click();
     },
     enterTextIntoAmountInputField: function(text) {
-        amount.click().sendKeys(text);
+        amountInput.click().sendKeys(text);
     },
     verifyWarningIsDisplayedIfChequeIsNotOpen: function(){
         browser.wait(EC.visibilityOf(warningToCheckCustomerID), 2000);
@@ -190,7 +190,7 @@ module.exports = {
         $("td-dialog-actions .mat-button.mat-accent").click();
     },
     cancelAction: function(){
-        $("td-dialog-actions button").get(0).click();
+        $$("td-dialog-actions button").get(0).click();
     },
     verifyStateForChequeInRow: function(state, row) {
         browser.wait(EC.visibilityOf($("table tbody")), 3000);
@@ -215,5 +215,16 @@ module.exports = {
     verifyDraweeForChequeInRow: function(drawee, row) {
         browser.wait(EC.visibilityOf($("table tbody")), 3000);
         expect($$("table tbody tr").get(row - 1).$$(".td-data-table-cell").get(1).getText()).toEqual(drawee);
+    },
+    clickButtonIssueCheques: function(){
+        $("button[title='Issue cheques']").click();
+    },
+    clickIssueChequesButton: function(){
+        browser.wait(EC.elementToBeClickable(primaryButtons.get(0)), 5000);
+        primaryButtons.filter(function(elem, index) {
+            return elem.$("span").getText().then(function(text) {
+                return text === "ISSUE CHEQUES";
+            });
+        }).click();
     },
 };
