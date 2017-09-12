@@ -6,7 +6,7 @@ exports.config = {
 
   framework: 'jasmine',
   specs: [
-      'Specs/cheque_management_from_scratch.js'
+      'Specs/cheque_management.js'
   ],
     directConnect: true,
     allScriptsTimeout: 25000,

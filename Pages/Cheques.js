@@ -212,13 +212,27 @@ module.exports = {
     cancelAction: function(){
         $$("td-dialog-actions button").get(0).click();
     },
-    verifyStateForChequeInRow: function(state, row) {
+    verifyStateForChequeWithIdentifier: function(state, identifier) {
         browser.wait(EC.visibilityOf($("table tbody")), 3000);
-        expect($$("table tbody tr").get(row - 1).$$(".td-data-table-cell").get(6).getText()).toEqual(state);
+        browser.wait(EC.textToBePresentInElement($$("tbody tr .td-data-table-cell").last(), "CANCEL"), 3000);
+        expect($$('tbody tr').filter(function(elem, index) {
+            return elem.$$(".td-data-table-cell").first().getText().then(function(text) {
+                return text === identifier;
+            });
+        }).$$(".td-data-table-cell").get(6).getText().then(function(text){
+            return text === state;
+        })).toBe(true);
     },
-    verifyDateIssuedForChequeInRow: function(date, row) {
+    verifyDateIssuedForChequeWithIdentifier: function(date, identifier) {
         browser.wait(EC.visibilityOf($("table tbody")), 3000);
-        expect($$("table tbody tr").get(row - 1).$$(".td-data-table-cell").get(5).getText()).toEqual(date);
+        browser.wait(EC.textToBePresentInElement($$("tbody tr .td-data-table-cell").last(), "CANCEL"), 3000);
+        expect($$('tbody tr').filter(function(elem, index) {
+            return elem.$$(".td-data-table-cell").first().getText().then(function(text) {
+                return text === identifier;
+            });
+        }).$$(".td-data-table-cell").get(5).getText().then(function(text){
+            return text === date;
+        })).toBe(true);
     },
     verifyAmountForChequeInRow: function(amount, row) {
         browser.wait(EC.visibilityOf($("table tbody")), 3000);

@@ -261,7 +261,7 @@ describe('cheque_management', function() {
         Cheques.enterTextIntoIssuingBankInputField("BoA");
         Cheques.enterTextIntoIssuerInputField("Paul Auster");
         Cheques.verifyPayeeHasTextAndCannotBeChanged("Thomas Pynchon");
-        Cheques.enterTextIntoDateIssuedInputField("992017");
+        Cheques.enterTextIntoDateIssuedInputField("9122017");
         Cheques.checkCheckboxIsChequeOpen();
         Cheques.verifyWarningIsNotDisplayedIfChequeIsOpen();
         Cheques.enterTextIntoAmountInputField("300");
@@ -312,17 +312,18 @@ describe('cheque_management', function() {
     it('cheques should be pending clearance - approve first cheque/cancel second cheque', function () {
         Accounting.goToAccountingViaSidePanel();
         Accounting.goToChequeClearing();
-        Cheques.verifyStateForChequeInRow("PENDING", 1);
-        //open cheque still not appearing
-        Cheques.verifyStateForChequeInRow("PENDING", 2);
+        Cheques.verifyStateForChequeWithIdentifier("PENDING", "123456~" + branchSortCode + "~789789");
+        Cheques.verifyStateForChequeWithIdentifier("PENDING", "123456~" + branchSortCode2 + "~789789");
+        Cheques.verifyDateIssuedForChequeWithIdentifier("9/9/2017", "123456~" + branchSortCode + "~789789");
+        Cheques.verifyDateIssuedForChequeWithIdentifier("9/12/2017", "123456~" + branchSortCode + "~789789");
         Cheques.clickButtonApproveForChequeWithIdentifier("123456~" + branchSortCode + "~789789");
         Cheques.cancelAction();
         Cheques.clickButtonApproveForChequeWithIdentifier("123456~" + branchSortCode + "~789789");
         Cheques.confirmAction();
-        //Cheques.verifyStateForChequeInRow("PROCESSED", 1);
+        Cheques.verifyStateForChequeWithIdentifier("PROCESSED", "123456~" + branchSortCode + "~789789");
         Cheques.clickButtonCancelForChequeWithIdentifier("123456~" + branchSortCode2 + "~789789");
         Cheques.confirmAction();
-        //Cheques.verifyStateForChequeInRow("CANCELED", 2);
+        Cheques.verifyStateForChequeWithIdentifier("CANCELED", "123456~" + branchSortCode2 + "~789789");
     });
     it('cheque should have been reverted as expected', function () {
         Accounting.goToAccountingViaSidePanel();
@@ -399,7 +400,7 @@ describe('cheque_management', function() {
         Cheques.clickIssueChequesButton();
         Common.verifyMessagePopupIsDisplayed("Cheques are going to be issued");
     });
-    it('customer should be able to cash cheque - cheque is not open/on us', function () {
+    it('customer should be able to cash cheque - cheque is on us', function () {
         Teller.goToTellerManagementViaSidePanel();
         Teller.enterTextIntoSearchInputField(customerAccount);
         Teller.clickButtonShowAtIndex(0);
@@ -459,6 +460,7 @@ describe('cheque_management', function() {
         // Cheques.verifyIssuerHasText("Cormac McCarthy");
     });
     it('journal entries for the transaction should be listed as expected', function () {
+        //cheque not pending clearance
         Accounting.goToAccountingViaSidePanel();
         Accounting.goToJournalEntries();
         Accounting.enterTextIntoSearchAccountInputField(customerAccount2 + ".9100.00001");
@@ -521,7 +523,7 @@ describe('cheque_management', function() {
         Cheques.verifyCreateTransactionButtonIsDisabled();
         Cheques.enterTextIntoAmountInputField("100,000.99");
         Cheques.clickCreateTransactionButton();
-        Cheques.verifyErrorMessageDisplayedWithTitleAndText("Invalid transaction", "Cheque is older than 6 month.");
+        Cheques.verifyErrorMessageDisplayedWithTitleAndText("Invalid transaction", "Cheque is older than 6 months.");
         //open issue: transaction is created anyways, should not be created
     });
     //amount too high (bad request)

@@ -236,7 +236,7 @@ describe('cheque_management', function() {
         Cheques.enterTextIntoIssuingBankInputField("BoA");
         Cheques.enterTextIntoIssuerInputField("Paul Auster");
         Cheques.verifyPayeeHasTextAndCannotBeChanged("Thomas Pynchon");
-        Cheques.enterTextIntoDateIssuedInputField("992017");
+        Cheques.enterTextIntoDateIssuedInputField("9122017");
         Cheques.checkCheckboxIsChequeOpen();
         Cheques.verifyWarningIsNotDisplayedIfChequeIsOpen();
         Cheques.enterTextIntoAmountInputField("300");
@@ -287,17 +287,18 @@ describe('cheque_management', function() {
     it('cheques should be pending clearance - approve first cheque/cancel second cheque', function () {
         Accounting.goToAccountingViaSidePanel();
         Accounting.goToChequeClearing();
-        Cheques.verifyStateForChequeInRow("PENDING", 1);
-        //open cheque still not appearing
-        Cheques.verifyStateForChequeInRow("PENDING", 2);
+        Cheques.verifyStateForChequeWithIdentifier("PENDING", "123456~" + branchSortCode + "~789789");
+        Cheques.verifyStateForChequeWithIdentifier("PENDING", "123456~" + branchSortCode2 + "~789789");
+        Cheques.verifyDateIssuedForChequeWithIdentifier("9/9/2017", "123456~" + branchSortCode + "~789789");
+        Cheques.verifyDateIssuedForChequeWithIdentifier("9/12/2017", "123456~" + branchSortCode + "~789789");
         Cheques.clickButtonApproveForChequeWithIdentifier("123456~" + branchSortCode + "~789789");
         Cheques.cancelAction();
         Cheques.clickButtonApproveForChequeWithIdentifier("123456~" + branchSortCode + "~789789");
         Cheques.confirmAction();
-        //Cheques.verifyStateForChequeInRow("PROCESSED", 1);
+        Cheques.verifyStateForChequeWithIdentifier("PROCESSED", "123456~" + branchSortCode + "~789789");
         Cheques.clickButtonCancelForChequeWithIdentifier("123456~" + branchSortCode2 + "~789789");
         Cheques.confirmAction();
-        //Cheques.verifyStateForChequeInRow("CANCELED", 2);
+        Cheques.verifyStateForChequeWithIdentifier("CANCELED", "123456~" + branchSortCode2 + "~789789");
     });
     it('cheque should have been reverted as expected', function () {
         Accounting.goToAccountingViaSidePanel();
