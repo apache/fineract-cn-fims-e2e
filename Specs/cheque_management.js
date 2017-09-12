@@ -8,14 +8,11 @@ var Login = require('../Pages/Login.js');
 var Employees = require('../Pages/Employees.js');
 var Common = require('../Pages/Common.js');
 var Offices = require('../Pages/Offices');
-var Roles = require('../Pages/Roles');
 var Teller = require('../Pages/Teller');
 var Customers = require('../Pages/Customers');
 var Deposits = require('../Pages/Deposits');
 var Accounting = require('../Pages/Accounting');
-var Loans = require('../Pages/Loans');
 var Cheques = require('../Pages/Cheques');
-
 
 describe('cheque_management', function() {
     var EC = protractor.ExpectedConditions;
@@ -500,7 +497,7 @@ describe('cheque_management', function() {
         Cheques.verifyCreateTransactionButtonIsDisabled();
         Cheques.enterTextIntoAmountInputField("100,000.99");
         Cheques.clickCreateTransactionButton();
-        Cheques.verifyErrorMessageDisplayedWithTitleAndText("Invalid transaction", "Cheque is older than 6 month.");
+        Cheques.verifyErrorMessageDisplayedWithTitleAndText("Invalid transaction", "Cheque is older than 6 months.");
         //open issue: transaction is created anyways, should not be created
     });
     //amount too high (bad request)

@@ -1,4 +1,6 @@
 //From scratch: Will create a role "Administrator" and a headquarter office
+//Prerequisite: No tasks need to be executed in order to activate a customer
+//ToDo: Figure out which roles best to use for which kind of actions instead of using employee with "Administrator" role
 
 var helper = require('../helper.js');
 var Login = require('../Pages/Login.js');
@@ -10,7 +12,6 @@ var Teller = require('../Pages/Teller');
 var Customers = require('../Pages/Customers');
 var Deposits = require('../Pages/Deposits');
 var Accounting = require('../Pages/Accounting');
-var Loans = require('../Pages/Loans');
 var Cheques = require('../Pages/Cheques');
 
 
@@ -18,6 +19,7 @@ describe('cheque_management', function() {
     var EC = protractor.ExpectedConditions;
     employeeIdentifier = helper.getRandomString(6);
     officeIdentifier = helper.getRandomString(6);
+    officeIdentifier2 = helper.getRandomString(12);
     tellerIdentifier = helper.getRandomString(4);
     customerAccount = helper.getRandomString(5);
     customerAccount2 = helper.getRandomString(5);
@@ -31,8 +33,6 @@ describe('cheque_management', function() {
     loanAccountShortName =  helper.getRandomString(4);
     branchSortCode = helper.getRandomString(11);
     branchSortCode2 = helper.getRandomString(11);
-
-    //what role would be best in order to clear cheques and verify correctness of bookings?
 
     it('should create a new administrator role', function () {
         Common.waitForThePageToFinishLoading();
