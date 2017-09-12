@@ -32,7 +32,7 @@ module.exports = {
     },
     clickLinkShowForRowWithId: function(identifier) {
         browser.wait(EC.invisibilityOf($("div[class='md-padding'] h3")), 5000);
-        browser.sleep(1000);
+        browser.sleep(1500);
         browser.wait(EC.textToBePresentInElement($$("tbody tr .td-data-table-cell").last(), "SHOW"), 5000);
         $$('tbody tr').filter(function (elem, index) {
             return elem.$(".td-data-table-cell").getText().then(function (text) {

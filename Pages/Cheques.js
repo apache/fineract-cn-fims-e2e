@@ -23,29 +23,30 @@ module.exports = {
     enterTextIntoChequeNumberInputField: function(text) {
         browser.executeScript("arguments[0].scrollIntoView();", chequeNumberInput.getWebElement());
         browser.wait(EC.visibilityOf(chequeNumberInput), 5000);
-        chequeNumberInput.click().sendKeys(text);
+        chequeNumberInput.click().clear().sendKeys(text);
     },
-    verifyCheckNumberInputHasErrorIfInputNoNumber: function(text) {
+    verifyChequeNumberInputHasErrorIfInputNoNumber: function(text) {
         expect(chequeNumberInput.getAttribute("class")).toMatch("ng-invalid");
-        expect(chequeNumberInput.parent().parent().parent().$("md-error").getText()).toEqual("Must be a number");
+        expect(chequeNumberInput.element(by.xpath("..")).element(by.xpath("..")).element(by.xpath("..")).$("md-error").getText()).toEqual("Must be a number");
     },
     enterTextIntoBranchSortCodeInputField: function(text) {
+        browser.executeScript("arguments[0].scrollIntoView();", branchSortCodeInput.getWebElement());
         browser.wait(EC.visibilityOf(branchSortCodeInput), 1000);
-        branchSortCodeInput.click().sendKeys(text);
+        branchSortCodeInput.click().clear().sendKeys(text);
     },
     verifyBranchSortCodeInputHasErrorIfCharacterLimitExceeded: function(text) {
         expect(branchSortCodeInput.getAttribute("class")).toMatch("ng-invalid");
-        expect(branchSortCodeInput.parent().parent().parent().$("md-error").getText()).toEqual("Only 11 characters allowed");
+        expect(branchSortCodeInput.element(by.xpath("..")).element(by.xpath("..")).element(by.xpath("..")).$("md-error").getText()).toEqual("Only 11 characters allowed.");
     },
     enterTextIntoAccountNumberInputField: function(text) {
         browser.wait(EC.visibilityOf(accountNumberInput), 1000);
-        accountNumberInput.click().sendKeys(text);
+        accountNumberInput.click().clear().sendKeys(text);
     },
     enterTextIntoIssuingBankInputField: function(text) {
-        issuingBankInput.click().sendKeys(text);
+        issuingBankInput.click().clear().sendKeys(text);
     },
     enterTextIntoIssuerInputField: function(text) {
-        issuerInput.click().sendKeys(text);
+        issuerInput.click().clear().sendKeys(text);
     },
     clickButtonDetermineFromMICR: function(){
         primaryButtons.filter(function(elem, index) {
@@ -59,14 +60,14 @@ module.exports = {
             return elem.$("span").getText().then(function(text) {
                 return text === "DETERMINE FROM MICR";
             });
-        }).isEnabled()).toBe(false);
+        }).first().isEnabled()).toBe(false);
     },
     verifyButtonDetermineFromMICREnabled: function(){
         expect(primaryButtons.filter(function(elem, index) {
             return elem.$("span").getText().then(function(text) {
                 return text === "DETERMINE FROM MICR";
             });
-        }).isEnabled()).toBe(true);
+        }).first().isEnabled()).toBe(true);
     },
     verifyWarningIsDisplayedIfIssuingBankCouldNotBeDetermined: function(){
         browser.wait(EC.visibilityOf(warningIssuingBankIssuerCouldNotBeDetermined), 2000);
@@ -99,7 +100,10 @@ module.exports = {
        checkboxIsChequeOpen.click();
     },
     enterTextIntoAmountInputField: function(text) {
-        amountInput.click().sendKeys(text);
+        amountInput.click().clear().sendKeys(text);
+    },
+    verifyAmountInputHasErrorIfInput0OrNegative: function(text) {
+       expect(amountInput.element(by.xpath("..")).element(by.xpath("..")).element(by.xpath("..")).$("md-error").getText()).toEqual("Value must be greater than 0");
     },
     verifyWarningIsDisplayedIfChequeIsNotOpen: function(){
         browser.wait(EC.visibilityOf(warningToCheckCustomerID), 2000);
@@ -132,14 +136,14 @@ module.exports = {
             return elem.$("span").getText().then(function(text) {
                 return text === "CREATE TRANSACTION";
             });
-        }).isEnabled()).toBe(false);
+        }).first().isEnabled()).toBe(false);
     },
     verifyCreateTransactionButtonIsEnabled: function(){
         expect(primaryButtons.filter(function(elem, index) {
             return elem.$("span").getText().then(function(text) {
                 return text === "CREATE TRANSACTION";
             });
-        }).isEnabled()).toBe(true);
+        }).first().isEnabled()).toBe(true);
     },
     clickConfirmTransactionButton: function(){
         browser.executeScript("arguments[0].scrollIntoView();", primaryButtons.get(2).getWebElement());

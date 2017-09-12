@@ -236,6 +236,8 @@ describe('cheque_management', function() {
         Cheques.clickButtonDetermineFromMICR();
         Cheques.verifyWarningIsDisplayedIfIssuingBankCouldNotBeDetermined();
         //Issuing Bank/Issuer show error
+        Cheques.verifyIssuingBankHasError();
+        Cheques.verifyIssuerHasError();
         Cheques.enterTextIntoIssuingBankInputField("BoA");
         Cheques.enterTextIntoIssuerInputField("Paul Auster");
         Cheques.verifyPayeeHasTextAndCannotBeChanged("Thomas Pynchon");
@@ -440,26 +442,28 @@ describe('cheque_management', function() {
         Cheques.enterTextIntoAmountInputField("33");
         Cheques.selectAccountToTransferTo(customerAccount + ".9100.00001(" + depositIdentifier +")");
         Cheques.clickCreateTransactionButton();
-        //waiting for error message to show up in the UI, "Cheque 200~FMwxYg~AcHlZ.9100.00001 already used."
+        Cheques.verifyErrorMessageDisplayedWithTitleAndText("Invalid transaction", "Cheque 200~" + officeIdentifier + "~" + customerAccount2 + ".9100.00001 already used.");
+        Cheques.clickButtonOKInErrorMessage();
+        //open issue: transaction is created anyways, should not be created
         //change cheque number to a number that has not yet been issued for the customer
-        Cheques.enterTextIntoChequeNumberInputField("201");
-        Cheques.clickButtonDetermineFromMICR();
-        Cheques.verifyWarningIsDisplayedIfIssuingBankCouldNotBeDetermined();
-        Cheques.verifyIssuingBankHasError();
-        Cheques.verifyIssuerHasError();
+        // Cheques.enterTextIntoChequeNumberInputField("201");
+        // Cheques.clickButtonDetermineFromMICR();
+        // Cheques.verifyWarningIsDisplayedIfIssuingBankCouldNotBeDetermined();
+        // Cheques.verifyIssuingBankHasError();
+        // Cheques.verifyIssuerHasError();
         //change back to cheque number that has been issued for the customer and that has not yet been used
-        Cheques.enterTextIntoChequeNumberInputField("199");
-        Cheques.clickButtonDetermineFromMICR();
-        Cheques.verifyWarningIsNotDisplayedIfIssuingBankCouldBeDetermined();
-        Cheques.verifyIssuingBankHasText("Branch " + officeIdentifier);
-        Cheques.verifyIssuerHasText("Cormac McCarthy");
+        // Cheques.enterTextIntoChequeNumberInputField("199");
+        // Cheques.clickButtonDetermineFromMICR();
+        // Cheques.verifyWarningIsNotDisplayedIfIssuingBankCouldBeDetermined();
+        // Cheques.verifyIssuingBankHasText("Branch " + officeIdentifier);
+        // Cheques.verifyIssuerHasText("Cormac McCarthy");
     });
     it('journal entries for the transaction should be listed as expected', function () {
         Accounting.goToAccountingViaSidePanel();
         Accounting.goToJournalEntries();
         Accounting.enterTextIntoSearchAccountInputField(customerAccount2 + ".9100.00001");
         Accounting.clickSearchButton();
-        Accounting.verifyFirstJournalEntry("Open Cheque", "Amount: 250.54");
+        Accounting.verifyFirstJournalEntry("Order Cheque", "Amount: 250.54");
         Common.clickBackButtonInTitleBar();
         Common.clickLinkShowForRowWithId("9000");
         Common.clickLinkShowForRowWithId("9100");
@@ -472,10 +476,54 @@ describe('cheque_management', function() {
         Common.clickBackButtonInTitleBar();
         Common.clickBackButtonInTitleBar();
         Common.clickLinkShowForRowWithId(customerAccount + ".9100.00001");
+        Accounting.viewAccountEntriesForAccount(customerAccount + ".9100.00001");
         Accounting.verifyTransactionTypeForRow("CREDIT", 5);
         Accounting.verifyTransactionMessageForRow("ORCQ", 5);
         Accounting.verifyTransactionAmountForRow("250.54", 5);
         Accounting.verifyTransactionBalanceForRow("5750.54", 5);
-        browser.pause();
-    })
+    });
+    it('input should be validated and CREATE TRANSACTION button is only enabled with valid input', function () {
+        Teller.goToTellerManagementViaSidePanel();
+        Teller.enterTextIntoSearchInputField(customerAccount2);
+        Teller.clickButtonShowAtIndex(0);
+        Teller.verifyCardTitleHasNameOfCustomer("Cormac McCarthy");
+        Teller.clickOnCashChequeForCustomer(customerAccount2);
+        //Cheque number is not a number
+        Cheques.enterTextIntoChequeNumberInputField("c1");
+        //Office identifier exceeds 11 characters
+        Cheques.enterTextIntoBranchSortCodeInputField(officeIdentifier2);
+        Cheques.enterTextIntoAccountNumberInputField(customerAccount + ".9100.00001");
+        Cheques.verifyButtonDetermineFromMICRDisabled();
+        Cheques.verifyChequeNumberInputHasErrorIfInputNoNumber();
+        Cheques.verifyBranchSortCodeInputHasErrorIfCharacterLimitExceeded();
+        //Issuing bank has special chars
+        Cheques.enterTextIntoIssuingBankInputField("Unión de Crédito Español");
+        Cheques.enterTextIntoIssuerInputField("Paul Auster");
+        Cheques.verifyPayeeHasTextAndCannotBeChanged("Cormac McCarthy");
+        //Date should not be more than 6 months in the past
+        Cheques.enterTextIntoDateIssuedInputField("8111999");
+        Cheques.enterTextIntoAmountInputField("26.78");
+        Cheques.selectAccountToTransferTo(customerAccount2 + ".9100.00001");
+        Cheques.verifyCreateTransactionButtonIsDisabled();
+        Cheques.enterTextIntoChequeNumberInputField("01");
+        Cheques.verifyCreateTransactionButtonIsDisabled();
+        Cheques.enterTextIntoBranchSortCodeInputField(officeIdentifier);
+        Cheques.verifyButtonDetermineFromMICREnabled();
+        Cheques.verifyCreateTransactionButtonIsEnabled();
+        //amount is 0 or negative
+        Cheques.enterTextIntoAmountInputField("0");
+        Cheques.verifyAmountInputHasErrorIfInput0OrNegative();
+        Cheques.verifyCreateTransactionButtonIsDisabled();
+        Cheques.enterTextIntoAmountInputField("0.02");
+        Cheques.verifyCreateTransactionButtonIsEnabled();
+        Cheques.enterTextIntoAmountInputField("-4");
+        Cheques.verifyAmountInputHasErrorIfInput0OrNegative();
+        Cheques.verifyCreateTransactionButtonIsDisabled();
+        Cheques.enterTextIntoAmountInputField("100,000.99");
+        Cheques.clickCreateTransactionButton();
+        Cheques.verifyErrorMessageDisplayedWithTitleAndText("Invalid transaction", "Cheque is older than 6 month.");
+        //open issue: transaction is created anyways, should not be created
+    });
+    //amount too high (bad request)
+    //special chars in branch sort field (bad request)
 });
