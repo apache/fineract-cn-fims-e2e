@@ -500,7 +500,7 @@ describe('cheque_management', function() {
         Cheques.clickCreateTransactionButton();
         Cheques.verifyErrorMessageDisplayedWithTitleAndText("Invalid transaction", "Cheque is older than 6 months.");
         //open issue: transaction is created anyways, should not be created
+        //amount too high (bad request)
+        //special chars in branch sort field (bad request)
     });
-    //amount too high (bad request)
-    //special chars in branch sort field (bad request)
 });
