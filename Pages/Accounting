@@ -153,6 +153,7 @@ module.exports = {
         }).click();
     },
     verifyFirstJournalEntry: function(transactionType, transactionAmount){
+        browser.sleep(500);
         expect($$("fims-layout-card-over .mat-list-item .mat-list-text p").first().getText().then(function(text){
             return text === transactionType;
         })).toBe(true);
@@ -173,6 +174,15 @@ module.exports = {
             return text === transactionType;
         })).toBe(true);
         expect($$("fims-layout-card-over .mat-list-item .mat-list-text p").get(5).getText().then(function(text){
+            return text === transactionAmount;
+        })).toBe(true);
+    },
+    verifyFourthJournalEntry: function(transactionType, transactionAmount){
+        browser.sleep(500);
+        expect($$("fims-layout-card-over .mat-list-item .mat-list-text p").get(6).getText().then(function(text){
+            return text === transactionType;
+        })).toBe(true);
+        expect($$("fims-layout-card-over .mat-list-item .mat-list-text p").get(7).getText().then(function(text){
             return text === transactionAmount;
         })).toBe(true);
     }

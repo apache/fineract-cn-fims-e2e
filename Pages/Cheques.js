@@ -21,6 +21,7 @@ var primaryButtons = $$(".mat-raised-button.mat-primary");
 
 module.exports = {
     enterTextIntoChequeNumberInputField: function(text) {
+        browser.executeScript("arguments[0].scrollIntoView();", chequeNumberInput.getWebElement());
         browser.wait(EC.visibilityOf(chequeNumberInput), 5000);
         chequeNumberInput.click().sendKeys(text);
     },
@@ -70,6 +71,9 @@ module.exports = {
     verifyWarningIsDisplayedIfIssuingBankCouldNotBeDetermined: function(){
         browser.wait(EC.visibilityOf(warningIssuingBankIssuerCouldNotBeDetermined), 2000);
     },
+    verifyWarningIsNotDisplayedIfIssuingBankCouldBeDetermined: function(){
+        browser.wait(EC.invisibilityOf(warningIssuingBankIssuerCouldNotBeDetermined), 2000);
+    },
     verifyPayeeHasTextAndCannotBeChanged: function(customerName){
         expect(payeeInput.getAttribute("value")).toEqual(customerName);
         expect(payeeInput.isEnabled()).toBe(false);
@@ -78,6 +82,18 @@ module.exports = {
         dateIssuedInput.click().sendKeys(protractor.Key.ARROW_LEFT);
         dateIssuedInput.sendKeys(protractor.Key.ARROW_LEFT);
         dateIssuedInput.sendKeys(date);
+    },
+    verifyIssuingBankHasText: function(issuingBank){
+        expect(issuingBankInput.getAttribute("value")).toEqual(issuingBank);
+    },
+    verifyIssuingBankHasError: function(){
+       expect(issuingBankInput.element(by.xpath("..")).element(by.xpath("..")).element(by.xpath("..")).$("md-error").getText()).toEqual("Required");
+    },
+    verifyIssuerHasText: function(issuer){
+        expect(issuerInput.getAttribute("value")).toEqual(issuer);
+    },
+    verifyIssuerHasError: function(){
+        expect(issuerInput.element(by.xpath("..")).element(by.xpath("..")).element(by.xpath("..")).$("md-error").getText()).toEqual("Required");
     },
     checkCheckboxIsChequeOpen: function(){
        checkboxIsChequeOpen.click();
@@ -227,4 +243,12 @@ module.exports = {
             });
         }).click();
     },
+    verifyErrorMessageDisplayedWithTitleAndText: function(title, message){
+        browser.wait(EC.visibilityOf($("td-alert-dialog")), 2000);
+        expect($("td-dialog-title").getText()).toEqual(title);
+        expect($("td-dialog-content").getText()).toEqual(message);
+    },
+    clickButtonOKInErrorMessage: function(){
+        $("td-dialog-actions button").click();
+    }
 };
