@@ -532,6 +532,4 @@ describe('cheque_management', function() {
         //amount too high (bad request)
         //special chars in branch sort field (bad request)
     });
-    //amount too high (bad request)
-    //special chars in branch sort field (bad request)
 });

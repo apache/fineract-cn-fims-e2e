@@ -141,6 +141,8 @@ module.exports = {
     verifyRadioRevenueToBeSelected: function() {
         expect(radioButtonRevenue.getAttribute("class")).toMatch("mat-radio-checked");
     },
+
+    //Journal entries
     enterTextIntoSearchAccountInputField: function(account) {
         browser.wait(EC.visibilityOf(accountSearchInputField), 5000);
         accountSearchInputField.click().sendKeys(account);
@@ -185,5 +187,34 @@ module.exports = {
         expect($$("fims-layout-card-over .mat-list-item .mat-list-text p").get(7).getText().then(function(text){
             return text === transactionAmount;
         })).toBe(true);
-    }
+    },
+    verifyAccountHasBeenDebitedWithAmountInRow: function(account, amount, row) {
+        browser.wait(EC.visibilityOf($("table tbody")), 3000);
+        expect($$("table tbody tr").get(row - 1).$$(".td-data-table-cell").get(0).getText()).toEqual(account);
+        expect($$("table tbody tr").get(row - 1).$$(".td-data-table-cell").get(2).getText()).toEqual(amount);
+    },
+    verifyAccountHasBeenCreditedWithAmountInRow: function(account, amount, row) {
+        browser.wait(EC.visibilityOf($("table tbody")), 3000);
+        expect($$("table tbody tr").get(row - 1).$$(".td-data-table-cell").get(1).getText()).toEqual(account);
+        expect($$("table tbody tr").get(row - 1).$$(".td-data-table-cell").get(2).getText()).toEqual(amount);
+    },
+    verifyClerkForJournalEntryIs: function (clerk){
+        browser.sleep(3000);
+        expect($$("md-card .mat-list-text").filter(function(elem, index) {
+            return elem.$("h3").getText().then(function(text) {
+                return text === "Clerk";
+            });
+        }).$$("p").getText().then(function(text){
+            return text == clerk;
+        })).toBe(true);
+    },
+    verifyMessageForJournalEntryIs: function (message){
+        expect($$("md-card .mat-list-text").filter(function(elem, index) {
+            return elem.$("h3").getText().then(function(text) {
+                return text === "Message";
+            });
+        }).$$("p").getText().then(function(text){
+            return text == message;
+        })).toBe(true);
+    },
 };
