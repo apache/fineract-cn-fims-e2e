@@ -89,12 +89,17 @@ module.exports = {
         browser.wait(EC.visibilityOf($("fims-teller-transaction-form")), 2000);
     },
     clickOnCashChequeForCustomer: function(customerAccount){
-        link = "/teller/customers/detail/" + customerAccount + "/transaction/cheque";
+        link = "/teller/customers/detail/" + customerAccount + "/transaction/cheque?transactionType=CCHQ";
         a = $('a[href= "' + link +'"]');
+        browser.wait(EC.visibilityOf(a), 5000);
         browser.executeScript("arguments[0].scrollIntoView();", a.getWebElement());
-        browser.wait(EC.elementToBeClickable(a), 5000);
         a.click();
         browser.wait(EC.presenceOf($("fims-cheque-transaction-form")), 4000);
+    },
+    verifyActionCashChequeNotDisplayedForCustomer: function(customerAccount){
+        link = "/teller/customers/detail/" + customerAccount + "/transaction/cheque?transactionType=CCHQ";
+        a = $('a[href= "' + link +'"]');
+        expect(a.isPresent()).toBe(false);
     },
     clickOnRepayLoanForCustomer: function(customerAccount){
         link = "/teller/customers/detail/" + customerAccount + "/transaction/loan?transactionType=PPAY";

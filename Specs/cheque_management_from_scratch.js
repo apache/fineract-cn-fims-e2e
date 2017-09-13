@@ -445,21 +445,20 @@ describe('cheque_management', function() {
         Cheques.clickCreateTransactionButton();
         Cheques.verifyErrorMessageDisplayedWithTitleAndText("Invalid transaction", "Cheque 200~" + officeIdentifier + "~" + customerAccount2 + ".9100.00001 already used.");
         Cheques.clickButtonOKInErrorMessage();
-        //open issue: transaction is created anyways, should not be created
         //change cheque number to a number that has not yet been issued for the customer
-        // Cheques.enterTextIntoChequeNumberInputField("201");
-        // Cheques.clickButtonDetermineFromMICR();
-        // Cheques.verifyWarningIsDisplayedIfIssuingBankCouldNotBeDetermined();
-        // Cheques.verifyIssuingBankHasError();
-        // Cheques.verifyIssuerHasError();
+        Cheques.enterTextIntoChequeNumberInputField("201");
+        Cheques.clickButtonDetermineFromMICR();
+        Cheques.verifyWarningIsDisplayedIfIssuingBankCouldNotBeDetermined();
+        Cheques.verifyIssuingBankHasError();
+        Cheques.verifyIssuerHasError();
         //change back to cheque number that has been issued for the customer and that has not yet been used
-        // Cheques.enterTextIntoChequeNumberInputField("199");
-        // Cheques.clickButtonDetermineFromMICR();
-        // Cheques.verifyWarningIsNotDisplayedIfIssuingBankCouldBeDetermined();
-        // Cheques.verifyIssuingBankHasText("Branch " + officeIdentifier);
-        // Cheques.verifyIssuerHasText("Cormac McCarthy");
+        Cheques.enterTextIntoChequeNumberInputField("199");
+        Cheques.clickButtonDetermineFromMICR();
+        Cheques.verifyWarningIsNotDisplayedIfIssuingBankCouldBeDetermined();
+        Cheques.verifyIssuingBankHasText("Branch " + officeIdentifier);
+        Cheques.verifyIssuerHasText("Cormac McCarthy");
     });
-    it('journal entries for the transaction should be listed as expected', function () {
+    it('journal entries for the transaction should be listed as expected - cheque "on us"', function () {
         //cheque not pending clearance
         Accounting.goToAccountingViaSidePanel();
         Accounting.goToJournalEntries();
@@ -489,7 +488,13 @@ describe('cheque_management', function() {
         Teller.enterTextIntoSearchInputField(customerAccount2);
         Teller.clickButtonShowAtIndex(0);
         Teller.verifyCardTitleHasNameOfCustomer("Cormac McCarthy");
-        Teller.clickOnCashChequeForCustomer(customerAccount2);
+        //action to cash cheques is not yet visible for the customer because deposit account not active yet
+        Teller.verifyActionCashChequeNotDisplayedForCustomer(customerAccount2);
+        Teller.goToTellerManagementViaSidePanel();
+        Teller.enterTextIntoSearchInputField(customerAccount);
+        Teller.clickButtonShowAtIndex(0);
+        Teller.verifyCardTitleHasNameOfCustomer("Thomas Pynchon");
+        Teller.clickOnCashChequeForCustomer(customerAccount);
         //Cheque number is not a number
         Cheques.enterTextIntoChequeNumberInputField("c1");
         //Office identifier exceeds 11 characters
@@ -501,11 +506,10 @@ describe('cheque_management', function() {
         //Issuing bank has special chars
         Cheques.enterTextIntoIssuingBankInputField("Unión de Crédito Español");
         Cheques.enterTextIntoIssuerInputField("Paul Auster");
-        Cheques.verifyPayeeHasTextAndCannotBeChanged("Cormac McCarthy");
         //Date should not be more than 6 months in the past
         Cheques.enterTextIntoDateIssuedInputField("8111999");
         Cheques.enterTextIntoAmountInputField("26.78");
-        Cheques.selectAccountToTransferTo(customerAccount2 + ".9100.00001");
+        Cheques.selectAccountToTransferTo(customerAccount + ".9100.00001");
         Cheques.verifyCreateTransactionButtonIsDisabled();
         Cheques.enterTextIntoChequeNumberInputField("01");
         Cheques.verifyCreateTransactionButtonIsDisabled();
@@ -524,7 +528,9 @@ describe('cheque_management', function() {
         Cheques.enterTextIntoAmountInputField("100,000.99");
         Cheques.clickCreateTransactionButton();
         Cheques.verifyErrorMessageDisplayedWithTitleAndText("Invalid transaction", "Cheque is older than 6 months.");
-        //open issue: transaction is created anyways, should not be created
+        Cheques.clickButtonOKInErrorMessage();
+        //amount too high (bad request)
+        //special chars in branch sort field (bad request)
     });
     //amount too high (bad request)
     //special chars in branch sort field (bad request)

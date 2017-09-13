@@ -85,10 +85,12 @@ module.exports = {
         dateIssuedInput.sendKeys(date);
     },
     verifyIssuingBankHasText: function(issuingBank){
+        browser.sleep(1000);
         expect(issuingBankInput.getAttribute("value")).toEqual(issuingBank);
     },
     verifyIssuingBankHasError: function(){
-       expect(issuingBankInput.element(by.xpath("..")).element(by.xpath("..")).element(by.xpath("..")).$("md-error").getText()).toEqual("Required");
+        browser.sleep(1000);
+        expect(issuingBankInput.element(by.xpath("..")).element(by.xpath("..")).element(by.xpath("..")).$("md-error").getText()).toEqual("Required");
     },
     verifyIssuerHasText: function(issuer){
         expect(issuerInput.getAttribute("value")).toEqual(issuer);
