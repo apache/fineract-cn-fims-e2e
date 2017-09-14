@@ -195,7 +195,7 @@ describe('cheque_management', function() {
         Teller.clickButtonShowAtIndex(0);
         Teller.verifyCardTitleHasNameOfCustomer("Thomas Pynchon");
         Teller.clickOnOpenAccountForCustomer(customerAccount);
-        Teller.verifyCardTitleIs("Teller transaction");
+        Common.verifyCardHasTitle("Teller transaction");
         Teller.selectAccountToBeAffected(customerAccount + ".9100.00001(" + depositIdentifier +")");
         Teller.enterTextIntoAmountInputField("500");
         Teller.clickEnabledCreateTransactionButton();
