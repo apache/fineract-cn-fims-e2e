@@ -17,11 +17,11 @@ var primaryButton = $$(".mat-raised-button.mat-primary");
 
 module.exports = {
     verifyCardHasTitleManageEmployees: function() {
-        browser.wait(EC.visibilityOf($("fims-employee md-toolbar-row div")), 5000);
+        browser.wait(EC.visibilityOf($("fims-employee md-toolbar-row span")), 5000);
         expect($("fims-employee md-toolbar-row div").getText()).toEqual("Manage employees");
     },
     verifyCardHasTitleCreateEmployee: function() {
-        form_title=$("fims-layout-card-over .mat-toolbar-row div").getText();
+        form_title=$("fims-layout-card-over .mat-toolbar-row span").getText();
         expect(form_title).toEqual("Create new employee");
     },
     enterTextIntoUsernameInputField: function(text) {

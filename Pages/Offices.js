@@ -39,9 +39,6 @@ module.exports = {
         browser.wait(EC.visibilityOf($$("a[href='/offices']").get(1)), 5000);
         $$("a[href='/offices']").get(1).click();
     },
-    verifyCardHasTitleCreateOffice: function () {
-        browser.wait(EC.textToBePresentInElement($("fims-layout-card-over .mat-toolbar-row span"), "Create new office"), 3000);
-    },
     clickButtonCreateNewOffice: function(){
         browser.wait(EC.visibilityOf($("a[title='Create branch office']")), 5000);
         $("a[title='Create branch office']").click();

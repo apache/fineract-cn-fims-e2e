@@ -40,14 +40,10 @@ module.exports = {
     },
     verifyCardTitleHasNameOfCustomer: function (text) {
         browser.wait(EC.presenceOf($('fims-portrait')), 10000);
-        form_title = $("fims-layout-card-over .mat-toolbar-row div").getText();
+        form_title = $$("fims-layout-card-over .mat-toolbar-row span").get(1).getText();
         expect(form_title).toMatch(text);
     },
-    verifyCardTitleIs: function (text) {
-        form_title = $("fims-layout-card-over .mat-toolbar-row div");
-        browser.wait(EC.textToBePresentInElement(form_title, text),3000);
-    },
-    pauseTeller: function(){
+     pauseTeller: function(){
         $("a[title='Pause']").click();
     },
     verifyTellerIsLocked: function(){

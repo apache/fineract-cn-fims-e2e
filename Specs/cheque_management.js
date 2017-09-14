@@ -72,7 +72,7 @@ describe('cheque_management', function() {
     it('should create a new branch office and a teller for the branch office', function () {
         Offices.goToManageOfficesViaSidePanel();
         Offices.clickButtonCreateNewOffice();
-        Offices.verifyCardHasTitleCreateOffice();
+        Common.verifyCardHasTitle("Create new office");
         Offices.enterTextIntoOfficeIdentifierInputField(officeIdentifier);
         Offices.enterTextIntoOfficeNameInputField("Branch " + officeIdentifier);
         Offices.clickEnabledContinueButtonForOfficeDetails();
@@ -108,9 +108,9 @@ describe('cheque_management', function() {
     });
     it('should create customer and activate customer', function () {
         Customers.goToManageCustomersViaSidePanel();
-        Customers.verifyCardHasTitleManageMembers();
+        Common.verifyCardHasTitle("Manage members");
         Customers.clickButtonOrLinkCreateNewCustomer();
-        Customers.verifyCardHasTitleCreateMember();
+        Common.verifyCardHasTitle("Create new member");
         Customers.enterTextIntoAccountInputField(customerAccount);
         Customers.enterTextIntoFirstNameInputField("Thomas");
         Customers.enterTextIntoLastNameInputField("Pynchon");
@@ -123,7 +123,7 @@ describe('cheque_management', function() {
         Customers.clickEnabledContinueButtonForCustomerAddress();
         Customers.clickEnabledCreateCustomerButton();
         Common.verifyMessagePopupIsDisplayed("Member is going to be saved")
-        Customers.verifyCardHasTitleManageMembers();
+        Common.verifyCardHasTitle("Manage members");
         Common.clickSearchButtonToMakeSearchInputFieldAppear();
         Common.enterTextInSearchInputFieldAndApplySearch(customerAccount);
         Common.verifyFirstRowOfSearchResultHasTextAsId(customerAccount);
@@ -136,9 +136,9 @@ describe('cheque_management', function() {
     });
     it('should create a deposit product and enable the product', function () {
         Deposits.goToDepositsViaSidePanel();
-        Deposits.verifyCardHasTitle("Manage deposit products");
+        Common.verifyCardHasTitle("Manage deposit products");
         Deposits.clickButtonCreateDepositAccount();
-        Deposits.verifyCardHasTitle("Create new deposit product");
+        Common.verifyCardHasTitle("Create new deposit product");
         Deposits.enterTextIntoShortNameInputField(depositIdentifier);
         Deposits.verifyRadioCheckingIsSelected();
         Deposits.enterTextIntoNameInputField(depositName);
@@ -162,7 +162,7 @@ describe('cheque_management', function() {
         Deposits.clickEnabledContinueButtonForProductDetails();
         Deposits.clickEnabledCreateProductButton();
         Common.verifyMessagePopupIsDisplayed("Product is going to be saved");
-        Deposits.verifyCardHasTitle("Manage deposit products");
+        Common.verifyCardHasTitle("Manage deposit products");
         Common.clickLinkShowForRowWithId(depositIdentifier);
         Deposits.verifyProductHasStatusDisabled();
         Deposits.clickButtonEnableProduct();

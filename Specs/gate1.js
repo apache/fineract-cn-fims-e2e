@@ -57,11 +57,11 @@ describe('Gate 1', function() {
         Common.waitForThePageToFinishLoading();
         Roles.clickCreateNewRoleFromQuickAccess();
         Roles.enterTextIntoRoleIdentifierInput("Administrator");
-        Roles.verifyCardHasTitleCreateRole();
+        Common.verifyCardHasTitle("Crete new role");
         Roles.selectCheckboxToGiveUserAllPermissions();
         Roles.clickEnabledSaveRoleButton();
         Common.verifyMessagePopupIsDisplayed("Role is going to be saved");
-        Roles.verifyCardHasTitleManageRoles();
+        Common.verifyCardHasTitle("Manage roles");
     });
     it('should create a new employee with administrator permissions', function () {
         Employees.goToManageEmployeesViaSidePanel();
@@ -94,7 +94,7 @@ describe('Gate 1', function() {
         Offices.goToManageOfficesViaSidePanel();
         Offices.verifyNoHeadquarterExistingYet();
         Offices.clickButtonCreateHeadquarter();
-        Offices.verifyCardHasTitleCreateOffice();
+        Common.verifyCardHasTitle("Create new office");
         Offices.enterTextIntoOfficeIdentifierInputField("hqo1");
         Offices.enterTextIntoOfficeNameInputField("Headquarter Office Playground");
         Offices.clickEnabledContinueButtonForOfficeDetails();
@@ -103,7 +103,7 @@ describe('Gate 1', function() {
     });
     it('should create a new branch office', function () {
         Offices.clickButtonCreateNewOffice();
-        Offices.verifyCardHasTitleCreateOffice();
+        Common.verifyCardHasTitle("Create new office");
         Offices.enterTextIntoOfficeIdentifierInputField(officeIdentifier);
         Offices.enterTextIntoOfficeNameInputField("Branch " + officeIdentifier);
         Offices.clickEnabledContinueButtonForOfficeDetails();
@@ -141,9 +141,9 @@ describe('Gate 1', function() {
     });
     it('should be able to create customer', function () {
         Customers.goToManageCustomersViaSidePanel();
-        Customers.verifyCardHasTitleManageMembers();
+        Common.verifyCardHasTitle("Manage members");
         Customers.clickButtonOrLinkCreateNewCustomer();
-        Customers.verifyCardHasTitleCreateMember();
+        Common.verifyCardHasTitle("Create new member");
         Customers.enterTextIntoAccountInputField(customerAccount);
         Customers.enterTextIntoFirstNameInputField("Thomas");
         Customers.enterTextIntoLastNameInputField("Pynchon");
@@ -156,7 +156,7 @@ describe('Gate 1', function() {
         Customers.clickEnabledContinueButtonForCustomerAddress();
         Customers.clickEnabledCreateCustomerButton();
         Common.verifyMessagePopupIsDisplayed("Member is going to be saved")
-        Customers.verifyCardHasTitleManageMembers();
+        Common.verifyCardHasTitle("Manage members");
         Common.clickSearchButtonToMakeSearchInputFieldAppear();
         Common.enterTextInSearchInputFieldAndApplySearch(customerAccount);
         Common.verifyFirstRowOfSearchResultHasTextAsId(customerAccount);
@@ -186,9 +186,9 @@ describe('Gate 1', function() {
     });
     it('should create a deposit account - Checking with opening charge', function () {
         Deposits.goToDepositsViaSidePanel();
-        Deposits.verifyCardHasTitle("Manage deposit products");
+        Common.verifyCardHasTitle("Manage deposit products");
         Deposits.clickButtonCreateDepositAccount();
-        Deposits.verifyCardHasTitle("Create new deposit product");
+        Common.verifyCardHasTitle("Create new deposit product");
         Deposits.enterTextIntoShortNameInputField(depositIdentifier);
         Deposits.verifyRadioCheckingIsSelected();
         Deposits.enterTextIntoNameInputField(depositName);
@@ -217,7 +217,7 @@ describe('Gate 1', function() {
         Deposits.selectTypeOfCharge("Account Opening");
         Deposits.clickEnabledCreateProductButton();
         Common.verifyMessagePopupIsDisplayed("Product is going to be saved");
-        Deposits.verifyCardHasTitle("Manage deposit products");
+        Common.verifyCardHasTitle("Manage deposit products");
     });
     it('should enable deposit product', function () {
         Common.clickLinkShowForRowWithId(depositIdentifier);
@@ -255,7 +255,7 @@ describe('Gate 1', function() {
         Teller.clickButtonShowAtIndex(0);
         Teller.verifyCardTitleHasNameOfCustomer("Thomas Pynchon");
         Teller.clickOnOpenAccountForCustomer(customerAccount);
-        Teller.verifyCardTitleIs("Teller transaction");
+        Common.verifyCardHasTitle("Teller transaction");
         Teller.selectAccountToBeAffected(customerAccount + ".9100.00001(" + depositIdentifier +")");
         Teller.enterTextIntoAmountInputField("100");
         Teller.clickEnabledCreateTransactionButton();

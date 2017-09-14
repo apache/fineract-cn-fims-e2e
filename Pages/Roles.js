@@ -6,7 +6,7 @@ var EC = protractor.ExpectedConditions;
 var identifierInput = $(".mat-input-infix input[placeholder='Identifier']");
 var checkboxAllPermissionsDelete = $$("md-checkbox").get(2);
 var createNewRoleQA =  $("a[href='/roles/create']");
-var titleRow = $("fims-layout-card-over .mat-toolbar-row div");
+var titleRow = $("fims-layout-card-over .mat-toolbar-row span");
 var primaryButton = $$(".mat-raised-button.mat-primary");
 
 
@@ -15,12 +15,6 @@ module.exports = {
     clickCreateNewRoleFromQuickAccess: function() {
         browser.wait(EC.visibilityOf(createNewRoleQA), 5000);
         createNewRoleQA.click();
-    },
-    verifyCardHasTitleCreateRole: function () {
-        browser.wait(EC.textToBePresentInElement(titleRow, 'Create new role'), 5000);
-    },
-    verifyCardHasTitleManageRoles: function () {
-        browser.wait(EC.textToBePresentInElement(titleRow, 'Manage roles'), 5000);
     },
     enterTextIntoRoleIdentifierInput: function (text){
         browser.wait(EC.visibilityOf(identifierInput), 5000);

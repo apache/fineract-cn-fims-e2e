@@ -16,7 +16,6 @@ var emailInput = $(".mat-input-infix input[formcontrolname='email']");
 var phoneInput = $(".mat-input-infix input[formcontrolname='phone']");
 var mobileInput = $(".mat-input-infix input[formcontrolname='mobile']");
 var linkCustomers = $$("a[href='/customers']");
-var titleRow = $("fims-layout-card-over .mat-toolbar-row div");
 var productSelect = $("md-select[formcontrolname='productIdentifier'] .mat-select-trigger");
 var beneficiaryInput = $("td-chips[formcontrolname='beneficiaries'] input");
 var primaryButton =  $$(".mat-raised-button.mat-primary");
@@ -30,13 +29,6 @@ var dayForMonthlyRepaySelect = $("md-select[formcontrolname='monthSettingDay'] .
 
 
 module.exports = {
-    verifyCardHasTitleManageMembers: function () {
-        browser.wait(EC.textToBePresentInElement(titleRow, 'Manage members'), 5000);
-    },
-    verifyCardHasTitleCreateMember: function () {
-        form_title = $("fims-layout-card-over .mat-toolbar-row div").getText();
-        expect(form_title).toEqual("Create new member");
-    },
     enterTextIntoAccountInputField: function (text) {
         accountInput.click().sendKeys(text);
     },

@@ -3,7 +3,7 @@
 //Actions specific to the Deposit Account Management section
 
 var EC = protractor.ExpectedConditions;
-var titleRow = $("fims-layout-card-over .mat-toolbar-row div");
+var titleRow = $("fims-layout-card-over .mat-toolbar-row span");
 var createDeposit = $("a[href='/deposits/create']");
 var radioGroupType = $("md-radio-group[formcontrolname='type']")
 var radioChecking = $$("md-radio-group md-radio-button").get(0);
@@ -48,9 +48,6 @@ var primaryButton = $$(".mat-raised-button.mat-primary");
 module.exports = {
     goToDepositsViaSidePanel: function() {
         $("a[href='/deposits']").click();
-    },
-    verifyCardHasTitle: function(text) {
-        browser.wait(EC.textToBePresentInElement(titleRow, text), 5000);
     },
     clickButtonCreateDepositAccount: function(){
         browser.wait(EC.visibilityOf(createDeposit), 5000);

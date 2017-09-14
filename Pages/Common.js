@@ -2,8 +2,12 @@
 var helper = require('../helper.js');
 
 var EC = protractor.ExpectedConditions;
+var titleRow = $("fims-layout-card-over .mat-toolbar-row span");
 
 module.exports = {
+    verifyCardHasTitle: function(text) {
+        browser.wait(EC.textToBePresentInElement(titleRow, text), 5000);
+    },
     clickSearchButtonToMakeSearchInputFieldAppear: function(){
         browser.wait(EC.visibilityOf($(".td-search-icon.mat-icon-button")), 5000);
         $(".td-search-icon.mat-icon-button").click();

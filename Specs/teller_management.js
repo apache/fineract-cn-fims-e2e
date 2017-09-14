@@ -86,7 +86,6 @@ describe('teller_management', function() {
         Offices.enterTextIntoCashWithdrawalLimitInputField("1000");
         Offices.enterTextIntoTellerAccountInputFieldAndSelectMatchingEntry(tellerAccount);
         Offices.enterTextIntoVaultAccountInputFieldAndSelectMatchingEntry(vaultAccount);
-        browser.pause();
         Offices.enterTextIntoChequesReceivableAccountInputFieldAndSelectMatchingEntry(chequesReceivableAccount);
         Offices.clickEnabledCreateTellerButton();
         Common.verifyMessagePopupIsDisplayed("Teller is going to be saved");

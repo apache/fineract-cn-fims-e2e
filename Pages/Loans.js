@@ -3,7 +3,7 @@
 //Actions specific to the Loan Products section
 
 var EC = protractor.ExpectedConditions;
-var titleRow = $("fims-layout-card-over .mat-toolbar-row div");
+var titleRow = $("fims-layout-card-over .mat-toolbar-row span");
 var createLoan = $("a[href='/loans/create']");
 var shortNameInput = $("fims-id-input[controlname='identifier'] input");
 var nameInput = $(".mat-input-infix input[formcontrolname='name']");
