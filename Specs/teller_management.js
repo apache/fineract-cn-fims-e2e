@@ -69,7 +69,7 @@ describe('teller_management', function() {
     it('should create a new branch office and a teller for the branch office', function () {
         Offices.goToManageOfficesViaSidePanel();
         Offices.clickButtonCreateNewOffice();
-        Offices.verifyCardHasTitleCreateOffice();
+        Common.verifyCardHasTitle("Create new office");
         Offices.enterTextIntoOfficeIdentifierInputField(officeIdentifier);
         Offices.enterTextIntoOfficeNameInputField("Branch " + officeIdentifier);
         Offices.clickEnabledContinueButtonForOfficeDetails();
@@ -121,32 +121,35 @@ describe('teller_management', function() {
         Accounting.enterTextIntoSearchAccountInputField(vaultAccount);
         Accounting.clickSearchButton();
         Accounting.verifyFirstJournalEntry("Debit Adjustments", "Amount: 2,500.00");
-        browser.pause();
         Accounting.verifyClerkForJournalEntryIs(employeeIdentifier);
         Accounting.verifyMessageForJournalEntryIs("Teller adjustment.");
         Accounting.verifyAccountHasBeenDebitedWithAmountInRow(tellerAccount, "2,500.00", 1);
         Accounting.verifyAccountHasBeenCreditedWithAmountInRow(vaultAccount, "2,500.00", 2);
-
-        // Common.clickBackButtonInTitleBar();
-        // Common.clickLinkShowForRowWithId("7000");
-        // Common.clickLinkShowForRowWithId("7200");
-        // Common.clickLinkShowForRowWithId(chequesReceivableAccount);
-        // Accounting.viewAccountEntriesForAccount(chequesReceivableAccount);
-        // Accounting.verifyTransactionTypeForRow("CREDIT", 3);
-        // Accounting.verifyTransactionMessageForRow("CQRV", 3);
-        // Accounting.verifyTransactionAmountForRow("300", 3);
-        // Accounting.verifyTransactionBalanceForRow("5000", 3);
-        // Common.clickBackButtonInTitleBar();
-        // Common.clickBackButtonInTitleBar();
-        // Common.clickBackButtonInTitleBar();
-        // Common.clickBackButtonInTitleBar();
-        // Common.clickLinkShowForRowWithId("9000");
-        // Common.clickLinkShowForRowWithId("9100");
-        // Common.clickLinkShowForRowWithId(customerAccount + ".9100.00001");
-        // Accounting.viewAccountEntriesForAccount(customerAccount + ".9100.00001");
-        // Accounting.verifyTransactionTypeForRow("DEBIT", 4);
-        // Accounting.verifyTransactionMessageForRow("CQRV", 4);
-        // Accounting.verifyTransactionAmountForRow("300", 4);
-        // Accounting.verifyTransactionBalanceForRow("5500", 4);
+        Common.clickBackButtonInTitleBar();
+        Common.clickLinkShowForRowWithId("7000");
+        Common.clickLinkShowForRowWithId("7300");
+        Common.clickLinkShowForRowWithId(vaultAccount);
+        Accounting.viewAccountEntriesForAccount(vaultAccount);
+        Accounting.verifyTransactionTypeForRow("CREDIT", 1);
+        Accounting.verifyTransactionMessageForRow("Teller adjustment.", 1);
+        Accounting.verifyTransactionAmountForRow("2500", 1);
+        Accounting.verifyTransactionBalanceForRow("-2500", 1);
+        Common.clickBackButtonInTitleBar();
+        Common.clickBackButtonInTitleBar();
+        Common.clickLinkShowForRowWithId(tellerAccount);
+        Accounting.viewAccountEntriesForAccount(tellerAccount);
+        Accounting.verifyTransactionTypeForRow("DEBIT", 1);
+        Accounting.verifyTransactionMessageForRow("Teller adjustment.", 1);
+        Accounting.verifyTransactionAmountForRow("2500", 1);
+        Accounting.verifyTransactionBalanceForRow("2500", 1);
+        browser.pause();
+    });
+    it('should be able to update teller', function () {
+        Offices.goToManageOfficesViaSidePanel();
+        Common.clickLinkShowForRowWithId(officeIdentifier);
+        Offices.goToManageTellersForOfficeByIdentifier(officeIdentifier);
+    });
+    it('should not be able to assign the same employee to another teller', function () {
+       
     });
 });

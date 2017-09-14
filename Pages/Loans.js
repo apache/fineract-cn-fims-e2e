@@ -3,7 +3,6 @@
 //Actions specific to the Loan Products section
 
 var EC = protractor.ExpectedConditions;
-var titleRow = $("fims-layout-card-over .mat-toolbar-row span");
 var createLoan = $("a[href='/loans/create']");
 var shortNameInput = $("fims-id-input[controlname='identifier'] input");
 var nameInput = $(".mat-input-infix input[formcontrolname='name']");
@@ -51,10 +50,6 @@ var actionSelect2 = $$("md-select[formcontrolname='action'] .mat-select-trigger"
 module.exports = {
     goToLoanProductsViaSidePanel: function() {
         $("a[href='/loans']").click();
-    },
-    verifyCardHasTitle: function() {
-        form_title = titleRow.getText();
-        expect(form_title).toEqual("Manage loan products");
     },
     clickButtonCreateLoanProduct: function(){
         browser.wait(EC.visibilityOf(createLoan), 5000);

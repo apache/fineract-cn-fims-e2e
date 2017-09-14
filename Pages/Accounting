@@ -199,21 +199,22 @@ module.exports = {
         expect($$("table tbody tr").get(row - 1).$$(".td-data-table-cell").get(2).getText()).toEqual(amount);
     },
     verifyClerkForJournalEntryIs: function (clerk){
-        browser.sleep(3000);
-        expect($$("md-card .mat-list-text").filter(function(elem, index) {
-            return elem.$("h3").getText().then(function(text) {
+        expect($$("md-card .mat-list-text h3").filter(function(elem, index) {
+            return elem.getText().then(function(text) {
                 return text === "Clerk";
             });
-        }).$$("p").getText().then(function(text){
+        }).first().element(by.xpath("..")).$("p").getText().then(function(text){
             return text == clerk;
         })).toBe(true);
     },
     verifyMessageForJournalEntryIs: function (message){
-        expect($$("md-card .mat-list-text").filter(function(elem, index) {
-            return elem.$("h3").getText().then(function(text) {
+        expect($$("md-card .mat-list-text h3").filter(function(elem, index) {
+            return elem.getText().then(function(text) {
+                console.log(text);
                 return text === "Message";
             });
-        }).$$("p").getText().then(function(text){
+        }).first().element(by.xpath("..")).$("p").getText().then(function(text){
+            console.log(text);
             return text == message;
         })).toBe(true);
     },
