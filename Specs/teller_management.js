@@ -73,7 +73,7 @@ describe('teller_management', function() {
         Offices.enterTextIntoOfficeIdentifierInputField(officeIdentifier);
         Offices.enterTextIntoOfficeNameInputField("Branch " + officeIdentifier);
         Offices.clickEnabledContinueButtonForOfficeDetails();
-        Offices.clickEnabledCreateOfficeButton();
+        Offices.clickCreateOfficeButton();
         Common.verifyMessagePopupIsDisplayed("Office is going to be saved");
         Common.clickSearchButtonToMakeSearchInputFieldAppear();
         Common.enterTextInSearchInputFieldAndApplySearch(officeIdentifier);
@@ -87,7 +87,7 @@ describe('teller_management', function() {
         Offices.enterTextIntoTellerAccountInputFieldAndSelectMatchingEntry(tellerAccount);
         Offices.enterTextIntoVaultAccountInputFieldAndSelectMatchingEntry(vaultAccount);
         Offices.enterTextIntoChequesReceivableAccountInputFieldAndSelectMatchingEntry(chequesReceivableAccount);
-        Offices.clickEnabledCreateTellerButton();
+        Offices.clickCreateTellerButton();
         Common.verifyMessagePopupIsDisplayed("Teller is going to be saved");
         //workaround for current bug that teller is not always listed immediately
         Common.clickBackButtonInTitleBar();
@@ -109,7 +109,6 @@ describe('teller_management', function() {
         Common.verifyMessagePopupIsDisplayed("Teller is going to be updated");
         Offices.verifyTellerStatusIs("OPEN");
         Offices.verifyAssignedEmployeeForTellerIs(employeeIdentifier2);
-        //Offices.verifyCreatedByForTellerIs(employeeIdentifier);
         Offices.viewTellerBalanceForTellerInOffice(tellerIdentifier, officeIdentifier);
         Offices.verifyTellerTransactionMessageForRow("Teller adjustment.", 1);
         //Is this the right column (Credit)? The teller account is debited.
@@ -142,14 +141,32 @@ describe('teller_management', function() {
         Accounting.verifyTransactionMessageForRow("Teller adjustment.", 1);
         Accounting.verifyTransactionAmountForRow("2500", 1);
         Accounting.verifyTransactionBalanceForRow("2500", 1);
-        browser.pause();
     });
     it('should be able to update teller', function () {
         Offices.goToManageOfficesViaSidePanel();
         Common.clickLinkShowForRowWithId(officeIdentifier);
         Offices.goToManageTellersForOfficeByIdentifier(officeIdentifier);
+        Common.clickLinkShowForRowWithId(tellerIdentifier);
+        Offices.verifyNumberForTellerIs(tellerIdentifier);
+        Offices.verifyCashWithdrawalLimitIs("1000");
+        Offices.verifyTellerAccountIs(tellerAccount);
+        Offices.verifyVaultAccountIs(vaultAccount);
+        Offices.verifyChequesReceivableAccountIs(chequesReceivableAccount);
+        Offices.verifyCreatedByForTellerIs(employeeIdentifier);
+        Offices.verifyLastModifiedByForTellerIs(employeeIdentifier);
+        Offices.clickButtonEditForTellerInOffice(tellerIdentifier, officeIdentifier);
+        Offices.enterTextIntoPasswordInputField("123abc!!");
+        Offices.enterTextIntoCashWithdrawalLimitInputField("500");
+        Offices.enterTextIntoTellerAccountInputFieldAndSelectMatchingEntry("7353");
+        Offices.clickUpdateTellerButton();
+        Common.verifyMessagePopupIsDisplayed("Teller is going to be saved");
+        Offices.verifyTellerStatusIs("OPEN");
+        Offices.verifyCashWithdrawalLimitIs("500");
+        Offices.verifyTellerAccountIs("7353");
+        browser.pause();
+
     });
     it('should not be able to assign the same employee to another teller', function () {
-       
+
     });
 });

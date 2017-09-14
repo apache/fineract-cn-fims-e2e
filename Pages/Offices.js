@@ -56,7 +56,7 @@ module.exports = {
         expect($$(".mat-raised-button").get(0).isEnabled()).toBeTruthy();
         $$(".mat-raised-button").get(0).click();
     },
-    clickEnabledCreateOfficeButton: function(){
+    clickCreateOfficeButton: function(){
         browser.executeScript("arguments[0].scrollIntoView();", createOfficeButton.getWebElement());
         browser.wait(EC.elementToBeClickable(createOfficeButton), 3000);
         primaryButton.filter(function(elem, index) {
@@ -92,23 +92,24 @@ module.exports = {
         numberInput.click().sendKeys(text);
     },
     enterTextIntoPasswordInputField: function(text) {
-        passwordInput.click().sendKeys(text);
+        browser.wait(EC.visibilityOf(passwordInput), 5000);
+        passwordInput.click().clear().sendKeys(text);
     },
     enterTextIntoCashWithdrawalLimitInputField: function(text) {
-        withdrawalLimitInput.click().sendKeys(text);
+        withdrawalLimitInput.click().clear().sendKeys(text);
     },
     enterTextIntoTellerAccountInputFieldAndSelectMatchingEntry: function(text) {
-        tellerAccountInput.click().sendKeys(text);
+        tellerAccountInput.click().clear().sendKeys(text);
         browser.wait(EC.visibilityOf($(".mat-option")), 5000);
         $$(".mat-option").first().click();
     },
     enterTextIntoVaultAccountInputFieldAndSelectMatchingEntry: function(text) {
-        vaultAccountInput.click().sendKeys(text);
+        vaultAccountInput.click().clear().sendKeys(text);
         browser.wait(EC.visibilityOf($(".mat-option")), 5000);
         $$(".mat-option").first().click();
     },
     enterTextIntoChequesReceivableAccountInputFieldAndSelectMatchingEntry: function(text) {
-        chequesReceivableAccountInput.click().sendKeys(text);
+        chequesReceivableAccountInput.click().clear().sendKeys(text);
         browser.wait(EC.visibilityOf($(".mat-option")), 5000);
         $$(".mat-option").first().click();
     },
@@ -134,7 +135,7 @@ module.exports = {
         browser.wait(EC.visibilityOf($(".mat-option")), 3000);
         element(by.cssContainingText('.mat-option', name)).click();
     },
-    clickEnabledCreateTellerButton: function(){
+    clickCreateTellerButton: function(){
         browser.executeScript("arguments[0].scrollIntoView();", primaryButton.get(0).getWebElement());
         primaryButton.filter(function(elem, index) {
             return elem.$("span").getText().then(function(text) {
@@ -142,8 +143,21 @@ module.exports = {
             });
         }).click();
     },
+    clickUpdateTellerButton: function(){
+        browser.executeScript("arguments[0].scrollIntoView();", primaryButton.get(0).getWebElement());
+        primaryButton.filter(function(elem, index) {
+            return elem.$("span").getText().then(function(text) {
+                return text === "UPDATE TELLER";
+            });
+        }).click();
+    },
     clickActionOpenForTellerOfOffice: function(teller, office){
         link = '/offices/detail/' + office + '/tellers/detail/' + teller + '/command?action=OPEN';
+        browser.wait(EC.elementToBeClickable($('a[href="' + link + '"]')), 5000);
+        $('a[href="' + link + '"]').click();
+    },
+    clickButtonEditForTellerInOffice: function(teller, office){
+        link = '/offices/detail/' + office + '/tellers/detail/' + teller + '/edit';
         browser.wait(EC.elementToBeClickable($('a[href="' + link + '"]')), 5000);
         $('a[href="' + link + '"]').click();
     },
@@ -165,17 +179,71 @@ module.exports = {
             return elem.$("h3").getText().then(function (text) {
                 return text === "Assigned employee";
             });
-        }).$$("p").getText().then(function (text) {
-            return text == assignedEmployee;
+        }).first().$("p").getText().then(function (text) {
+            return text === assignedEmployee;
+        })).toBe(true);
+    },
+    verifyNumberForTellerIs: function(tellerNumber) {
+        expect($$("fims-layout-card-over .mat-list-text").filter(function (elem, index) {
+            return elem.$("h3").getText().then(function (text) {
+                return text === "Number";
+            });
+        }).first().$("p").getText().then(function (text) {
+            return text === tellerNumber;
+        })).toBe(true);
+    },
+    verifyCashWithdrawalLimitIs: function(limit) {
+        expect($$("fims-layout-card-over .mat-list-text").filter(function (elem, index) {
+            return elem.$("h3").getText().then(function (text) {
+                return text === "Cash withdrawal limit";
+            });
+        }).first().$("p").getText().then(function (text) {
+            return text === limit;
+        })).toBe(true);
+    },
+    verifyTellerAccountIs: function(account) {
+        expect($$("fims-layout-card-over .mat-list-text").filter(function (elem, index) {
+            return elem.$("h3").getText().then(function (text) {
+                return text === "Teller account";
+            });
+        }).first().$("p").getText().then(function (text) {
+            return text === account;
+        })).toBe(true);
+    },
+    verifyVaultAccountIs: function(account) {
+        expect($$("fims-layout-card-over .mat-list-text").filter(function (elem, index) {
+            return elem.$("h3").getText().then(function (text) {
+                return text === "Vault account";
+            });
+        }).first().$("p").getText().then(function (text) {
+            return text === account;
+        })).toBe(true);
+    },
+    verifyChequesReceivableAccountIs: function(account) {
+        expect($$("fims-layout-card-over .mat-list-text").filter(function (elem, index) {
+            return elem.$("h3").getText().then(function (text) {
+                return text === "Cheques receivable account";
+            });
+        }).first().$("p").getText().then(function (text) {
+            return text === account;
         })).toBe(true);
     },
     verifyCreatedByForTellerIs: function(createdBy){
         expect($$("fims-layout-card-over .mat-list-text").filter(function (elem, index) {
             return elem.$("h3").getText().then(function (text) {
-                return text === "Assigned employee";
+                return text === "Created by";
             });
-        }).$$("p").getText().then(function (text) {
-            return text == assignedEmployee;
+        }).first().$("p").getText().then(function (text) {
+            return text.indexOf(createdBy) >= 0;
+        })).toBe(true);
+    },
+    verifyLastModifiedByForTellerIs: function(modifiedBy){
+        expect($$("fims-layout-card-over .mat-list-text").filter(function (elem, index) {
+            return elem.$("h3").getText().then(function (text) {
+                return text === "Last modified by";
+            });
+        }).first().$("p").getText().then(function (text) {
+            return text.indexOf(modifiedBy) >= 0;
         })).toBe(true);
     },
     viewTellerBalanceForTellerInOffice: function(tellerIdentifier, officeIdentifier){

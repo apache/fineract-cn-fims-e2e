@@ -57,7 +57,7 @@ describe('Gate 1', function() {
         Common.waitForThePageToFinishLoading();
         Roles.clickCreateNewRoleFromQuickAccess();
         Roles.enterTextIntoRoleIdentifierInput("Administrator");
-        Common.verifyCardHasTitle("Crete new role");
+        Common.verifyCardHasTitle("Create new role");
         Roles.selectCheckboxToGiveUserAllPermissions();
         Roles.clickEnabledSaveRoleButton();
         Common.verifyMessagePopupIsDisplayed("Role is going to be saved");
@@ -98,7 +98,7 @@ describe('Gate 1', function() {
         Offices.enterTextIntoOfficeIdentifierInputField("hqo1");
         Offices.enterTextIntoOfficeNameInputField("Headquarter Office Playground");
         Offices.clickEnabledContinueButtonForOfficeDetails();
-        Offices.clickEnabledCreateOfficeButton();
+        Offices.clickCreateOfficeButton();
         Common.verifyMessagePopupIsDisplayed("Office is going to be saved");
     });
     it('should create a new branch office', function () {
@@ -107,7 +107,7 @@ describe('Gate 1', function() {
         Offices.enterTextIntoOfficeIdentifierInputField(officeIdentifier);
         Offices.enterTextIntoOfficeNameInputField("Branch " + officeIdentifier);
         Offices.clickEnabledContinueButtonForOfficeDetails();
-        Offices.clickEnabledCreateOfficeButton();
+        Offices.clickCreateOfficeButton();
         Common.verifyMessagePopupIsDisplayed("Office is going to be saved");
         Common.clickSearchButtonToMakeSearchInputFieldAppear();
         Common.enterTextInSearchInputFieldAndApplySearch(officeIdentifier);
@@ -123,7 +123,7 @@ describe('Gate 1', function() {
         Offices.enterTextIntoTellerAccountInputFieldAndSelectMatchingEntry(tellerAccount);
         Offices.enterTextIntoVaultAccountInputFieldAndSelectMatchingEntry("7351");
         Offices.enterTextIntoChequesReceivableAccountInputFieldAndSelectMatchingEntry("7310.1");
-        Offices.clickEnabledCreateTellerButton();
+        Offices.clickCreateTellerButton();
         Common.verifyMessagePopupIsDisplayed("Teller is going to be saved");
         //workaround for current bug that teller is not always listed immediately
         Common.clickBackButtonInTitleBar();

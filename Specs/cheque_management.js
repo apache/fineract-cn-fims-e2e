@@ -76,7 +76,7 @@ describe('cheque_management', function() {
         Offices.enterTextIntoOfficeIdentifierInputField(officeIdentifier);
         Offices.enterTextIntoOfficeNameInputField("Branch " + officeIdentifier);
         Offices.clickEnabledContinueButtonForOfficeDetails();
-        Offices.clickEnabledCreateOfficeButton();
+        Offices.clickCreateOfficeButton();
         Common.verifyMessagePopupIsDisplayed("Office is going to be saved");
         Common.clickSearchButtonToMakeSearchInputFieldAppear();
         Common.enterTextInSearchInputFieldAndApplySearch(officeIdentifier);
@@ -90,7 +90,7 @@ describe('cheque_management', function() {
         Offices.enterTextIntoTellerAccountInputFieldAndSelectMatchingEntry(tellerAccount);
         Offices.enterTextIntoVaultAccountInputFieldAndSelectMatchingEntry("7351");
         Offices.enterTextIntoChequesReceivableAccountInputFieldAndSelectMatchingEntry(chequesReceivableAccount);
-        Offices.clickEnabledCreateTellerButton();
+        Offices.clickCreateTellerButton();
         Common.verifyMessagePopupIsDisplayed("Teller is going to be saved");
         //workaround for current bug that teller is not always listed immediately
         Common.clickBackButtonInTitleBar();
