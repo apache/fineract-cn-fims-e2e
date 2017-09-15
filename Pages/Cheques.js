@@ -34,7 +34,7 @@ module.exports = {
         browser.wait(EC.visibilityOf(branchSortCodeInput), 1000);
         branchSortCodeInput.click().clear().sendKeys(text);
     },
-    verifyBranchSortCodeInputHasErrorIfCharacterLimitExceeded: function(text) {
+    verifyBranchSortCodeInputHasErrorIfCharacterLimitExceeded: function() {
         expect(branchSortCodeInput.getAttribute("class")).toMatch("ng-invalid");
         expect(branchSortCodeInput.element(by.xpath("..")).element(by.xpath("..")).element(by.xpath("..")).$("md-error").getText()).toEqual("Only 11 characters allowed.");
     },

@@ -425,7 +425,7 @@ describe('Gate 1', function() {
     Loans.clickButtonEditProcessingFeeForLoanProduct(loanShortName);
     Loans.enterTextIntoFeeAmountInputField("3");
     Loans.clickEnabledUpdateChargeButton();
-    Common.verifyMessagePopupIsDisplayed("Charge is going to be saved");
+    Common.verifyMessagePopupIsDisplayed("Fee is going to be saved");
     Common.clickBackButtonInTitleBar();
     Common.clickBackButtonInTitleBar();
     });

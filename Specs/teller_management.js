@@ -66,6 +66,65 @@ describe('teller_management', function() {
         Login.signOut();
         Login.logInForFirstTimeWithTenantUserAndPassword("playground", employeeIdentifier, "abc123!!", "abc123??");
     });
+    it('should be able to create customer', function () {
+        Customers.goToManageCustomersViaSidePanel();
+        Common.verifyCardHasTitle("Manage members");
+        Customers.clickButtonOrLinkCreateNewCustomer();
+        Common.verifyCardHasTitle("Create new member");
+        Customers.enterTextIntoAccountInputField(customerAccount);
+        Customers.enterTextIntoFirstNameInputField("Samuel");
+        Customers.enterTextIntoLastNameInputField("Beckett");
+        Customers.enterTextIntoDayOfBirthInputField("9211978");
+        Customers.clickEnabledContinueButtonForCustomerDetails();
+        Customers.enterTextIntoStreetInputField("800 Chatham Road #326");
+        Customers.enterTextIntoCityInputField("Winston-Salem");
+        Customers.selectCountryByName("Germany");
+        Customers.clickEnabledContinueButtonForCustomerAddress();
+        Customers.clickEnabledCreateCustomerButton();
+        Common.verifyMessagePopupIsDisplayed("Member is going to be saved")
+        Common.verifyCardHasTitle("Manage members");
+    });
+    it('should create a deposit account - Checking with opening charge', function () {
+        Deposits.goToDepositsViaSidePanel();
+        Common.verifyCardHasTitle("Manage deposit products");
+        Deposits.clickButtonCreateDepositAccount();
+        Common.verifyCardHasTitle("Create new deposit product");
+        Deposits.enterTextIntoShortNameInputField(depositIdentifier);
+        Deposits.verifyRadioCheckingIsSelected();
+        Deposits.selectRadioButtonShare();
+        Deposits.enterTextIntoNameInputField(depositName);
+        Deposits.enterTextIntoMinimumBalanceInputField("100");
+        Deposits.enterTextIntoInterestInputField("0.05");
+        Deposits.enterTextIntoCashAccountInputField("7352");
+        Deposits.enterTextIntoExpenseAccountInputField("2820");
+        Deposits.enterTextIntoEquityLedgerInputField("9100");
+        Deposits.clickEnabledContinueButtonForProductDetails();
+        Deposits.clickEnabledCreateProductButton();
+        Common.verifyMessagePopupIsDisplayed("Product is going to be saved");
+        Common.verifyCardHasTitle("Manage deposit products");
+    });
+    it('should enable deposit product', function () {
+        Common.clickLinkShowForRowWithId(depositIdentifier);
+        Deposits.verifyProductHasStatusDisabled();
+        Deposits.clickButtonEnableProduct();
+        Common.verifyMessagePopupIsDisplayed("Product is going to be updated");
+        Deposits.verifyProductHasStatusEnabled();
+    });
+    it('should assign deposit product to customer', function () {
+        Customers.goToManageCustomersViaSidePanel();
+        Common.clickSearchButtonToMakeSearchInputFieldAppear();
+        Common.enterTextInSearchInputFieldAndApplySearch(customerAccount);
+        Common.verifyFirstRowOfSearchResultHasTextAsId(customerAccount);
+        Common.clickLinkShowForRowWithId(customerAccount);
+        Customers.clickManageDepositAccountsForMember(customerAccount);
+        Customers.clickCreateDepositAccountForMember(customerAccount);
+        Customers.selectProduct(depositName);
+        Customers.clickEnabledButtonCreateDepositAccount();
+        Common.verifyMessagePopupIsDisplayed("Deposit account is going to be saved");
+        //might not be in list immediately always
+        Common.clickBackButtonInTitleBar();
+        Customers.clickManageDepositAccountsForMember(customerAccount);
+    });
     it('should create a new branch office and a teller for the branch office', function () {
         Offices.goToManageOfficesViaSidePanel();
         Offices.clickButtonCreateNewOffice();
@@ -142,6 +201,42 @@ describe('teller_management', function() {
         Accounting.verifyTransactionAmountForRow("2500", 1);
         Accounting.verifyTransactionBalanceForRow("2500", 1);
     });
+    it('employee assigned to teller should be able to unlock the teller', function () {
+        Login.signOut();
+        Login.logInForFirstTimeWithTenantUserAndPassword("playground", employeeIdentifier2, "abc123!!", "abc123??");
+        Teller.goToTellerManagementViaSidePanel();
+        Teller.enterTextIntoTellerNumberInputField(tellerIdentifier);
+        Teller.enterTextIntoPasswordInputField("qazwsx123!!");
+        Teller.clickEnabledUnlockTellerButton();
+        //Common.verifyMessagePopupIsDisplayed("");
+        Teller.enterTextIntoSearchInputField(customerAccount);
+        //will be successful even if the customer does not exist, clicks one of the buttons too quickly: need to fix
+        Teller.clickButtonShowAtIndex(0);
+        Teller.verifyCardTitleHasNameOfCustomer("Samuel Beckett");
+        //only action possible: Open account
+        Teller.clickOnOpenAccountForCustomer(customerAccount);
+        Teller.selectAccountToBeAffected(customerAccount + ".9100.00001(" + depositIdentifier +")");
+        Teller.enterTextIntoAmountInputField("200.00");
+        Teller.clickEnabledCreateTransactionButton();
+        Teller.clickEnabledConfirmTransactionButton();
+        Common.verifyMessagePopupIsDisplayed("Transaction successfully confirmed");
+        //action no longer possible: Open account
+        Teller.clickOnCashWithdrawalForCustomer(customerAccount);
+        Teller.selectAccountToBeAffected(customerAccount + ".9100.00001(" + depositIdentifier +")");
+        Teller.verifyCashdrawLimitHintIsDisplayed("Cashdraw limit is: 1,000.00");
+        Teller.enterTextIntoAmountInputField("1000.01");
+        Teller.verifyAmountInputFieldHasError("Value must be smaller than or equal to 1000");
+        Teller.verifyCreateTransactionButtonIsDisabled();
+    });
+    it('employee not assigned to teller should not be able to unlock the teller', function () {Lo
+        Login.signOut();
+        Login.logInWithTenantUserAndPassword("playground", employeeIdentifier, "abc123??");
+        Teller.goToTellerManagementViaSidePanel();
+        Teller.enterTextIntoTellerNumberInputField(tellerIdentifier);
+        Teller.enterTextIntoPasswordInputField("qazwsx123!!");
+        Teller.clickEnabledUnlockTellerButton();
+        Login.verifyMessageForUnsuccessfulLoginIsDisplayed();
+    });
     it('should be able to update teller', function () {
         Offices.goToManageOfficesViaSidePanel();
         Common.clickLinkShowForRowWithId(officeIdentifier);
@@ -163,7 +258,19 @@ describe('teller_management', function() {
         Offices.verifyTellerStatusIs("OPEN");
         Offices.verifyCashWithdrawalLimitIs("500");
         Offices.verifyTellerAccountIs("7353");
-        browser.pause();
+        //teller balance empty since account now different; find way to check this
+        Login.signOut();
+    });
+    it('employee assigned to teller should be able to unlock the teller', function () {
+        Login.logInForFirstTimeWithTenantUserAndPassword("playground", employeeIdentifier2, "abc123!!", "abc123??");
+        Teller.goToTellerManagementViaSidePanel();
+        Teller.enterTextIntoTellerNumberInputField(tellerIdentifier);
+        //password has been updated
+        Teller.enterTextIntoPasswordInputField("123abc!!");
+        Teller.clickEnabledUnlockTellerButton();
+        //cash withdrawal limit has been update
+    });
+    it('employee not assigned to teller should not be able to unlock the teller', function () {
 
     });
     it('should not be able to assign the same employee to another teller', function () {

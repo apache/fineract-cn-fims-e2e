@@ -116,6 +116,10 @@ module.exports = {
         browser.wait(EC.elementToBeClickable(amountInput), 5000);
         amountInput.click().clear().sendKeys(text);
     },
+    verifyAmountInputFieldHasError: function(text) {
+        expect(amountInput.getAttribute("class")).toMatch("ng-invalid");
+        expect(amountInput.element(by.xpath("..")).element(by.xpath("..")).element(by.xpath("..")).$("md-error").getText()).toEqual(text);
+    },
     clickEnabledCreateTransactionButton: function(){
         primaryButton.filter(function(elem, index) {
             return elem.$("span").getText().then(function(text) {
@@ -128,7 +132,7 @@ module.exports = {
             return elem.$("span").getText().then(function(text) {
                 return text === "CREATE TRANSACTION";
             });
-        }).isEnabled()).toBe(false);
+        }).first().isEnabled()).toBe(false);
     },
     verifyCreateTransactionButtonIsEnabled: function(){
         expect(primaryButton.filter(function(elem, index) {
@@ -139,13 +143,12 @@ module.exports = {
     },
     clickEnabledConfirmTransactionButton: function(){
         browser.executeScript("arguments[0].scrollIntoView();", primaryButton.get(1).getWebElement());
-        browser.wait(EC.elementToBeClickable(primaryButton.get(1)), 3000);
-        primaryButton.get(1).click();
-        // primaryButton.filter(function(elem, index) {
-        //     return elem.$("span").getText().then(function(text) {
-        //         return text === "CONFIRM TRANSACTION";
-        //     });
-        // }).click();
+        browser.wait(EC.elementToBeClickable(primaryButton.get(1)), 4000);
+        primaryButton.filter(function(elem, index) {
+            return elem.$("span").getText().then(function(text) {
+                return text === "CONFIRM TRANSACTION";
+            });
+        }).click();
     },
     verifyChargesPayedInCashCheckboxChecked: function(){
         classCB = checkboxChargesInCash.getAttribute("class");
@@ -177,6 +180,9 @@ module.exports = {
         }).$$(".td-data-table-cell").last().getText().then(function(text){
             return text === chargeAmount;
         })).toBe(true);
-    }
+    },
+    verifyCashdrawLimitHintIsDisplayed: function(text){
+      browser.wait(EC.textToBePresentInElement($(".text-md"), text), 2000);
+    },
 
 };

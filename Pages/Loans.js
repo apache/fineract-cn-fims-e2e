@@ -196,7 +196,7 @@ module.exports = {
         browser.wait(EC.elementToBeClickable(primaryButton.first()), 3000);
         primaryButton.filter(function(elem, index) {
             return elem.$("span").getText().then(function(text) {
-                return text === "UPDATE CHARGE";
+                return text === "UPDATE FEE";
             });
         }).click();
     },
