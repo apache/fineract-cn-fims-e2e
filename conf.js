@@ -6,7 +6,7 @@ exports.config = {
 
   framework: 'jasmine',
   specs: [
-      'Specs/teller_management.js'
+      'Specs/cheque_management.js'
   ],
     directConnect: true,
     allScriptsTimeout: 25000,

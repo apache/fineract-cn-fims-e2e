@@ -7,7 +7,7 @@ var accountInput = $(".mat-input-infix input[placeholder='Account']");
 var firstNameInput = $(".mat-input-infix input[formcontrolname='firstName']");
 var middleNameInput = $(".mat-input-infix input[formcontrolname='middleName']");
 var lastNameInput = $(".mat-input-infix input[formcontrolname='lastName']");
-var birthDayInput = $(".mat-input-infix input[formcontrolname='dayOfBirth']");
+var birthDayInput = $("#dayOfBirth");
 var memberCheckbox = $("md-checkbox[formcontrolname='member']");
 var streetInput = $(".mat-input-infix input[formcontrolname='street']");
 var cityInput = $(".mat-input-infix input[formcontrolname='city']");
