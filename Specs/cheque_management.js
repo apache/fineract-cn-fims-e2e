@@ -331,9 +331,9 @@ describe('cheque_management', function() {
     });
     it('should create another customer', function () {
         Customers.goToManageCustomersViaSidePanel();
-        Customers.verifyCardHasTitleManageMembers();
+        Common.verifyCardHasTitle("Manage members");
         Customers.clickButtonOrLinkCreateNewCustomer();
-        Customers.verifyCardHasTitleCreateMember();
+        Common.verifyCardHasTitle("Create new member");
         Customers.enterTextIntoAccountInputField(customerAccount2);
         Customers.enterTextIntoFirstNameInputField("Cormac");
         Customers.enterTextIntoLastNameInputField("McCarthy");
@@ -346,7 +346,7 @@ describe('cheque_management', function() {
         Customers.clickEnabledContinueButtonForCustomerAddress();
         Customers.clickEnabledCreateCustomerButton();
         Common.verifyMessagePopupIsDisplayed("Member is going to be saved")
-        Customers.verifyCardHasTitleManageMembers();
+        Common.verifyCardHasTitle("Manage members");
         Common.clickSearchButtonToMakeSearchInputFieldAppear();
         Common.enterTextInSearchInputFieldAndApplySearch(customerAccount2);
         Common.verifyFirstRowOfSearchResultHasTextAsId(customerAccount2);
@@ -458,6 +458,48 @@ describe('cheque_management', function() {
         Accounting.verifyTransactionMessageForRow("ORCQ", 5);
         Accounting.verifyTransactionAmountForRow("250.54", 5);
         Accounting.verifyTransactionBalanceForRow("5750.54", 5);
+    });
+    it('customer should not be able to cash cheque if account is locked - cheque is on us', function () {
+        //lock second customer's account
+        Common.clickBackButtonInTitleBar();
+        Common.clickBackButtonInTitleBar();
+        Common.clickLinkShowForRowWithId(customerAccount2 + ".9100.00001");
+        Accounting.goToTasksForAccount(customerAccount2 + ".9100.00001");
+        Accounting.clickButtonToExecuteAction("LOCK");
+        Common.verifyMessagePopupIsDisplayed("Command is going to be executed");
+        Accounting.verifyAccountStatus("LOCKED");
+        Teller.goToTellerManagementViaSidePanel();
+        Teller.enterTextIntoSearchInputField(customerAccount);
+        Teller.clickButtonShowAtIndex(0);
+        Teller.verifyCardTitleHasNameOfCustomer("Thomas Pynchon");
+        Teller.clickOnCashChequeForCustomer(customerAccount);
+        Cheques.enterTextIntoChequeNumberInputField("11");
+        Cheques.enterTextIntoBranchSortCodeInputField(officeIdentifier);
+        Cheques.enterTextIntoAccountNumberInputField(customerAccount2 + ".9100.00001");
+        Cheques.clickButtonDetermineFromMICR();
+        Cheques.verifyWarningIsNotDisplayedIfIssuingBankCouldBeDetermined();
+        Cheques.enterTextIntoDateIssuedInputField("9152017");
+        Cheques.verifyIssuingBankHasText("Branch " + officeIdentifier);
+        Cheques.verifyIssuerHasText("Cormac McCarthy");
+        Cheques.enterTextIntoAmountInputField("400");
+        Cheques.selectAccountToTransferTo(customerAccount + ".9100.00001(" + depositIdentifier +")");
+        Cheques.clickCreateTransactionButton();
+        //verify transaction cannot be created if account is not open
+        Cheques.verifyErrorMessageDisplayedWithTitleAndText("Invalid transaction", "Account " + customerAccount2 + ".9100.00001 is not open.");
+        Cheques.clickButtonOKInErrorMessage();
+        //change branch sort code to a code that is not one of the office identifiers for the client and verify transaction goes through
+        Cheques.enterTextIntoBranchSortCodeInputField("boa");
+        Cheques.clickCreateTransactionButton();
+        Cheques.verifyTransactionAmount("400");
+        Cheques.clickConfirmTransactionButton();
+        Common.verifyMessagePopupIsDisplayed("Transaction successfully confirmed");
+        Accounting.goToAccountingViaSidePanel();
+        Accounting.goToChequeClearing();
+        Cheques.verifyStateForChequeWithIdentifier("PENDING", "11~boa~" + customerAccount2 + ".9100.00001");
+        Common.clickBackButtonInTitleBar();
+        Accounting.goToJournalEntries();
+        Accounting.enterTextIntoSearchAccountInputField(chequesReceivableAccount);
+        Accounting.verifyFourthJournalEntry("Order Cheque", "400.00");
     });
     it('input should be validated and CREATE TRANSACTION button is only enabled with valid input', function () {
         Teller.goToTellerManagementViaSidePanel();

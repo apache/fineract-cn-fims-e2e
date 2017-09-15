@@ -57,6 +57,12 @@ module.exports = {
         $('a[href="'+ link + '"]').click();
         browser.sleep(1000);
     },
+    goToTasksForAccount: function(accountIdentifier){
+        link = "/accounting/accounts/detail/" + accountIdentifier + "/tasks";
+        browser.wait(EC.visibilityOf($('a[href="'+ link + '"]')));
+        $('a[href="'+ link + '"]').click();
+        browser.sleep(1000);
+    },
     clickLinkShowForAccountWithName: function(name) {
         browser.wait(EC.invisibilityOf($("div[class='md-padding'] h3")), 5000);
         browser.sleep(1000);
@@ -210,12 +216,19 @@ module.exports = {
     verifyMessageForJournalEntryIs: function (message){
         expect($$("md-card .mat-list-text h3").filter(function(elem, index) {
             return elem.getText().then(function(text) {
-                console.log(text);
                 return text === "Message";
             });
         }).first().element(by.xpath("..")).$("p").getText().then(function(text){
             console.log(text);
             return text == message;
         })).toBe(true);
+    },
+    //tasks for accounts
+    clickButtonToExecuteAction: function(action){
+        $$(".mat-raised-button.mat-accent span").filter(function(elem, index) {
+            return elem.getText().then(function(text){
+                return text === action;
+            });
+        }).first().click();
     },
 };
