@@ -487,6 +487,10 @@ describe('cheque_management', function() {
         //verify transaction cannot be created if account is not open
         Cheques.verifyErrorMessageDisplayedWithTitleAndText("Invalid transaction", "Account " + customerAccount2 + ".9100.00001 is not open.");
         Cheques.clickButtonOKInErrorMessage();
+        Cheques.enterTextIntoAccountNumberInputField(customerAccount2 + ".9100.00005");
+        Cheques.clickCreateTransactionButton();
+        Cheques.verifyErrorMessageDisplayedWithTitleAndText("Invalid transaction", "Account " + customerAccount2 + ".9100.00005 not found.");
+        Cheques.clickButtonOKInErrorMessage();
         //change branch sort code to a code that is not one of the office identifiers for the client and verify transaction goes through
         Cheques.enterTextIntoBranchSortCodeInputField("boa");
         Cheques.clickCreateTransactionButton();
@@ -499,6 +503,7 @@ describe('cheque_management', function() {
         Common.clickBackButtonInTitleBar();
         Accounting.goToJournalEntries();
         Accounting.enterTextIntoSearchAccountInputField(chequesReceivableAccount);
+        Accounting.clickSearchButton();
         Accounting.verifyFourthJournalEntry("Order Cheque", "400.00");
     });
     it('input should be validated and CREATE TRANSACTION button is only enabled with valid input', function () {

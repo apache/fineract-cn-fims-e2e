@@ -39,6 +39,7 @@ module.exports = {
         expect(branchSortCodeInput.element(by.xpath("..")).element(by.xpath("..")).element(by.xpath("..")).$("md-error").getText()).toEqual("Only 11 characters allowed.");
     },
     enterTextIntoAccountNumberInputField: function(text) {
+        browser.executeScript("arguments[0].scrollIntoView();", accountNumberInput.getWebElement());
         browser.wait(EC.visibilityOf(accountNumberInput), 1000);
         accountNumberInput.click().clear().sendKeys(text);
     },
