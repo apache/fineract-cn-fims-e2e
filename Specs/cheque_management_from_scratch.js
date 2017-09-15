@@ -523,12 +523,12 @@ describe('cheque_management', function() {
         Common.verifyMessagePopupIsDisplayed("Transaction successfully confirmed");
         Accounting.goToAccountingViaSidePanel();
         Accounting.goToChequeClearing();
-        Cheques.verifyStateForChequeWithIdentifier("PENDING", "11~boa~" + customerAccount2 + ".9100.00001");
+        Cheques.verifyStateForChequeWithIdentifier("PENDING", "11~boa~" + customerAccount2 + ".9100.00005");
         Common.clickBackButtonInTitleBar();
         Accounting.goToJournalEntries();
         Accounting.enterTextIntoSearchAccountInputField(chequesReceivableAccount);
         Accounting.clickSearchButton();
-        Accounting.verifyFourthJournalEntry("Order Cheque", "400.00");
+        Accounting.verifyFourthJournalEntry("Order Cheque", "Amount: 400.00");
     });
     it('input should be validated and CREATE TRANSACTION button is only enabled with valid input', function () {
         Teller.goToTellerManagementViaSidePanel();

@@ -216,7 +216,7 @@ describe('teller_management', function() {
         //only action possible: Open account
         Teller.clickOnOpenAccountForCustomer(customerAccount);
         Teller.selectAccountToBeAffected(customerAccount + ".9100.00001(" + depositIdentifier +")");
-        Teller.enterTextIntoAmountInputField("200.00");
+        Teller.enterTextIntoAmountInputField("2000.00");
         Teller.clickEnabledCreateTransactionButton();
         Teller.clickEnabledConfirmTransactionButton();
         Common.verifyMessagePopupIsDisplayed("Transaction successfully confirmed");
@@ -228,7 +228,9 @@ describe('teller_management', function() {
         Teller.verifyAmountInputFieldHasError("Value must be smaller than or equal to 1000");
         Teller.verifyCreateTransactionButtonIsDisabled();
     });
-    it('employee not assigned to teller should not be able to unlock the teller', function () {Lo
+    it('employee not assigned to teller should not be able to unlock the teller', function () {
+        //workaround for bug on logging out from within teller transaction
+        Teller.goToTellerManagementViaSidePanel();
         Login.signOut();
         Login.logInWithTenantUserAndPassword("playground", employeeIdentifier, "abc123??");
         Teller.goToTellerManagementViaSidePanel();
@@ -261,19 +263,30 @@ describe('teller_management', function() {
         //teller balance empty since account now different; find way to check this
         Login.signOut();
     });
-    it('employee assigned to teller should be able to unlock the teller', function () {
-        Login.logInForFirstTimeWithTenantUserAndPassword("playground", employeeIdentifier2, "abc123!!", "abc123??");
+    it('teller should have updated as expected', function () {
+        Login.logInWithTenantUserAndPassword("playground", employeeIdentifier2, "abc123??");
         Teller.goToTellerManagementViaSidePanel();
         Teller.enterTextIntoTellerNumberInputField(tellerIdentifier);
         //password has been updated
         Teller.enterTextIntoPasswordInputField("123abc!!");
         Teller.clickEnabledUnlockTellerButton();
-        //cash withdrawal limit has been update
-    });
-    it('employee not assigned to teller should not be able to unlock the teller', function () {
-
+        //cash withdrawal limit has been updated
+        Teller.clickOnCashWithdrawalForCustomer(customerAccount);
+        Teller.selectAccountToBeAffected(customerAccount + ".9100.00001(" + depositIdentifier +")");
+        Teller.verifyCashdrawLimitHintIsDisplayed("Cashdraw limit is: 500.00");
+        Teller.enterTextIntoAmountInputField("500.01");
+        Teller.verifyAmountInputFieldHasError("Value must be smaller than or equal to 500");
+        Teller.verifyCreateTransactionButtonIsDisabled();
+        Teller.enterTextIntoAmountInputField("500.00");
+        Teller.clickEnabledCreateTransactionButton();
+        Teller.clickEnabledConfirmTransactionButton();
+        Common.verifyMessagePopupIsDisplayed("Transaction successfully confirmed");
+        //verify money has been taken out of account 7353
     });
     it('should not be able to assign the same employee to another teller', function () {
+
+    });
+    it('closing teller should unassign employee', function () {
 
     });
 });

@@ -9,7 +9,8 @@ exports.config = {
       'Specs/cheque_management.js'
   ],
     directConnect: true,
-    allScriptsTimeout: 25000,
+    allScriptsTimeout: 45000,
+    jasmineNodeOpts: {defaultTimeoutInterval: 500000},
     capabilities: {
         browserName: 'chrome',
         chromeOptions: {

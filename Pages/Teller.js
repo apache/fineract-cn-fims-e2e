@@ -117,6 +117,7 @@ module.exports = {
         amountInput.click().clear().sendKeys(text);
     },
     verifyAmountInputFieldHasError: function(text) {
+        $(".text-md").click();
         expect(amountInput.getAttribute("class")).toMatch("ng-invalid");
         expect(amountInput.element(by.xpath("..")).element(by.xpath("..")).element(by.xpath("..")).$("md-error").getText()).toEqual(text);
     },
@@ -143,6 +144,7 @@ module.exports = {
     },
     clickEnabledConfirmTransactionButton: function(){
         browser.executeScript("arguments[0].scrollIntoView();", primaryButton.get(1).getWebElement());
+        browser.sleep(1000);
         browser.wait(EC.elementToBeClickable(primaryButton.get(1)), 4000);
         primaryButton.filter(function(elem, index) {
             return elem.$("span").getText().then(function(text) {
