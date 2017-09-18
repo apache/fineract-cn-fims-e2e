@@ -3,8 +3,8 @@
 //Actions specific to the Teller section
 
 var EC = protractor.ExpectedConditions;
-var tellerNumberInput = $(".mat-input-infix input[formcontrolname='tellerCode']");
-var passwordInput = $(".mat-input-infix input[formcontrolname='password']");
+var tellerNumberInput = $("input[formcontrolname='tellerCode']");
+var passwordInput = $("input[formcontrolname='password']");
 var accountSelect =  $("md-select[formcontrolname='productInstance'] .mat-select-trigger");
 var amountInput = $("input[formcontrolname='amount']");
 var primaryButton = $$(".mat-raised-button.mat-primary");
@@ -36,6 +36,7 @@ module.exports = {
         browser.sleep(2000);
     },
     clickButtonShowAtIndex: function(i){
+        browser.wait(EC.visibilityOf($$("button[title='SHOW']").get(i)), 5000);
         $$("button[title='SHOW']").get(i).click();
     },
     verifyCardTitleHasNameOfCustomer: function (text) {
@@ -80,7 +81,7 @@ module.exports = {
     clickOnCashWithdrawalForCustomer: function(customerAccount){
         link = "/teller/customers/detail/" + customerAccount + "/transaction/deposit?transactionType=CWDL";
         a = $('a[href= "' + link +'"]');
-        browser.wait(EC.elementToBeClickable(a), 3000);
+        browser.wait(EC.elementToBeClickable(a), 5000);
         a.click();
         browser.wait(EC.visibilityOf($("fims-teller-transaction-form")), 2000);
     },

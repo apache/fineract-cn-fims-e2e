@@ -98,6 +98,10 @@ module.exports = {
     enterTextIntoCashWithdrawalLimitInputField: function(text) {
         withdrawalLimitInput.click().clear().sendKeys(text);
     },
+    verifyCashWithdrawalLimitInputFieldHasError: function(text) {
+        expect(withdrawalLimitInput.getAttribute("class")).toMatch("ng-invalid");
+        expect(withdrawalLimitInput.element(by.xpath("..")).element(by.xpath("..")).element(by.xpath("..")).$("md-error").getText()).toEqual(text);
+    },
     enterTextIntoTellerAccountInputFieldAndSelectMatchingEntry: function(text) {
         tellerAccountInput.click().clear().sendKeys(text);
         browser.wait(EC.visibilityOf($(".mat-option")), 5000);
@@ -108,10 +112,24 @@ module.exports = {
         browser.wait(EC.visibilityOf($(".mat-option")), 5000);
         $$(".mat-option").first().click();
     },
+    enterTextIntoVaultAccountInputField: function(text) {
+        vaultAccountInput.click().clear().sendKeys(text);
+    },
+    verifyVaultAccountInputFieldHasError: function(text) {
+        expect(vaultAccountInput.getAttribute("class")).toMatch("ng-invalid");
+        expect(vaultAccountInput.element(by.xpath("..")).element(by.xpath("..")).element(by.xpath("..")).$("md-error").getText()).toEqual(text);
+    },
     enterTextIntoChequesReceivableAccountInputFieldAndSelectMatchingEntry: function(text) {
         chequesReceivableAccountInput.click().clear().sendKeys(text);
         browser.wait(EC.visibilityOf($(".mat-option")), 5000);
         $$(".mat-option").first().click();
+    },
+    enterTextIntoChequesReceivableAccountInputField: function(text) {
+        chequesReceivableAccountInput.click().clear().sendKeys(text);
+    },
+    verifyChequesReceivableAccountInputFieldHasError: function(text) {
+        expect(chequesReceivableAccountInput.getAttribute("class")).toMatch("ng-invalid");
+        expect(chequesReceivableAccountInput.element(by.xpath("..")).element(by.xpath("..")).element(by.xpath("..")).$("md-error").getText()).toEqual(text);
     },
     verifyRadioNoneSelected: function(){
         expect(radioNone.getAttribute('class')).toMatch("mat-radio-checked");
@@ -142,6 +160,22 @@ module.exports = {
                 return text === "CREATE TELLER";
             });
         }).click();
+    },
+    verifyCreateTellerButtonIsDisabled: function(){
+        browser.executeScript("arguments[0].scrollIntoView();", primaryButton.get(0).getWebElement());
+        expect(primaryButton.filter(function(elem, index) {
+            return elem.$("span").getText().then(function(text) {
+                return text === "CREATE TELLER";
+            });
+        }).first().isEnabled()).toBe(false);
+    },
+    verifyCreateTellerButtonIsEnabled: function(){
+        browser.executeScript("arguments[0].scrollIntoView();", primaryButton.get(0).getWebElement());
+        expect(primaryButton.filter(function(elem, index) {
+            return elem.$("span").getText().then(function(text) {
+                return text === "CREATE TELLER";
+            });
+        }).first().isEnabled()).toBe(true);
     },
     clickUpdateTellerButton: function(){
         browser.executeScript("arguments[0].scrollIntoView();", primaryButton.get(0).getWebElement());

@@ -204,7 +204,6 @@ describe('cheque_management', function() {
         Common.verifyMessagePopupIsDisplayed("Transaction successfully confirmed");
     });
     it('customer should be able to cash cheque - cheque is not open/not on us', function () {
-        //action not immediately available although account has been opened
         Teller.clickOnCashChequeForCustomer(customerAccount);
         Cheques.enterTextIntoChequeNumberInputField("123456");
         Cheques.enterTextIntoBranchSortCodeInputField(branchSortCode);
