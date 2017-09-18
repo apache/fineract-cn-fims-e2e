@@ -6,17 +6,17 @@ var EC = protractor.ExpectedConditions;
 
 //create customer
 var accountInput = $(".mat-input-infix input[placeholder='Account']");
-var firstNameInput = $(".mat-input-infix input[formcontrolname='firstName']");
-var middleNameInput = $(".mat-input-infix input[formcontrolname='middleName']");
-var lastNameInput = $(".mat-input-infix input[formcontrolname='lastName']");
+var firstNameInput = $("fims-text-input[controlname='firstName'] input");
+var middleNameInput = $("fims-text-input[controlname='middleName'] input");
+var lastNameInput = $("fims-text-input[controlname='lastName'] input");
 var birthDayInput = $("#dayOfBirth");
 var memberCheckbox = $("md-checkbox[formcontrolname='member']");
-var streetInput = $(".mat-input-infix input[formcontrolname='street']");
-var cityInput = $(".mat-input-infix input[formcontrolname='city']");
-var countrySelect = $(".mat-input-infix input[formcontrolname='country']");
-var emailInput = $(".mat-input-infix input[formcontrolname='email']");
-var phoneInput = $(".mat-input-infix input[formcontrolname='phone']");
-var mobileInput = $(".mat-input-infix input[formcontrolname='mobile']");
+var streetInput = $("fims-text-input[controlname='street'] input");
+var cityInput = $("fims-text-input[controlname='city'] input");
+var countrySelect = $("input[formcontrolname='country']");
+var emailInput = $("fims-text-input[controlname='email'] input");
+var phoneInput = $("fims-text-input[controlname='phone'] input");
+var mobileInput = $("fims-text-input[controlname='mobile'] input");
 
 //create deposit account
 var productSelect = $("md-select[formcontrolname='productIdentifier'] .mat-select-trigger");
@@ -25,8 +25,8 @@ var beneficiaryInput = $("td-chips[formcontrolname='beneficiaries'] input");
 //create loan account
 var shortNameInput = $("fims-id-input[controlname='identifier'] input");
 var principalAmountInput = $("fims-number-input[controlname='principalAmount'] input");
-var termInput = $("input[formcontrolname='term']");
-var paymentPeriod = $("input[formcontrolname='paymentPeriod']");
+var termInput = $("fims-text-input[controlname='term'] input");
+var paymentPeriod = $("fima-text-input[controlname='paymentPeriod'] input");
 var depositAccountSelect = $("md-select[formcontrolname='depositAccountIdentifier'] .mat-select-trigger");
 var dayForMonthlyRepaySelect = $("md-select[formcontrolname='monthSettingDay'] .mat-select-trigger");
 

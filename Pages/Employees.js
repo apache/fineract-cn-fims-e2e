@@ -4,14 +4,14 @@
 var Common = require('./Common.js');
 
 var EC = protractor.ExpectedConditions;
-var usernameInput = $(".mat-input-infix input[placeholder='Username']");
-var firstNameInput = $(".mat-input-infix input[formcontrolname='firstName']");
-var lastNameInput = $(".mat-input-infix input[formcontrolname='lastName']");
-var passwordInput = $(".mat-input-infix input[formcontrolname='password']");
-var middleNameInput = $(".mat-input-infix input[formcontrolname='middleName']");
-var emailInput = $(".mat-input-infix input[formcontrolname='email']");
-var phoneInput = $(".mat-input-infix input[formcontrolname='phone']");
-var mobileInput = $(".mat-input-infix input[formcontrolname='mobile']");
+var usernameInput = $("fims-id-input[controlname='identifier'] input");
+var firstNameInput = $("fims-text-input[controlname='firstName'] input");
+var lastNameInput = $("fims-text-input[controlname='lastName'] input");
+var passwordInput = $("input[formcontrolname='password']");
+var middleNameInput = $("fims-text-input[controlname='middleName'] input");
+var emailInput = $("fims-text-input[controlname='email'] input");
+var phoneInput = $("fims-text-input[controlname='phone'] input");
+var mobileInput = $("fims-text-input[controlname='mobile'] input");
 var createEmployee = $("a[href='/employees/create']");
 var primaryButton = $$(".mat-raised-button.mat-primary");
 

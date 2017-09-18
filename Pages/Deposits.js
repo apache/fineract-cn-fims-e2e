@@ -10,7 +10,7 @@ var radioChecking = $$("md-radio-group md-radio-button").get(0);
 var radioSavings = $$("md-radio-group md-radio-button").get(1);
 var radioShare = $$("md-radio-group md-radio-button").get(2);
 var shortNameInput = $("fims-id-input[controlname='identifier'] input");
-var nameInput = $(".mat-input-infix input[formcontrolname='name']");
+var nameInput = $("fims-text-input[controlname='name'] input");
 var descriptionInput = $(".mat-input-infix input[formcontrolname='description']");
 var minimumBalanceInput = $("fims-number-input[controlname='minimumBalance'] input");
 var currencySelect = $("md-select[formcontrolname='currencyCode']");
@@ -21,7 +21,7 @@ var radioQuarterly = radioGroupInterest.$$("md-radio-button").get(2);
 var radioMonthly = radioGroupInterest.$$("md-radio-button").get(3);
 var checkboxFlexibleInterest = $("md-checkbox[formcontrolname='flexible']")
 var interestInput = $("fims-number-input[controlname='interest'] input");
-var termPeriodInput = $(".mat-input-infix input[formcontrolname='termPeriod']");
+var termPeriodInput = $("fims-text-input[controlname='termPeriod'] input");
 var fixedTermEnabledToggle = $("md-slide-toggle[formcontrolname='fixedTermEnabled']");
 var termTimeUnit = $("md-radio-group[formcontrolname='termTimeUnit']");
 var radioMonth = termTimeUnit.$$("md-radio-button").get(0);
@@ -32,8 +32,8 @@ var expenseAccountInput = $("fims-account-select[formcontrolname='expenseAccount
 var accrueAccountInput = $("fims-account-select[formcontrolname='accrueAccountIdentifier'] input");
 var equityLedgerInput = $("fims-ledger-select[formcontrolname='equityLedgerIdentifier'] input");
 
-var chargeNameInput1 = $$("fims-deposit-product-charges-form input[formcontrolname='name']").get(0);
-var chargeNameInput2 = $$("fims-deposit-product-charges-form input[formcontrolname='name']").get(1);
+var chargeNameInput1 = $$("fims-deposit-product-charges-form fims-text-input[controlname='name'] input").get(0);
+var chargeNameInput2 = $$("fims-deposit-product-charges-form fims-text-input[controlname='name'] input").get(1);
 var chargeDescriptionInput = $("input[formcontrolname='description']");
 var chargeAmountInput1 = $$("fims-number-input[controlname='amount'] input").get(0);
 var chargeAmountInput2 = $$("fims-number-input[controlname='amount'] input").get(1);

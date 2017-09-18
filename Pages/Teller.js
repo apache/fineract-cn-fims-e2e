@@ -3,10 +3,10 @@
 //Actions specific to the Teller section
 
 var EC = protractor.ExpectedConditions;
-var tellerNumberInput = $("input[formcontrolname='tellerCode']");
+var tellerNumberInput = $("input[placeholder='Teller number']");
 var passwordInput = $("input[formcontrolname='password']");
 var accountSelect =  $("md-select[formcontrolname='productInstance'] .mat-select-trigger");
-var amountInput = $("input[formcontrolname='amount']");
+var amountInput = $("fims-text-input[controlname='amount'] input");
 var primaryButton = $$(".mat-raised-button.mat-primary");
 var checkboxChargesInCash = $("md-checkbox");
 

@@ -5,8 +5,9 @@
 var EC = protractor.ExpectedConditions;
 var createLedger = $("a[href='/accounting/create']");
 var accountIdentifierInput = $("fims-id-input[controlname='identifier'] input");
-var accountNameInput = $("input[formcontrolname='name']");
-var accountBalanceInput = $("input[formcontrolname='balance']");
+var accountNameInput = $("fims-text-input[controlname='name'] input");
+var descriptionInput = $("input[formcontrolname='description']");
+var accountBalanceInput = $("fims-text-input[controlname='balance'] input");
 var primaryButton = $$(".mat-raised-button.mat-primary");
 var radioButtonAsset = $$("md-radio-button").get(0);
 var radioButtonRevenue = $$("md-radio-button").get(4);

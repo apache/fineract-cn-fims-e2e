@@ -5,12 +5,12 @@
 var EC = protractor.ExpectedConditions;
 var createLoan = $("a[href='/loans/create']");
 var shortNameInput = $("fims-id-input[controlname='identifier'] input");
-var nameInput = $(".mat-input-infix input[formcontrolname='name']");
+var nameInput = $("fims-text-input[controlname='name'] input");
 var descriptionInput = $(".mat-input-infix textarea[formcontrolname='description']");
 var minimumPrincipalInput = $("fims-min-max input[placeholder='Minimum principal amount']");
 var maximumPrincipalInput = $("fims-min-max input[placeholder='Maximum principal amount']");
 var currencySelect = $("md-select[formcontrolname='currencyCode']");
-var termInput = $(".mat-input-infix input[formcontrolname='term']");
+var termInput = $("fims-text-input[controlname='term'] input");
 var radioWeeks = $$("md-radio-group .mat-radio-button").first();
 var radioMonths =  $$("md-radio-group .mat-radio-button").get(1);
 var radioYears =  $$("md-radio-group .mat-radio-button").get(2);
@@ -34,13 +34,13 @@ var arrearsAllowanceAccountInput = $("fims-account-select[formcontrolname='accou
 
 var primaryButton = $$(".mat-raised-button.mat-primary");
 
-var feeAmountInput = $("input[formcontrolname='amount']");
+var feeAmountInput = $("fims-text-input[controlname='amount'] input");
 var feeProportionalToSelect = $("md-select[formcontrolname='proportionalTo'] .mat-select-trigger");
 var radioFixed = $$("md-radio-group[formcontrolname='chargeMethod'] md-radio-button").get(0);
 var radioProportional = $$("md-radio-group[formcontrolname='chargeMethod'] md-radio-button").get(1);
 
 var taskIdentifierInput = $("fims-id-input[controlname='identifier'] input");
-var taskNameInput = $(".mat-input-infix input[formcontrolname='name']");
+var taskNameInput = $("fims-text-input[controlname='name'] input");
 var taskDescriptionInput = $(".mat-input-infix textarea[formcontrolname='description']");
 var mandatoryCheckbox = $("md-checkbox[formcontrolname='mandatory']");
 var fourEyesCheckbox = $("md-checkbox[formcontrolname='fourEyes']");

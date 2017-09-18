@@ -3,14 +3,18 @@ var Common = require('../Pages/Common.js');
 
 //office creation
 var officeIdentifierInput = $(".mat-input-infix input[placeholder='Identifier']");
-var officeNameInput = $(".mat-input-infix input[formcontrolname='name']");
-var officeDescriptionInput = $(".mat-input-infix input[formcontrolname='description']");
-var streetInput = $(".mat-input-infix input[formcontrolname='street']");
+var officeNameInput = $("fims-text-input[controlname='name'] input");
+var officeDescriptionInput = $("fims-text-input[controlname='description'] input");
+var streetInput = $("fims-text-input[controlname='street'] input");
+var cityInput = $("fims-text-input[controlname='city'] input");
+var postalCodeInput = $("fims-text-input[controlname='postalCode'] input");
+var regionInput = $("fims-text-input[controlname='region'] input");
+var countryInput = $("input[formcontrolname='country']");
 
 //teller creation
 var numberInput = $(".mat-input-infix input[placeholder='Number']");
-var passwordInput = $(".mat-input-infix input[formcontrolname='password']");
-var withdrawalLimitInput = $(".mat-input-infix input[formcontrolname='cashdrawLimit']");
+var passwordInput = $("input[formcontrolname='password']");
+var withdrawalLimitInput = $("fims-text-input[controlname='cashdrawLimit'] input");
 var tellerAccountInput = $("fims-account-select[formcontrolname='tellerAccountIdentifier'] input");
 var vaultAccountInput =$("fims-account-select[formcontrolname='vaultAccountIdentifier'] input");
 var chequesReceivableAccountInput = $("fims-account-select[formcontrolname='chequesReceivableAccount'] input");
