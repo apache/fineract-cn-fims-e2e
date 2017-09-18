@@ -4,17 +4,17 @@
 
 var EC = protractor.ExpectedConditions;
 
-var chequeNumberInput = $("input[formcontrolname='chequeNumber']");
-var branchSortCodeInput = $("input[formcontrolname='branchSortCode']");
-var accountNumberInput =  $("input[formcontrolname='accountNumber']");
-var issuingBankInput = $("input[formcontrolname='drawee']");
-var issuerInput = $("input[formcontrolname='drawer']");
-var payeeInput = $("input[formcontrolname='payee']");
-var dateIssuedInput = $("input[formcontrolname='dateIssued']");
+var chequeNumberInput = $("fims-text-input[controlname='chequeNumber'] input");
+var branchSortCodeInput = $("fims-text-input[controlname='branchSortCode'] input");
+var accountNumberInput =  $("fims-text-input[controlname='accountNumber'] input");
+var issuingBankInput = $("fims-text-input[controlname='drawee'] input");
+var issuerInput = $("fims-text-input[controlname='drawer'] input");
+var payeeInput = $("fims-text-input[controlname='payee'] input");
+var dateIssuedInput = $("fims-date-input[controlname='dateIssued'] input");
 var checkboxIsChequeOpen = $("md-checkbox[formcontrolname='openCheque']");
 var warningIssuingBankIssuerCouldNotBeDetermined = $("td-message[label='Issuing Bank/Issuer could not be determined in our system from the MICR your entered.']");
 var warningToCheckCustomerID = $("td-message[label='Please check identification card of member']");
-var amountInput = $("input[formcontrolname='amount']");
+var amountInput = $("fims-text-input[controlname='amount'] input");
 var accountSelect = $("md-select[formcontrolname='productInstance'] .mat-select-trigger");
 // three buttons (DETERMINE FROM MICR, CREATE TRANSACTION, CONFIRM TRANSACTION
 var primaryButtons = $$(".mat-raised-button.mat-primary");

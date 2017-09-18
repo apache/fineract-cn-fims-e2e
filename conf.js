@@ -6,7 +6,7 @@ exports.config = {
 
   framework: 'jasmine',
   specs: [
-      'Specs/gate1.js'
+      'Specs/cheque_management.js'
   ],
     directConnect: true,
     allScriptsTimeout: 45000,
