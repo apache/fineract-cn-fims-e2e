@@ -250,7 +250,6 @@ describe('teller_management', function() {
         Offices.verifyVaultAccountIs(vaultAccount);
         Offices.verifyChequesReceivableAccountIs(chequesReceivableAccount);
         Offices.verifyCreatedByForTellerIs(employeeIdentifier);
-        Offices.verifyLastModifiedByForTellerIs(employeeIdentifier);
         Offices.clickButtonEditForTellerInOffice(tellerIdentifier, officeIdentifier);
         Offices.enterTextIntoPasswordInputField("123abc!!");
         Offices.enterTextIntoCashWithdrawalLimitInputField("500");
@@ -260,10 +259,12 @@ describe('teller_management', function() {
         Offices.verifyTellerStatusIs("OPEN");
         Offices.verifyCashWithdrawalLimitIs("500");
         Offices.verifyTellerAccountIs("7353");
+        browser.pause();
+        Offices.verifyLastModifiedByForTellerIs(employeeIdentifier);
         //teller balance empty since account now different; find way to check this
-        Login.signOut();
     });
     it('teller should have updated as expected', function () {
+        Login.signOut();
         Login.logInWithTenantUserAndPassword("playground", employeeIdentifier2, "abc123??");
         Teller.goToTellerManagementViaSidePanel();
         Teller.enterTextIntoTellerNumberInputField(tellerIdentifier);

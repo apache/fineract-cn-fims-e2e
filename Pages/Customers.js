@@ -3,6 +3,8 @@
 //Actions specific to the Customers section
 
 var EC = protractor.ExpectedConditions;
+
+//create customer
 var accountInput = $(".mat-input-infix input[placeholder='Account']");
 var firstNameInput = $(".mat-input-infix input[formcontrolname='firstName']");
 var middleNameInput = $(".mat-input-infix input[formcontrolname='middleName']");
@@ -15,11 +17,12 @@ var countrySelect = $(".mat-input-infix input[formcontrolname='country']");
 var emailInput = $(".mat-input-infix input[formcontrolname='email']");
 var phoneInput = $(".mat-input-infix input[formcontrolname='phone']");
 var mobileInput = $(".mat-input-infix input[formcontrolname='mobile']");
-var linkCustomers = $$("a[href='/customers']");
+
+//create deposit account
 var productSelect = $("md-select[formcontrolname='productIdentifier'] .mat-select-trigger");
 var beneficiaryInput = $("td-chips[formcontrolname='beneficiaries'] input");
-var primaryButton =  $$(".mat-raised-button.mat-primary");
-var continueButton = $$(".mat-raised-button.mat-accent");
+
+//create loan account
 var shortNameInput = $("fims-id-input[controlname='identifier'] input");
 var principalAmountInput = $("fims-number-input[controlname='principalAmount'] input");
 var termInput = $("input[formcontrolname='term']");
@@ -27,9 +30,20 @@ var paymentPeriod = $("input[formcontrolname='paymentPeriod']");
 var depositAccountSelect = $("md-select[formcontrolname='depositAccountIdentifier'] .mat-select-trigger");
 var dayForMonthlyRepaySelect = $("md-select[formcontrolname='monthSettingDay'] .mat-select-trigger");
 
+//identification cards
+var identificationCardNumberInput = $("fims-id-input[controlname='number'] input");
+var typeInput = $("input[formcontrolname='type']");
+var expirationDateInput = $("input[formcontrolname='expirationDate']");
+var issuerInput = $("input[formcontrolname='issuer']");
+
+//general elements
+var linkCustomers = $$("a[href='/customers']");
+var primaryButton =  $$(".mat-raised-button.mat-primary");
+var continueButton = $$(".mat-raised-button.mat-accent");
 
 module.exports = {
     enterTextIntoAccountInputField: function (text) {
+        browser.wait(EC.visibilityOf(accountInput), 3000);
         accountInput.click().sendKeys(text);
     },
     enterTextIntoFirstNameInputField: function (text) {
@@ -131,6 +145,26 @@ module.exports = {
     },
     clickManageLoanAccountsForMember: function (customer) {
         link = "/customers/detail/" + customer + "/loans";
+        browser.wait(EC.elementToBeClickable($('a[href="' + link + '"]')), 6000);
+        $('a[href="' + link + '"]').click();
+    },
+    clickViewIdentificationCardsForMember: function (customer) {
+        link = "/customers/detail/" + customer + "/identifications";
+        browser.wait(EC.elementToBeClickable($('a[href="' + link + '"]')), 6000);
+        $('a[href="' + link + '"]').click();
+    },
+    clickTasksForMember: function (customer) {
+        link = "/customers/detail/" + customer + "/tasks";
+        browser.wait(EC.elementToBeClickable($('a[href="' + link + '"]')), 6000);
+        $('a[href="' + link + '"]').click();
+    },
+    clickActivitiesForMember: function (customer) {
+        link = "/customers/detail/" + customer + "/activities";
+        browser.wait(EC.elementToBeClickable($('a[href="' + link + '"]')), 6000);
+        $('a[href="' + link + '"]').click();
+    },
+    clickPayrollForMember: function (customer) {
+        link = "/customers/detail/" + customer + "/payroll";
         browser.wait(EC.elementToBeClickable($('a[href="' + link + '"]')), 6000);
         $('a[href="' + link + '"]').click();
     },
