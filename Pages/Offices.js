@@ -21,7 +21,7 @@ var chequesReceivableAccountInput = $("fims-account-select[formcontrolname='cheq
 
 //open teller
 var assignedEmployeeInput = $("fims-employee-auto-complete[formcontrolname='assignedEmployeeIdentifier'] input");
-var amountInput = $("input[formcontrolname='amount']");
+var amountInput = $("fims-text-input[controlname='amount'] input");
 var radioNone = $$("md-radio-group[formcontrolname='adjustment'] md-radio-button").first();
 var radioCashIn = $$("md-radio-group[formcontrolname='adjustment'] md-radio-button").last();
 
@@ -132,8 +132,8 @@ module.exports = {
         chequesReceivableAccountInput.click().clear().sendKeys(text);
     },
     verifyChequesReceivableAccountInputFieldHasError: function(text) {
-        expect(chequesReceivableAccountInput.getAttribute("class")).toMatch("ng-invalid");
-        expect(chequesReceivableAccountInput.element(by.xpath("..")).element(by.xpath("..")).element(by.xpath("..")).$("md-error").getText()).toEqual(text);
+        browser.wait(EC.presenceOf($("md-hint")), 2500);
+        expect(chequesReceivableAccountInput.element(by.xpath("..")).element(by.xpath("..")).element(by.xpath("..")).$("md-hint").getText()).toEqual(text);
     },
     verifyRadioNoneSelected: function(){
         expect(radioNone.getAttribute('class')).toMatch("mat-radio-checked");
@@ -301,4 +301,11 @@ module.exports = {
         browser.wait(EC.visibilityOf($("table tbody")), 3000);
         expect($$("table tbody tr").get(row - 1).$$(".td-data-table-cell").get(2).getText()).toEqual(amount);
     },
+    clickButtonCancel: function(){
+        $$(".mat-button span").filter(function(elem, index){
+            return elem.getText().then(function(text){
+                return text == "Cancel";
+            })
+        }).click();
+    }
 }

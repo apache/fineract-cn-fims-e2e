@@ -227,6 +227,7 @@ module.exports = {
         $$(".mat-raised-button").get(0).click();
     },
     clickEnabledCreateProductButton: function(){
+        browser.sleep(1000);
         browser.executeScript("arguments[0].scrollIntoView();", primaryButton.first().getWebElement());
         browser.wait(EC.elementToBeClickable(primaryButton.first()), 3000);
         primaryButton.filter(function(elem, index) {

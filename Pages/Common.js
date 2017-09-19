@@ -50,6 +50,14 @@ module.exports = {
         browser.wait(EC.textToBePresentInElement(popup, message), 5000);
         browser.wait(EC.invisibilityOf(popup),5000);
     },
+    verifyErrorMessageDisplayedWithTitleAndText: function(title, message){
+        browser.wait(EC.visibilityOf($("td-alert-dialog")), 2000);
+        expect($("td-dialog-title").getText()).toEqual(title);
+        expect($("td-dialog-content").getText()).toEqual(message);
+    },
+    clickButtonOKInErrorMessage: function(){
+        $("td-dialog-actions button").click();
+    },
     clickLinkShowForRowWithId2: function(identifier) {
         numberPages = 1;
         i = 1;

@@ -13,7 +13,7 @@ var radioButtonAsset = $$("md-radio-button").get(0);
 var radioButtonRevenue = $$("md-radio-button").get(4);
 
 //journal entries
-var accountSearchInputField = $("input[formcontrolname='account']");
+var accountSearchInputField = $("fims-text-input[controlname='account'] input");
 
 module.exports = {
     goToAccountingViaSidePanel: function() {

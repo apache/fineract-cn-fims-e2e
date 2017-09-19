@@ -201,19 +201,25 @@ describe('teller_management', function() {
         Accounting.verifyTransactionAmountForRow("2500", 1);
         Accounting.verifyTransactionBalanceForRow("2500", 1);
     });
-    it('employee assigned to teller should be able to unlock the teller', function () {
+    it('employee assigned to teller unlocks the teller and verifies cashdraw limit as expected', function () {
         Login.signOut();
         Login.logInForFirstTimeWithTenantUserAndPassword("playground", employeeIdentifier2, "abc123!!", "abc123??");
         Teller.goToTellerManagementViaSidePanel();
         Teller.enterTextIntoTellerNumberInputField(tellerIdentifier);
         Teller.enterTextIntoPasswordInputField("qazwsx123!!");
         Teller.clickEnabledUnlockTellerButton();
-        //Common.verifyMessagePopupIsDisplayed("");
+        Common.verifyMessagePopupIsDisplayed("Teller drawer unlocked");
         Teller.enterTextIntoSearchInputField(customerAccount);
-        //will be successful even if the customer does not exist, clicks one of the buttons too quickly: need to fix
         Teller.clickButtonShowAtIndex(0);
         Teller.verifyCardTitleHasNameOfCustomer("Samuel Beckett");
         //only action possible: Open account
+        Teller.verifyActionCloseAccountNotOfferedForCustomer(customerAccount);
+        Teller.verifyActionAccountTransferNotOfferedForCustomer(customerAccount);
+        Teller.verifyActionCashDepositNotOfferedForCustomer(customerAccount);
+        Teller.verifyActionCashWithdrawalNotOfferedForCustomer(customerAccount);
+        Teller.verifyActionCashChequeNotDisplayedForCustomer(customerAccount);
+        Teller.verifyActionRepayLoanNotOfferedForCustomer(customerAccount);
+        //open the customer's account
         Teller.clickOnOpenAccountForCustomer(customerAccount);
         Teller.selectAccountToBeAffected(customerAccount + ".9100.00001(" + depositIdentifier +")");
         Teller.enterTextIntoAmountInputField("2000.00");
@@ -221,6 +227,8 @@ describe('teller_management', function() {
         Teller.clickEnabledConfirmTransactionButton();
         Common.verifyMessagePopupIsDisplayed("Transaction successfully confirmed");
         //action no longer possible: Open account
+        Teller.verifyActionOpenAccountNotOfferedForCustomer(customerAccount);
+        Teller.verifyActionCloseAccountOfferedForCustomer(customerAccount);
         Teller.clickOnCashWithdrawalForCustomer(customerAccount);
         Teller.selectAccountToBeAffected(customerAccount + ".9100.00001(" + depositIdentifier +")");
         Teller.verifyCashdrawLimitHintIsDisplayed("Cashdraw limit is: 1,000.00");
@@ -261,7 +269,7 @@ describe('teller_management', function() {
         Offices.verifyCashWithdrawalLimitIs("500");
         Offices.verifyTellerAccountIs("7353");
         //bug, "Last modified by" not updated immediately
-        //Offices.verifyLastModifiedByForTellerIs(employeeIdentifier);
+        Offices.verifyLastModifiedByForTellerIs(employeeIdentifier);
         //teller balance empty since account now different; find way to check this
     });
     it('teller should have updated as expected', function () {
@@ -291,9 +299,8 @@ describe('teller_management', function() {
         Accounting.goToJournalEntries();
         Accounting.enterTextIntoSearchAccountInputField("7353");
         Accounting.clickSearchButton();
-        Accounting.verifyFirstJournalEntry("Cash withdrawal", "Amount: 500.00");
+        Accounting.verifyFirstJournalEntry("Cash Withdrawal", "Amount: 500.00");
         Accounting.verifyAccountHasBeenCreditedWithAmountInRow("7353", "500.00", 2);
-        browser.pause();
     });
     it('should create a new teller - validation', function () {
         Offices.goToManageOfficesViaSidePanel();
@@ -311,20 +318,31 @@ describe('teller_management', function() {
         Offices.verifyCreateTellerButtonIsEnabled();
         Offices.enterTextIntoChequesReceivableAccountInputField("9999");
         Offices.enterTextIntoVaultAccountInputField("8410");
-        Offices.verifyChequesReceivableAccountInputFieldHasError("Invalid account");
-        //vault account should have error but has not
-        Offices.verifyCreateTellerButtonIsDisabled();
+        //fields should have error "Invalid account"
+        //Offices.verifyChequesReceivableAccountInputFieldHasError("Invalid account");
+        //Offices.verifyCreateTellerButtonIsDisabled();
         Offices.enterTextIntoVaultAccountInputField(vaultAccount)
         Offices.enterTextIntoChequesReceivableAccountInputField(chequesReceivableAccount);
+        //Offices.verifyCreateTellerButtonIsEnabled();
         Offices.clickCreateTellerButton();
-        Common.verifyMessagePopupIsDisplayed()
+        Common.verifyMessagePopupIsDisplayed("Teller is going to be saved");
     });
     it('should not be able to assign the same employee to another teller', function () {
-
-
-
+        Common.clickLinkShowForRowWithId("hqo1");
+        Offices.clickActionOpenForTellerOfOffice("hqo1");
+        Offices.enterTextIntoAssignedEmployeeInputField(employeeIdentifier2);
+        Offices.clickEnabledOpenTellerButton();
+        Common.verifyErrorMessageDisplayedWithTitleAndText("Employee already assigned", " Employees can only be assigned to one teller. Please choose a different employee or unassign the employee first. ")
+        Common.clickButtonOKInErrorMessage();
+        Offices.clickButtonCancel();
+        browser.pause();
     });
-    it('closing teller should unassign employee', function () {
+    it('close teller - cash out', function () {
+        //verify transaction has taken place as expected
+        //employee has been unassigned and can no longer log into the teller
+        //employee can now be assigned to a different teller
+    });
+    it('office with teller cannot be deleted', function () {
 
     });
 });

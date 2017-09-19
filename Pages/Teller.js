@@ -57,12 +57,28 @@ module.exports = {
         a.click();
         browser.wait(EC.visibilityOf($("fims-teller-transaction-form")), 2000);
     },
+    verifyActionOpenAccountNotOfferedForCustomer: function(customerAccount){
+        link = "/teller/customers/detail/" + customerAccount + "/transaction/deposit?transactionType=ACCO";
+        a = $('a[href= "' + link +'"]');
+        browser.wait(EC.invisibilityOf(a), 5000);
+        expect(a.isPresent()).toBe(false);
+    },
     clickOnCloseAccountForCustomer: function(customerAccount){
         link = "/teller/customers/detail/" + customerAccount + "/transaction/deposit?transactionType=ACCC";
         a = $('a[href= "' + link +'"]');
         browser.wait(EC.elementToBeClickable(a), 3000);
         a.click();
         browser.wait(EC.visibilityOf($("fims-teller-transaction-form")), 2000);
+    },
+    verifyActionCloseAccountNotOfferedForCustomer: function(customerAccount){
+        link = "/teller/customers/detail/" + customerAccount + "/transaction/deposit?transactionType=ACCC";
+        a = $('a[href= "' + link +'"]');
+        expect(a.isPresent()).toBe(false);
+    },
+    verifyActionCloseAccountOfferedForCustomer: function(customerAccount){
+        link = "/teller/customers/detail/" + customerAccount + "/transaction/deposit?transactionType=ACCC";
+        a = $('a[href= "' + link +'"]');
+        expect(a.isPresent()).toBe(true);
     },
     clickOnTransferAccountForCustomer: function(customerAccount){
         link = "/teller/customers/detail/" + customerAccount + "/transaction/deposit?transactionType=ACCT";
@@ -71,6 +87,11 @@ module.exports = {
         a.click();
         browser.wait(EC.visibilityOf($("fims-teller-transaction-form")), 2000);
     },
+    verifyActionAccountTransferNotOfferedForCustomer: function(customerAccount){
+        link = "/teller/customers/detail/" + customerAccount + "/transaction/deposit?transactionType=ACCT";
+        a = $('a[href= "' + link +'"]');
+        expect(a.isPresent()).toBe(false);
+    },
     clickOnCashDepositForCustomer: function(customerAccount){
         link = "/teller/customers/detail/" + customerAccount + "/transaction/deposit?transactionType=CDPT";
         a = $('a[href= "' + link +'"]');
@@ -78,12 +99,22 @@ module.exports = {
         a.click();
         browser.wait(EC.visibilityOf($("fims-teller-transaction-form")), 2000);
     },
+    verifyActionCashDepositNotOfferedForCustomer: function(customerAccount){
+        link = "/teller/customers/detail/" + customerAccount + "/transaction/deposit?transactionType=CDPT";
+        a = $('a[href= "' + link +'"]');
+        expect(a.isPresent()).toBe(false);
+    },
     clickOnCashWithdrawalForCustomer: function(customerAccount){
         link = "/teller/customers/detail/" + customerAccount + "/transaction/deposit?transactionType=CWDL";
         a = $('a[href= "' + link +'"]');
         browser.wait(EC.elementToBeClickable(a), 5000);
         a.click();
         browser.wait(EC.visibilityOf($("fims-teller-transaction-form")), 2000);
+    },
+    verifyActionCashWithdrawalNotOfferedForCustomer: function(customerAccount){
+        link = "/teller/customers/detail/" + customerAccount + "/transaction/deposit?transactionType=CWDL";
+        a = $('a[href= "' + link +'"]');
+        expect(a.isPresent()).toBe(false);
     },
     clickOnCashChequeForCustomer: function(customerAccount){
         link = "/teller/customers/detail/" + customerAccount + "/transaction/cheque?transactionType=CCHQ";
@@ -104,6 +135,11 @@ module.exports = {
         browser.wait(EC.elementToBeClickable(a), 3000);
         a.click();
         browser.wait(EC.visibilityOf($("fims-teller-transaction-form")), 2000);
+    },
+    verifyActionRepayLoanNotOfferedForCustomer: function(customerAccount){
+        link = "/teller/customers/detail/" + customerAccount + "/transaction/deposit?transactionType=PPAY";
+        a = $('a[href= "' + link +'"]');
+        expect(a.isPresent()).toBe(false);
     },
     selectAccountToBeAffected: function(accountIdentifier){
         browser.sleep(2000);
