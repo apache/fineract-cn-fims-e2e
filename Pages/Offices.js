@@ -24,6 +24,8 @@ var assignedEmployeeInput = $("fims-employee-auto-complete[formcontrolname='assi
 var amountInput = $("fims-text-input[controlname='amount'] input");
 var radioNone = $$("md-radio-group[formcontrolname='adjustment'] md-radio-button").first();
 var radioCashIn = $$("md-radio-group[formcontrolname='adjustment'] md-radio-button").last();
+var radioCashOut = $$("md-radio-group[formcontrolname='adjustment'] md-radio-button").last();
+
 
 //general elements
 var primaryButton = $$(".mat-raised-button.mat-primary");
@@ -141,6 +143,10 @@ module.exports = {
     selectRadioCashIn: function(){
         radioCashIn.click();
     },
+    selectRadioCashOut: function(){
+        browser.wait(EC.elementToBeClickable(radioCashOut), 2500);
+        radioCashOut.click();
+    },
     verifyAmountInputDisabledIfNoneSelected: function(){
         expect(amountInput.isEnabled()).toBe(false);
     },
@@ -159,6 +165,7 @@ module.exports = {
     },
     clickCreateTellerButton: function(){
         browser.executeScript("arguments[0].scrollIntoView();", primaryButton.get(0).getWebElement());
+        browser.sleep(1000);
         primaryButton.filter(function(elem, index) {
             return elem.$("span").getText().then(function(text) {
                 return text === "CREATE TELLER";
@@ -175,6 +182,7 @@ module.exports = {
     },
     verifyCreateTellerButtonIsEnabled: function(){
         browser.executeScript("arguments[0].scrollIntoView();", primaryButton.get(0).getWebElement());
+        browser.sleep(1000);
         expect(primaryButton.filter(function(elem, index) {
             return elem.$("span").getText().then(function(text) {
                 return text === "CREATE TELLER";
@@ -194,6 +202,11 @@ module.exports = {
         browser.wait(EC.elementToBeClickable($('a[href="' + link + '"]')), 5000);
         $('a[href="' + link + '"]').click();
     },
+    clickActionCloseForTellerOfOffice: function(teller, office){
+        link = '/offices/detail/' + office + '/tellers/detail/' + teller + '/command?action=CLOSE';
+        browser.wait(EC.elementToBeClickable($('a[href="' + link + '"]')), 5000);
+        $('a[href="' + link + '"]').click();
+    },
     clickButtonEditForTellerInOffice: function(teller, office){
         link = '/offices/detail/' + office + '/tellers/detail/' + teller + '/edit';
         browser.wait(EC.elementToBeClickable($('a[href="' + link + '"]')), 5000);
@@ -201,6 +214,13 @@ module.exports = {
     },
     clickEnabledOpenTellerButton: function(){
         browser.wait(EC.visibilityOf($(".mat-raised-button.mat-primary")), 5000);
+        browser.sleep(1000);
+        //expect($(".mat-raised-button.mat-primary").isEnabled()).toBeTruthy();
+        $(".mat-raised-button.mat-primary").click();
+    },
+    clickCloseTellerButton: function(){
+        browser.wait(EC.visibilityOf($(".mat-raised-button.mat-primary")), 5000);
+        browser.sleep(1000);
         //expect($(".mat-raised-button.mat-primary").isEnabled()).toBeTruthy();
         $(".mat-raised-button.mat-primary").click();
     },

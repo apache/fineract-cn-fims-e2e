@@ -50,6 +50,7 @@ module.exports = {
         issuerInput.click().clear().sendKeys(text);
     },
     clickButtonDetermineFromMICR: function(){
+        browser.executeScript("arguments[0].scrollIntoView();", primaryButtons.get(0).getWebElement());
         primaryButtons.filter(function(elem, index) {
             return elem.$("span").getText().then(function(text) {
                 return text === "DETERMINE FROM MICR";

@@ -21,6 +21,7 @@ describe('teller_management', function() {
     officeIdentifier = helper.getRandomString(6);
     officeIdentifier2 = helper.getRandomString(12);
     tellerIdentifier = helper.getRandomString(4);
+    tellerIdentifier2 = helper.getRandomString(4);
     customerAccount = helper.getRandomString(5);
     customerAccount2 = helper.getRandomString(5);
     depositIdentifier = helper.getRandomString(5);
@@ -306,7 +307,7 @@ describe('teller_management', function() {
         Offices.goToManageOfficesViaSidePanel();
         Offices.goToManageTellersForOfficeByIdentifier("hqo1");
         Offices.clickCreateTellerForOfficeByIdentifier("hqo1");
-        Offices.enterTextIntoTellerNumberInputField("teller_hqo1");
+        Offices.enterTextIntoTellerNumberInputField(tellerIdentifier2);
         Offices.enterTextIntoPasswordInputField("hqo1_abc");
         Offices.enterTextIntoCashWithdrawalLimitInputField("0");
         Offices.enterTextIntoTellerAccountInputFieldAndSelectMatchingEntry(tellerAccount);
@@ -322,22 +323,38 @@ describe('teller_management', function() {
         //Offices.verifyChequesReceivableAccountInputFieldHasError("Invalid account");
         //Offices.verifyCreateTellerButtonIsDisabled();
         Offices.enterTextIntoVaultAccountInputField(vaultAccount)
-        Offices.enterTextIntoChequesReceivableAccountInputField(chequesReceivableAccount);
-        //Offices.verifyCreateTellerButtonIsEnabled();
+        Offices.enterTextIntoChequesReceivableAccountInputFieldAndSelectMatchingEntry(chequesReceivableAccount);
+        Offices.verifyCreateTellerButtonIsEnabled();
         Offices.clickCreateTellerButton();
         Common.verifyMessagePopupIsDisplayed("Teller is going to be saved");
     });
     it('should not be able to assign the same employee to another teller', function () {
-        Common.clickLinkShowForRowWithId("hqo1");
-        Offices.clickActionOpenForTellerOfOffice("hqo1");
+        //workaround for teller not showing up immediately
+        Common.clickBackButtonInTitleBar();
+        Offices.goToManageTellersForOfficeByIdentifier("hqo1");
+        Common.clickLinkShowForRowWithId(tellerIdentifier2);
+        Offices.clickActionOpenForTellerOfOffice(tellerIdentifier2, "hqo1");
         Offices.enterTextIntoAssignedEmployeeInputField(employeeIdentifier2);
         Offices.clickEnabledOpenTellerButton();
         Common.verifyErrorMessageDisplayedWithTitleAndText("Employee already assigned", " Employees can only be assigned to one teller. Please choose a different employee or unassign the employee first. ")
         Common.clickButtonOKInErrorMessage();
         Offices.clickButtonCancel();
-        browser.pause();
+        Offices.verifyTellerStatusIs("CLOSED");
     });
     it('close teller - cash out', function () {
+        Common.clickBackButtonInTitleBar();
+        Common.clickBackButtonInTitleBar();
+        Common.clickLinkShowForRowWithId(officeIdentifier);
+        Offices.goToManageTellersForOfficeByIdentifier(officeIdentifier);
+        Common.clickLinkShowForRowWithId(tellerIdentifier);
+        Offices.clickActionCloseForTellerOfOffice(tellerIdentifier, officeIdentifier);
+        Offices.selectRadioCashOut();
+        Offices.enterTextIntoAmountInputField("50");
+        Offices.clickCloseTellerButton();
+        Common.verifyMessagePopupIsDisplayed("Teller is going to be updated");
+        Offices.verifyTellerStatusIs("CLOSED");
+        Offices.verifyAssignedEmployeeForTellerIs("");
+        browser.pause();
         //verify transaction has taken place as expected
         //employee has been unassigned and can no longer log into the teller
         //employee can now be assigned to a different teller
