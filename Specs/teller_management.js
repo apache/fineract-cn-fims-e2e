@@ -336,14 +336,13 @@ describe('teller_management', function() {
         Offices.clickActionOpenForTellerOfOffice(tellerIdentifier2, "hqo1");
         Offices.enterTextIntoAssignedEmployeeInputField(employeeIdentifier2);
         Offices.clickEnabledOpenTellerButton();
-        Common.verifyErrorMessageDisplayedWithTitleAndText("Employee already assigned", " Employees can only be assigned to one teller. Please choose a different employee or unassign the employee first. ")
+        Common.verifyErrorMessageDisplayedWithTitleAndText("Employee already assigned", "Employees can only be assigned to one teller. Please choose a different employee or unassign the employee first.")
         Common.clickButtonOKInErrorMessage();
         Offices.clickButtonCancel();
         Offices.verifyTellerStatusIs("CLOSED");
     });
     it('close teller - cash out', function () {
-        Common.clickBackButtonInTitleBar();
-        Common.clickBackButtonInTitleBar();
+        Offices.goToManageOfficesViaSidePanel();
         Common.clickLinkShowForRowWithId(officeIdentifier);
         Offices.goToManageTellersForOfficeByIdentifier(officeIdentifier);
         Common.clickLinkShowForRowWithId(tellerIdentifier);
@@ -354,10 +353,36 @@ describe('teller_management', function() {
         Common.verifyMessagePopupIsDisplayed("Teller is going to be updated");
         Offices.verifyTellerStatusIs("CLOSED");
         Offices.verifyAssignedEmployeeForTellerIs("");
-        browser.pause();
         //verify transaction has taken place as expected
+        Accounting.goToAccountingViaSidePanel();
+        Accounting.goToJournalEntries();
+        Accounting.enterTextIntoSearchAccountInputField(vaultAccount);
+        Accounting.clickSearchButton();
+        Accounting.verifySecondJournalEntry("Credit Adjustments", "Amount: 50.00");
+        Accounting.verifyClerkForJournalEntryIs(employeeIdentifier);
+        Accounting.verifyMessageForJournalEntryIs("Teller adjustment.");
+        Accounting.verifyAccountHasBeenDebitedWithAmountInRow(vaultAccount, "50.00", 1);
+        Accounting.verifyAccountHasBeenCreditedWithAmountInRow(tellerAccount, "50.00", 2);
         //employee has been unassigned and can no longer log into the teller
+        Login.signOut();
+        Login.logInWithTenantUserAndPassword("playground", employeeIdentifier2, "abc123??");
+        Teller.goToTellerManagementViaSidePanel();
+        Teller.enterTextIntoTellerNumberInputField(tellerIdentifier);
+        Teller.enterTextIntoPasswordInputField("123abc!!");
+        Teller.clickEnabledUnlockTellerButton();
+        Login.verifyMessageForUnsuccessfulLoginIsDisplayed();
+        Login.signOut();
         //employee can now be assigned to a different teller
+        Login.logInWithTenantUserAndPassword("playground", employeeIdentifier, "abc123??");
+        Offices.goToManageOfficesViaSidePanel();
+        Offices.goToManageTellersForOfficeByIdentifier("hqo1");
+        Common.clickLinkShowForRowWithId(tellerIdentifier2);
+        Offices.clickActionOpenForTellerOfOffice(tellerIdentifier2, "hqo1");
+        Offices.enterTextIntoAssignedEmployeeInputField(employeeIdentifier2);
+        Offices.clickEnabledOpenTellerButton();
+        Common.verifyMessagePopupIsDisplayed("Teller is going to be updated");
+        Offices.verifyTellerStatusIs("OPEN");
+        Offices.verifyAssignedEmployeeForTellerIs(employeeIdentifier2);
     });
     it('office with teller cannot be deleted', function () {
 
