@@ -36,6 +36,9 @@ var typeInput = $("input[formcontrolname='type']");
 var expirationDateInput = $("input[formcontrolname='expirationDate']");
 var issuerInput = $("input[formcontrolname='issuer']");
 
+//payroll
+
+
 //general elements
 var linkCustomers = $$("a[href='/customers']");
 var primaryButton =  $$(".mat-raised-button.mat-primary");

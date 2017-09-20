@@ -6,7 +6,7 @@ exports.config = {
 
   framework: 'jasmine',
   specs: [
-      'Specs/teller_management.js'
+      'Specs/gate1.js'
   ],
     directConnect: true,
     allScriptsTimeout: 45000,
