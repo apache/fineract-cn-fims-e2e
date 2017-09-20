@@ -113,65 +113,6 @@ module.exports = {
             });
         }).first().isEnabled()).toBe(true);
     },
-
-
-    verifyStateForChequeWithIdentifier: function(state, identifier) {
-        browser.wait(EC.visibilityOf($("table tbody")), 3000);
-        browser.wait(EC.textToBePresentInElement($$("tbody tr .td-data-table-cell").last(), "CANCEL"), 3000);
-        expect($$('tbody tr').filter(function(elem, index) {
-            return elem.$$(".td-data-table-cell").first().getText().then(function(text) {
-                return text === identifier;
-            });
-        }).$$(".td-data-table-cell").get(6).getText().then(function(text){
-            return text === state;
-        })).toBe(true);
-    },
-    verifyDateIssuedForChequeWithIdentifier: function(date, identifier) {
-        browser.wait(EC.visibilityOf($("table tbody")), 3000);
-        browser.wait(EC.textToBePresentInElement($$("tbody tr .td-data-table-cell").last(), "CANCEL"), 3000);
-        expect($$('tbody tr').filter(function(elem, index) {
-            return elem.$$(".td-data-table-cell").first().getText().then(function(text) {
-                return text === identifier;
-            });
-        }).$$(".td-data-table-cell").get(5).getText().then(function(text){
-            return text === date;
-        })).toBe(true);
-    },
-    verifyAmountForChequeInRow: function(amount, row) {
-        browser.wait(EC.visibilityOf($("table tbody")), 3000);
-        expect($$("table tbody tr").get(row - 1).$$(".td-data-table-cell").get(4).getText()).toEqual(amount);
-    },
-    verifyPayeeForChequeInRow: function(payee, row) {
-        browser.wait(EC.visibilityOf($("table tbody")), 3000);
-        expect($$("table tbody tr").get(row - 1).$$(".td-data-table-cell").get(3).getText()).toEqual(payee);
-    },
-    verifyDrawerForChequeInRow: function(drawer, row) {
-        browser.wait(EC.visibilityOf($("table tbody")), 3000);
-        expect($$("table tbody tr").get(row - 1).$$(".td-data-table-cell").get(2).getText()).toEqual(drawer);
-    },
-    verifyDraweeForChequeInRow: function(drawee, row) {
-        browser.wait(EC.visibilityOf($("table tbody")), 3000);
-        expect($$("table tbody tr").get(row - 1).$$(".td-data-table-cell").get(1).getText()).toEqual(drawee);
-    },
-    clickButtonIssueCheques: function(){
-        $("button[title='Issue cheques']").click();
-    },
-    clickIssueChequesButton: function(){
-        browser.wait(EC.elementToBeClickable(primaryButtons.get(0)), 5000);
-        primaryButtons.filter(function(elem, index) {
-            return elem.$("span").getText().then(function(text) {
-                return text === "ISSUE CHEQUES";
-            });
-        }).click();
-    },
-    verifyErrorMessageDisplayedWithTitleAndText: function(title, message){
-        browser.wait(EC.visibilityOf($("td-alert-dialog")), 2000);
-        expect($("td-dialog-title").getText()).toEqual(title);
-        expect($("td-dialog-content").getText()).toEqual(message);
-    },
-    clickButtonOKInErrorMessage: function(){
-        $("td-dialog-actions button").click();
-    },
     clickButtonAddPayment: function(){
         buttons.filter(function(elem, index) {
             return elem.$("span").getText().then(function(text) {
