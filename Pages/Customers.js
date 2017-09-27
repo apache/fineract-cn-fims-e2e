@@ -36,6 +36,16 @@ var typeInput = $("input[formcontrolname='type']");
 var expirationDateInput = $("input[formcontrolname='expirationDate']");
 var issuerInput = $("input[formcontrolname='issuer']");
 
+//tasks
+var identifierInput = $("fims-id-input[controlname='identifier'] input");
+var nameInput = $("fims-text-input[controlname='name'] input");
+var descriptionInput = $("textarea[formcontrolname='identifier']");
+var radioButtonFourEyes = $$("md-radio-group[formcontrolname='type'] md-radio-button").get(1);
+var radioButtonCustom = $$("md-radio-group[formcontrolname='type'] md-radio-button").get(2);
+var radioButtonIdentificationCard = $$("md-radio-group[formcontrolname='type'] md-radio-button").get(0);
+var checkboxMandatory = $("md-checkbox[formcontrolname='mandatory']");
+var checkboxAutoAssign = $("md-checkbox[formcontrolname='predefined']");
+
 //payroll
 
 
@@ -283,23 +293,6 @@ module.exports = {
             });
         }).click();
     },
-    clickLinkTasks: function (customer, productIdentifier, accountIdentifier) {
-        link = "/customers/detail/" + customer + "/loans/products/" + productIdentifier + "/detail/" + accountIdentifier + "/tasks";
-        browser.wait(EC.elementToBeClickable($('a[href="' + link + '"]')), 5000);
-        $('a[href="' + link + '"]').click();
-    },
-    selectExecuteTaskCheckbox: function(){
-        browser.wait(EC.visibilityOf($("md-checkbox[title='Execute task']")), 3000);
-        $("md-checkbox[title='Execute task']").click();
-        expect($("md-checkbox[title='Execute task']").getAttribute("class")).toMatch("mat-checkbox-checked");
-    },
-    clickButtonForTask: function (action) {
-        $$('.mat-raised-button.mat-accent').filter(function (elem, index) {
-            return elem.$("span").getText().then(function (text) {
-                return text === action;
-            });
-        }).click();
-    },
     verifyTransactionCharge: function(chargeName, chargeAmount){
         browser.sleep(1000);
         browser.wait(EC.visibilityOf($("fims-case-command-confirmation-form table tbody")), 3000);
@@ -323,4 +316,34 @@ module.exports = {
         status = $("fims-state-display .mat-list-text .mat-line").getText();
         expect(status).toEqual(expectedStatus);
     },
+
+    //customer tasks
+    goToTasks: function(){
+        link = "/customers/tasks";
+        browser.wait(EC.elementToBeClickable($('a[href="' + link + '"]')), 5000);
+        $('a[href="' + link + '"]').click();
+    },
+    clickButtonCreateNewTask: function(){
+        link = "/customers/tasks/create";
+        browser.wait(EC.elementToBeClickable($('a[href="' + link + '"]')), 5000);
+        $('a[href="' + link + '"]').click();
+    },
+    clickLinkTasks: function (customer, productIdentifier, accountIdentifier) {
+        link = "/customers/detail/" + customer + "/loans/products/" + productIdentifier + "/detail/" + accountIdentifier + "/tasks";
+        browser.wait(EC.elementToBeClickable($('a[href="' + link + '"]')), 5000);
+        $('a[href="' + link + '"]').click();
+    },
+    selectExecuteTaskCheckbox: function(){
+        browser.wait(EC.visibilityOf($("md-checkbox[title='Execute task']")), 3000);
+        $("md-checkbox[title='Execute task']").click();
+        expect($("md-checkbox[title='Execute task']").getAttribute("class")).toMatch("mat-checkbox-checked");
+    },
+    clickButtonForTask: function (action) {
+        $$('.mat-raised-button.mat-accent').filter(function (elem, index) {
+            return elem.$("span").getText().then(function (text) {
+                return text === action;
+            });
+        }).click();
+    },
+
 };

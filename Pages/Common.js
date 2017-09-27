@@ -46,7 +46,7 @@ module.exports = {
     },
     verifyMessagePopupIsDisplayed: function(message){
         popup = $("simple-snack-bar");
-        browser.wait(EC.visibilityOf(popup), 2000);
+        browser.wait(EC.visibilityOf(popup), 3000);
         browser.wait(EC.textToBePresentInElement(popup, message), 5000);
         browser.wait(EC.invisibilityOf(popup),5000);
     },

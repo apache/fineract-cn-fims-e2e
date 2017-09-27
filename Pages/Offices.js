@@ -308,6 +308,7 @@ module.exports = {
         link = "/offices/detail/" + officeIdentifier + "/tellers/detail/" + tellerIdentifier + "/balance";
         browser.wait(EC.visibilityOf($("a[href='"+link+"']")), 2000);
         $("a[href='"+link+"']").click();
+        browser.wait(EC.textToBePresentInElement($$("fims-layout-card-over .mat-toolbar-row span").get(1), "Teller balance"), 2000);
     },
     verifyTellerTransactionMessageForRow: function(message, row) {
         browser.wait(EC.visibilityOf($("table tbody")), 3000);
@@ -324,7 +325,7 @@ module.exports = {
     clickButtonCancel: function(){
         $$(".mat-button span").filter(function(elem, index){
             return elem.getText().then(function(text){
-                return text == "Cancel";
+                return text == "CANCEL";
             })
         }).click();
     }

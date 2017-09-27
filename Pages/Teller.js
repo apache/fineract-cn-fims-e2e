@@ -78,6 +78,7 @@ module.exports = {
     verifyActionCloseAccountOfferedForCustomer: function(customerAccount){
         link = "/teller/customers/detail/" + customerAccount + "/transaction/deposit?transactionType=ACCC";
         a = $('a[href= "' + link +'"]');
+        browser.wait(EC.visibilityOf(a), 3000);
         expect(a.isPresent()).toBe(true);
     },
     clickOnTransferAccountForCustomer: function(customerAccount){

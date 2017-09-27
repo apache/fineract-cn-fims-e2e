@@ -171,8 +171,7 @@ describe('teller_management', function() {
         Offices.verifyAssignedEmployeeForTellerIs(employeeIdentifier2);
         Offices.viewTellerBalanceForTellerInOffice(tellerIdentifier, officeIdentifier);
         Offices.verifyTellerTransactionMessageForRow("Teller adjustment.", 1);
-        //Is this the right column (Credit)? The teller account is debited.
-        Offices.verifyTellerCreditTransactionAmountForRow("2,500", 1);
+        Offices.verifyTellerDebitTransactionAmountForRow("2,500", 1);
     });
     it('Journey entry has been created and account entries are as expected', function () {
         Accounting.goToAccountingViaSidePanel();
@@ -227,9 +226,14 @@ describe('teller_management', function() {
         Teller.clickEnabledCreateTransactionButton();
         Teller.clickEnabledConfirmTransactionButton();
         Common.verifyMessagePopupIsDisplayed("Transaction successfully confirmed");
-        //action no longer possible: Open account
-        Teller.verifyActionOpenAccountNotOfferedForCustomer(customerAccount);
+        //workaround for actions not updating immediately
+        Teller.goToTellerManagementViaSidePanel();
+        Teller.enterTextIntoSearchInputField(customerAccount);
+        Teller.clickButtonShowAtIndex(0);
+        Teller.verifyCardTitleHasNameOfCustomer("Samuel Beckett");
+        //action no longer possible: Open account; instead closing account not possible
         Teller.verifyActionCloseAccountOfferedForCustomer(customerAccount);
+        Teller.verifyActionOpenAccountNotOfferedForCustomer(customerAccount);
         Teller.clickOnCashWithdrawalForCustomer(customerAccount);
         Teller.selectAccountToBeAffected(customerAccount + ".9100.00001(" + depositIdentifier +")");
         Teller.verifyCashdrawLimitHintIsDisplayed("Cashdraw limit is: 1,000.00");
@@ -359,6 +363,7 @@ describe('teller_management', function() {
         Accounting.enterTextIntoSearchAccountInputField(vaultAccount);
         Accounting.clickSearchButton();
         Accounting.verifySecondJournalEntry("Credit Adjustments", "Amount: 50.00");
+        Accounting.clickSecondJournalEntry();
         Accounting.verifyClerkForJournalEntryIs(employeeIdentifier);
         Accounting.verifyMessageForJournalEntryIs("Teller adjustment.");
         Accounting.verifyAccountHasBeenDebitedWithAmountInRow(vaultAccount, "50.00", 1);
@@ -385,6 +390,9 @@ describe('teller_management', function() {
         Offices.verifyAssignedEmployeeForTellerIs(employeeIdentifier2);
     });
     it('office with teller cannot be deleted', function () {
-
+        Offices.goToManageOfficesViaSidePanel();
+        Common.clickLinkShowForRowWithId(officeIdentifier);
+        //verify office cannot be deleted; delete icon is hidden
     });
+    //teller transactions
 });
