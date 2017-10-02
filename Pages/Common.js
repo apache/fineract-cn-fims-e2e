@@ -58,6 +58,13 @@ module.exports = {
     clickButtonOKInErrorMessage: function(){
         $("td-dialog-actions button").click();
     },
+    confirmAction: function(){
+        browser.wait(EC.visibilityOf($("td-dialog-actions")), 5000);
+        $("td-dialog-actions .mat-button.mat-accent").click();
+    },
+    cancelAction: function(){
+        $$("td-dialog-actions button").get(0).click();
+    },
     clickLinkShowForRowWithId2: function(identifier) {
         numberPages = 1;
         i = 1;

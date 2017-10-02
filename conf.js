@@ -6,7 +6,7 @@ exports.config = {
 
   framework: 'jasmine',
   specs: [
-      'Specs/gate1.js'
+      'Specs/custom_fields_members.js'
   ],
     directConnect: true,
     allScriptsTimeout: 45000,

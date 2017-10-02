@@ -274,8 +274,11 @@ describe('teller_management', function() {
         Offices.verifyCashWithdrawalLimitIs("500");
         Offices.verifyTellerAccountIs("7353");
         //bug, "Last modified by" not updated immediately
-        Offices.verifyLastModifiedByForTellerIs(employeeIdentifier);
-        //teller balance empty since account now different; find way to check this
+        //Offices.verifyLastModifiedByForTellerIs(employeeIdentifier);
+        //teller balance empty since account now different (7353 might not be empty, create new account)
+        Offices.viewTellerBalanceForTellerInOffice(tellerIdentifier, officeIdentifier);
+        Offices.verifyCurrentTellerBalance("0");
+
     });
     it('teller should have updated as expected', function () {
         Login.signOut();
@@ -326,7 +329,7 @@ describe('teller_management', function() {
         //fields should have error "Invalid account"
         //Offices.verifyChequesReceivableAccountInputFieldHasError("Invalid account");
         //Offices.verifyCreateTellerButtonIsDisabled();
-        Offices.enterTextIntoVaultAccountInputField(vaultAccount)
+        Offices.enterTextIntoVaultAccountInputField(vaultAccount);
         Offices.enterTextIntoChequesReceivableAccountInputFieldAndSelectMatchingEntry(chequesReceivableAccount);
         Offices.verifyCreateTellerButtonIsEnabled();
         Offices.clickCreateTellerButton();

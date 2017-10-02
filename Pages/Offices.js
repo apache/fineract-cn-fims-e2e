@@ -310,9 +310,18 @@ module.exports = {
         $("a[href='"+link+"']").click();
         browser.wait(EC.textToBePresentInElement($$("fims-layout-card-over .mat-toolbar-row span").get(1), "Teller balance"), 2000);
     },
+    verifyCurrentTellerBalance: function(balance){
+        expect($$('tbody tr').filter(function (elem, index) {
+            return elem.$(".td-data-table-cell").getText().then(function (text) {
+                return text === "Current balance";
+            });
+        }).$$(".td-data-table-cell").get(2).getText().then(function (text){
+            return text === balance;
+        })).toBe(true);
+    },
     verifyTellerTransactionMessageForRow: function(message, row) {
         browser.wait(EC.visibilityOf($("table tbody")), 3000);
-        expect($$("table tbody tr").get(row - 1).$$(".td-data-table-cell").get(1).getText()).toEqual(message);
+        browser.wait(EC.textToBePresentInElement($$("table tbody tr").get(row - 1).$$(".td-data-table-cell").get(1), message));
     },
     verifyTellerCreditTransactionAmountForRow: function(amount, row) {
         browser.wait(EC.visibilityOf($("table tbody")), 3000);

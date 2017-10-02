@@ -181,7 +181,7 @@ module.exports = {
     },
     clickSecondJournalEntry: function(){
         $$("fims-layout-card-over md-nav-list a").get(1).click();
-        browser.pause();
+        browser.sleep(500);
     },
     verifyThirdJournalEntry: function(transactionType, transactionAmount){
         expect($$("fims-layout-card-over .mat-list-item .mat-list-text p").get(4).getText().then(function(text){
