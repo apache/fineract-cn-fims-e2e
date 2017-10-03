@@ -81,6 +81,7 @@ module.exports = {
         cityInput.click().sendKeys(text);
     },
     enterTextIntoEmailInputField: function (text) {
+        browser.wait(EC.elementToBeClickable(emailInput), 5000);
         emailInput.click().sendKeys(text);
     },
     enterTextIntoPhoneInputField: function (text) {
@@ -344,6 +345,24 @@ module.exports = {
                 return text === action;
             });
         }).click();
+    },
+    goToStepCustomFields: function(){
+        browser.wait(EC.elementToBeClickable($$(".td-step-label").get(5)), 3000);
+        $$(".td-step-label").get(5).click();
+    },
+    verifyButtonCreateMemberDisabled: function(){
+        expect(primaryButton.filter(function(elem, index) {
+            return elem.$("span").getText().then(function(text) {
+                return text === "CREATE MEMBER";
+            });
+        }).first().isEnabled()).toBe(false);
+    },
+    verifyButtonCreateMemberEnabled: function(){
+        expect(primaryButton.filter(function(elem, index) {
+            return elem.$("span").getText().then(function(text) {
+                return text === "CREATE MEMBER";
+            });
+        }).first().isEnabled()).toBe(true);
     },
 
 };

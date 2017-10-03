@@ -8,9 +8,9 @@ var EC = protractor.ExpectedConditions;
 var nameInput = $("fims-text-input[controlname='name'] input");
 var descriptionInput = $("textarea[formcontrolname='description']");
 var identifierInput = $$("fims-id-input[controlname='identifier'] input");
-var labelInput = $$("fims-text-input[controlname='label'] input");
+var labelInput = $$("fims-custom-field-form fims-text-input[controlname='label'] input");
 var hintInput = $$("fims-text-input[controlname='hint'] input");
-var checkboxMandatory = $("md-checkbox[formcontrolname='mandatory']");
+var checkboxMandatory = $$("md-checkbox[formcontrolname='mandatory']");
 var descriptionInputField = $$("textarea[formcontrolname='description']");
 var radioButtonGroupDataType = $$("md-radio-group[formcontrolname='dataType']");
 
@@ -55,7 +55,7 @@ module.exports = {
         browser.wait(EC.elementToBeClickable(identifierInput.get(fieldNumber-1)), 5000);
         identifierInput.get(fieldNumber-1).click().clear().sendKeys(text);
     },
-    enterTextIntoLabelInputFieldForField: function(text, fieldNumber) {
+    enterTextIntoLabelInputField: function(text, fieldNumber) {
         browser.wait(EC.elementToBeClickable(labelInput.get(fieldNumber-1)), 5000);
         labelInput.get(fieldNumber-1).click().clear().sendKeys(text);
     },
@@ -101,12 +101,12 @@ module.exports = {
         browser.wait(EC.elementToBeClickable(maxValueInput.get(fieldNumber-1)), 5000);
         maxValueInput.get(fieldNumber-1).click().clear().sendKeys(number);
     },
-    clickButtonAddOption: function(){
+    clickButtonAddOption: function(optionNumber){
         buttons.filter(function(elem, index) {
             return elem.$("span").getText().then(function(text) {
                 return text === "Add option";
             });
-        }).click();
+        }).get(optionNumber-1).click();
     },
     enterTextIntoLabelInputFieldForOption: function(text, option){
         $$("div[formarrayname='options'] fims-text-input[controlname='label'] input").get(option-1).click().clear().sendKeys(text);
@@ -131,6 +131,20 @@ module.exports = {
             });
         }).click();
     },
+    verifyButtonCreateCustomFieldsDisabled: function(){
+        expect(primaryButtons.filter(function(elem, index) {
+            return elem.$("span").getText().then(function(text) {
+                return text === "CREATE CUSTOM FIELDS";
+            });
+        }).first().isEnabled()).toBe(false);
+    },
+    verifyButtonCreateCustomFieldsEnabled: function(){
+        expect(primaryButtons.filter(function(elem, index) {
+            return elem.$("span").getText().then(function(text) {
+                return text === "CREATE CUSTOM FIELDS";
+            });
+        }).first().isEnabled()).toBe(true);
+    },
     clickUpdateCustomFieldsButton: function () {
         browser.sleep(500);
         browser.executeScript("arguments[0].scrollIntoView();", primaryButtons.first().getWebElement());
@@ -153,7 +167,149 @@ module.exports = {
     clickDeleteCatalogButton: function(){
         $("button[title='Delete this catalog']").click();
     },
-    checkCheckboxMandatory: function(){
-        checkboxMandatory.click();
-    }
+    checkCheckboxMandatoryForField: function(fieldNumber){
+        checkboxMandatory.get(fieldNumber-1).click();
+    },
+    verifyNameForCatalogIs: function(name) {
+        expect($$("fims-layout-card-over .mat-list-text").filter(function (elem, index) {
+            return elem.$("h3").getText().then(function (text) {
+                return text === "Name";
+            });
+        }).first().$("p").getText().then(function (text) {
+            return text === name;
+        })).toBe(true);
+    },
+    verifyDescriptionForCatalogIs: function(desc) {
+        expect($$("fims-layout-card-over .mat-list-text").filter(function (elem, index) {
+            return elem.$("h3").getText().then(function (text) {
+                return text === "Description";
+            });
+        }).first().$("p").getText().then(function (text) {
+            return text === desc;
+        })).toBe(true);
+    },
+    verifyCreatedByForCatalogIs: function(createdBy){
+        expect($$("fims-layout-card-over .mat-list-text").filter(function (elem, index) {
+            return elem.$("h3").getText().then(function (text) {
+                return text === "Created by";
+            });
+        }).first().$("p").getText().then(function (text) {
+            return text.indexOf(createdBy) >= 0;
+        })).toBe(true);
+    },
+    verifyLastModifiedByForCatalogIs: function(lastModifiedBy){
+        expect($$("fims-layout-card-over .mat-list-text").filter(function (elem, index) {
+            return elem.$("h3").getText().then(function (text) {
+                return text === "Last modified by";
+            });
+        }).first().$("p").getText().then(function (text) {
+            return text.indexOf(lastModifiedBy) >= 0;
+        })).toBe(true);
+    },
+    verifyDataTypeForRow: function(dataType, row) {
+        browser.wait(EC.visibilityOf($("table tbody")), 3000);
+        expect($$("table tbody tr").get(row - 1).$$(".td-data-table-cell").get(1).getText()).toEqual(dataType);
+    },
+    verifyLabelForRow: function(label, row) {
+        browser.wait(EC.visibilityOf($("table tbody")), 3000);
+        expect($$("table tbody tr").get(row - 1).$$(".td-data-table-cell").get(2).getText()).toEqual(label);
+    },
+    verifyHintForRow: function(hint, row) {
+        browser.wait(EC.visibilityOf($("table tbody")), 3000);
+        expect($$("table tbody tr").get(row - 1).$$(".td-data-table-cell").get(3).getText()).toEqual(hint);
+    },
+    verifyDescriptionForRow: function(description, row) {
+        browser.wait(EC.visibilityOf($("table tbody")), 3000);
+        expect($$("table tbody tr").get(row - 1).$$(".td-data-table-cell").get(1).getText()).toEqual(description);
+    },
+    verifyDataTypeForFieldIs: function(dataType) {
+        expect($$("fims-layout-card-over .mat-list-text").filter(function (elem, index) {
+            return elem.$("h3").getText().then(function (text) {
+                return text === "Data type";
+            });
+        }).first().$("p").getText().then(function (text) {
+            return text === dataType;
+        })).toBe(true);
+    },
+    verifyLabelForFieldIs: function(label) {
+        expect($$("fims-layout-card-over .mat-list-text").filter(function (elem, index) {
+            return elem.$("h3").getText().then(function (text) {
+                return text === "Label";
+            });
+        }).first().$("p").getText().then(function (text) {
+            return text === label;
+        })).toBe(true);
+    },
+    verifyHintForFieldIs: function(hint) {
+        expect($$("fims-layout-card-over .mat-list-text").filter(function (elem, index) {
+            return elem.$("h3").getText().then(function (text) {
+                return text === "Hint";
+            });
+        }).first().$("p").getText().then(function (text) {
+            return text === hint;
+        })).toBe(true);
+    },
+    verifyMandatoryForFieldIs: function(mandatory) {
+        expect($$("fims-layout-card-over .mat-list-text").filter(function (elem, index) {
+            return elem.$("h3").getText().then(function (text) {
+                return text === "Mandatory";
+            });
+        }).first().$("p").getText().then(function (text) {
+            return text === mandatory;
+        })).toBe(true);
+    },
+    verifyLengthForFieldIs: function(length) {
+        expect($$("fims-layout-card-over .mat-list-text").filter(function (elem, index) {
+            return elem.$("h3").getText().then(function (text) {
+                return text === "Length";
+            });
+        }).first().$("p").getText().then(function (text) {
+            return text === length;
+        })).toBe(true);
+    },
+    verifyCreatedByForFieldIs: function(createdBy){
+        expect($$("fims-layout-card-over .mat-list-text").filter(function (elem, index) {
+            return elem.$("h3").getText().then(function (text) {
+                return text === "Created by";
+            });
+        }).first().$("p").getText().then(function (text) {
+            return text.indexOf(createdBy) >= 0;
+        })).toBe(true);
+    },
+    verifyCustomFieldsTitle: function(title){
+        browser.wait(EC.visibilityOf($("fims-custom-fields-component form h4")), 2000);
+        expect($("fims-custom-fields-component form h4").getText()).toEqual(title);
+    },
+    enterTextIntoCustomFieldOfTypeText: function(text, fieldId){
+        elem = $('input[id= "' + fieldId +'"]');
+        elem.clear().click().sendKeys(text);
+    },
+    enterTextIntoCustomFieldOfTypeNumber: function(text, fieldId){
+        elem = $('input[id= "' + fieldId +'"]');
+        elem.clear().click().sendKeys(text);
+    },
+    enterTextIntoCustomDateInputField: function (date, fieldId) {
+        elem = $('input[id= "' + fieldId +'"]');
+        elem.click().sendKeys(protractor.Key.ARROW_LEFT);
+        elem.sendKeys(protractor.Key.ARROW_LEFT);
+        elem.sendKeys(date);
+    },
+    selectRadioButtonForSingleSelection: function(optionNumber, fieldId){
+        elem = $('md-radio-group[ng-reflect-name= "' + fieldId +'"]');
+        elem.$$("md-radio-button").get(optionNumber-1).click();
+    },
+    selectOptionForMultiSelection: function(option, fieldId){
+        elem = $('td-chips[ng-reflect-name= "' + fieldId +'"]');
+        elem.click();
+        browser.wait(EC.visibilityOf($(".mat-option")), 5000);
+        element(by.cssContainingText('.mat-option',option)).click();
+    },
+    verifyCustomTextFieldInputHasError: function(fieldId, errorMessage) {
+        elem = $('input[id= "' + fieldId +'"]');
+        expect(elem.element(by.xpath("..")).element(by.xpath("..")).element(by.xpath("..")).$("md-error").getText()).toEqual(errorMessage);
+    },
+    verifyCustomNumberFieldInputHasError: function(fieldId, errorMessage) {
+        elem = $('input[id= "' + fieldId +'"]');
+        expect(elem.element(by.xpath("..")).element(by.xpath("..")).element(by.xpath("..")).$("md-error").getText()).toEqual(errorMessage);
+    },
 };
