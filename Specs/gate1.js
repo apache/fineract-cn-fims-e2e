@@ -596,6 +596,5 @@ describe('Gate 1', function() {
         Accounting.verifyAccountHasBeenDebitedWithAmountInRow(tellerAccount, "408.60", 1);
         Accounting.verifyAccountHasBeenCreditedWithAmountInRow(customerAccount + ".clf.00002", "205.00", 2);
         Accounting.verifyAccountHasBeenCreditedWithAmountInRow(customerAccount + ".clp.00001", "203.60", 3);
-        browser.pause();
     });
 });
