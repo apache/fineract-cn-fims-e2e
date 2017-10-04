@@ -12,7 +12,7 @@ var issuerInput = $("fims-text-input[controlname='drawer'] input");
 var payeeInput = $("fims-text-input[controlname='payee'] input");
 var dateIssuedInput = $("fims-date-input[controlname='dateIssued'] input");
 var checkboxIsChequeOpen = $("md-checkbox[formcontrolname='openCheque']");
-var warningIssuingBankIssuerCouldNotBeDetermined = $("td-message[label='Issuing Bank/Issuer could not be determined in our system from the MICR your entered.']");
+var warningIssuingBankIssuerCouldNotBeDetermined = $("td-message[label='Issuing Bank/Issuer could not be determined in our system from the MICR you entered.']");
 var warningToCheckCustomerID = $("td-message[label='Please check identification card of member']");
 var amountInput = $("fims-text-input[controlname='amount'] input");
 var accountSelect = $("md-select[formcontrolname='productInstance'] .mat-select-trigger");
@@ -72,7 +72,7 @@ module.exports = {
         }).first().isEnabled()).toBe(true);
     },
     verifyWarningIsDisplayedIfIssuingBankCouldNotBeDetermined: function(){
-        browser.wait(EC.visibilityOf(warningIssuingBankIssuerCouldNotBeDetermined), 2000);
+        browser.wait(EC.visibilityOf(warningIssuingBankIssuerCouldNotBeDetermined), 3000);
     },
     verifyWarningIsNotDisplayedIfIssuingBankCouldBeDetermined: function(){
         browser.wait(EC.invisibilityOf(warningIssuingBankIssuerCouldNotBeDetermined), 2000);

@@ -182,6 +182,11 @@ module.exports = {
         browser.wait(EC.elementToBeClickable($('a[href="' + link + '"]')), 6000);
         $('a[href="' + link + '"]').click();
     },
+    clickEditPayrollDistributionForMember: function (customer) {
+        link = "/customers/detail/" + customer + "/payroll/edit";
+        browser.wait(EC.elementToBeClickable($('a[href="' + link + '"]')), 6000);
+        $('a[href="' + link + '"]').click();
+    },
     clickCreateDepositAccountForMember: function (customer) {
         link = "/customers/detail/" + customer + "/deposits/create";
         browser.wait(EC.visibilityOf($('a[href="' + link + '"]')));

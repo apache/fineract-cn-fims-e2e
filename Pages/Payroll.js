@@ -135,6 +135,10 @@ module.exports = {
         browser.wait(EC.elementToBeClickable(memberInput.get(paymentNumber-1)), 5000);
         memberInput.get(paymentNumber-1).click().clear().sendKeys(text);
     },
+    verifyMemberInputFieldHasError: function(errorMessage) {
+        browser.wait(EC.textToBePresentInElement($$("md-hint").get(1), "Invalid member or has no payroll created"), 2000);
+        expect(memberInput.first().element(by.xpath("..")).element(by.xpath("..")).element(by.xpath("..")).$("md-hint").getText()).toEqual(errorMessage);
+    },
     enterTextIntoEmployerInputFieldForPayment: function(text, paymentNumber) {
         browser.wait(EC.elementToBeClickable(employerInput.get(paymentNumber-1)), 5000);
         employerInput.get(paymentNumber-1).click().clear().sendKeys(text);
