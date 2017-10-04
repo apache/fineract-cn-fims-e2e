@@ -65,6 +65,10 @@ module.exports = {
     cancelAction: function(){
         $$("td-dialog-actions button").get(0).click();
     },
+    clickFirstColumnHeaderInTableToResortTable: function(){
+        browser.wait(EC.visibilityOf($("th")), 5000);
+        $$("th").first().click();
+    },
     clickLinkShowForRowWithId2: function(identifier) {
         numberPages = 1;
         i = 1;

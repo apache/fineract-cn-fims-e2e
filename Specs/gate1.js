@@ -47,6 +47,7 @@ describe('Gate 1', function() {
     customerAccount = helper.getRandomString(5);
     depositIdentifier = helper.getRandomString(4);
     depositName = helper.getRandomString(8);
+    chequeReceivablesAccount = helper.getRandomString(4);
     tellerAccount = helper.getRandomString(4);
     revenueAccount = helper.getRandomString(4);
     loanShortName = helper.getRandomString(6);
@@ -70,6 +71,16 @@ describe('Gate 1', function() {
         Login.logInForFirstTimeWithTenantUserAndPassword("playground", employeeIdentifier, "abc123!!", "abc123??");
     });
     it('should create new accounts', function () {
+        Accounting.goToAccountingViaSidePanel();
+        Common.clickLinkShowForRowWithId("7000");
+        Common.clickLinkShowForRowWithId("7200");
+        Accounting.clickCreateNewAccountInLedger("7200");
+        Accounting.enterTextIntoAccountIdentifierInputField(chequeReceivablesAccount);
+        Accounting.verifyRadioAssetToBeSelected();
+        Accounting.verifyRadioAssetToBeDisabled();
+        Accounting.enterTextIntoAccountNameInputField("Cheques Receivables");
+        Accounting.clickButtonCreateAccount();
+        Common.verifyMessagePopupIsDisplayed("Account is going to be saved");
         Accounting.goToAccountingViaSidePanel();
         Common.clickLinkShowForRowWithId("7000");
         Common.clickLinkShowForRowWithId("7300");
@@ -122,7 +133,7 @@ describe('Gate 1', function() {
         Offices.enterTextIntoCashWithdrawalLimitInputField("1000");
         Offices.enterTextIntoTellerAccountInputFieldAndSelectMatchingEntry(tellerAccount);
         Offices.enterTextIntoVaultAccountInputFieldAndSelectMatchingEntry("7351");
-        Offices.enterTextIntoChequesReceivableAccountInputFieldAndSelectMatchingEntry("7310.1");
+        Offices.enterTextIntoChequesReceivableAccountInputFieldAndSelectMatchingEntry("7290");
         Offices.clickCreateTellerButton();
         Common.verifyMessagePopupIsDisplayed("Teller is going to be saved");
         //workaround for current bug that teller is not always listed immediately
@@ -400,10 +411,8 @@ describe('Gate 1', function() {
     Loans.enterTextIntoTermInputField("12");
     Loans.clickEnabledContinueButtonForProductDetails();
     Loans.enterTextIntoCashAccountInputField(tellerAccount);
-    Loans.enterTextIntoLoanInProcessLedgerInputField("8100");
     Loans.enterTextIntoCustomerLoanLedgerInputField("7900");
-    Loans.enterTextIntoPendingDisbursalAccountInputField("7013");
-    Loans.clickEnabledContinueButtonForLedgerAndAccountSettings("7810");
+    Loans.clickEnabledContinueButtonForLedgerAndAccountSettings();
     Loans.enterTextIntoInterestMinimumInputField("3.50");
     Loans.enterTextIntoIncomeAccountAccountInputField(revenueAccount);
     Loans.enterTextIntoAccrualAccountInputField("7015");
@@ -471,8 +480,8 @@ describe('Gate 1', function() {
         Customers.selectExecuteTaskCheckbox();
         Common.verifyMessagePopupIsDisplayed("Task executed successfully");
         Customers.clickButtonForTask("OPEN");
-        //verify correct processing fee
-        Customers.verifyTransactionCharge("processing-fee", "150.00");
+        //verify correct principal amount
+
         Customers.clickButtonForTransaction("OPEN");
         Common.verifyMessagePopupIsDisplayed("Case is going to be updated");
     });
@@ -480,14 +489,18 @@ describe('Gate 1', function() {
         Customers.clickLinkTasks(customerAccount, loanShortName, loanAccountShortName);
         //checkbox already selected since one task only that already has been executed
         Customers.clickButtonForTask("APPROVE");
-        Customers.verifyTransactionCharge("loan-origination-fee", "50.00");
+
         Customers.clickButtonForTransaction("APPROVE");
         Common.verifyMessagePopupIsDisplayed("Case is going to be updated");
         Customers.verifyLoanHasStatus("APPROVED");
     });
     it('should be able to disburse loan - no task', function () {
+        //currently error if this is done too quickly
+        browser.sleep("5000");
         Customers.clickLinkTasks(customerAccount, loanShortName, loanAccountShortName);
         Customers.clickButtonForTask("DISBURSE");
+        Customers.verifyTransactionCharge("processing-fee", "150.00");
+        Customers.verifyTransactionCharge("loan-origination-fee", "50.00");
         Customers.verifyTransactionCharge("disbursement-fee", "05.00");
         Customers.clickButtonForTransaction("DISBURSE");
         Common.verifyMessagePopupIsDisplayed("Case is going to be updated");
@@ -500,45 +513,64 @@ describe('Gate 1', function() {
         Accounting.clickLinkShowForAccountWithIdentifier("1300");
         Accounting.clickLinkShowForAccountWithIdentifier("1312");
         Accounting.viewAccountEntriesForAccount("1312");
+        Common.clickFirstColumnHeaderInTableToResortTable();
         Accounting.verifyTransactionTypeForRow("CREDIT", 1);
         Accounting.verifyTransactionAmountForRow("150", 1);
-        Accounting.verifyTransactionBalanceForRow("150", 1);
+        //Accounting.verifyTransactionBalanceForRow("150", 1);
         Common.clickBackButtonInTitleBar();
         Common.clickBackButtonInTitleBar();
         Accounting.clickLinkShowForAccountWithIdentifier("1310");
         Accounting.viewAccountEntriesForAccount("1310");
+        Common.clickFirstColumnHeaderInTableToResortTable();
         Accounting.verifyTransactionTypeForRow("CREDIT", 1);
         Accounting.verifyTransactionAmountForRow("50", 1);
-        Accounting.verifyTransactionBalanceForRow("50", 1);
+        //Accounting.verifyTransactionBalanceForRow("50", 1);
         Common.clickBackButtonInTitleBar();
         Common.clickBackButtonInTitleBar();
         Accounting.clickLinkShowForAccountWithIdentifier("1313");
         Accounting.viewAccountEntriesForAccount("1313");
+        Common.clickFirstColumnHeaderInTableToResortTable();
         Accounting.verifyTransactionTypeForRow("CREDIT", 1);
         Accounting.verifyTransactionAmountForRow("5", 1);
-        Accounting.verifyTransactionBalanceForRow("5", 1);
+        //Accounting.verifyTransactionBalanceForRow("5", 1);
         Common.clickBackButtonInTitleBar();
         Common.clickBackButtonInTitleBar();
         Common.clickBackButtonInTitleBar();
         Common.clickBackButtonInTitleBar();
-        //verify principal has been transferred to customer's deposit account and the fees substracted
+        //verify principal has been transferred to customer's deposit account
         Accounting.clickLinkShowForAccountWithIdentifier("9000");
         Accounting.clickLinkShowForAccountWithIdentifier("9100");
         Accounting.clickLinkShowForAccountWithName(depositName);
         Accounting.verifyAccountInfo("Balance", "4843.5");
         Accounting.viewAccountEntriesForAccount(customerAccount + ".9100.00001");
-        Accounting.verifyTransactionTypeForRow("DEBIT",4);
-        Accounting.verifyTransactionAmountForRow("150", 4);
-        Accounting.verifyTransactionBalanceForRow("-101.5", 4);
-        Accounting.verifyTransactionTypeForRow("DEBIT",5);
-        Accounting.verifyTransactionAmountForRow("50", 5);
-        Accounting.verifyTransactionBalanceForRow("-151.5", 5);
-        Accounting.verifyTransactionTypeForRow("DEBIT",6);
-        Accounting.verifyTransactionAmountForRow("5", 6);
-        Accounting.verifyTransactionBalanceForRow("-156.5", 6);
-        Accounting.verifyTransactionTypeForRow("CREDIT",7);
-        Accounting.verifyTransactionAmountForRow("5000", 7);
-        Accounting.verifyTransactionBalanceForRow("4843.5", 7);
+        Accounting.verifyTransactionTypeForRow("CREDIT",4);
+        Accounting.verifyTransactionAmountForRow("5000", 4);
+        Accounting.verifyTransactionBalanceForRow("5048.5", 4);
+        Accounting.goToAccountingViaSidePanel();
+        Accounting.clickLinkShowForAccountWithIdentifier("7000");
+        Accounting.clickLinkShowForAccountWithIdentifier("7900");
+        Accounting.goToSubledgersForAccount("7900");
+        Accounting.clickLinkShowForAccountWithIdentifier(customerAccount + ".cll.00001");
+        Accounting.clickLinkShowForAccountWithIdentifier(customerAccount + ".clp.00001");
+        //principal
+        Accounting.viewAccountEntriesForAccount(customerAccount + ".clp.00001");
+        Accounting.verifyTransactionTypeForRow("DEBIT", 1);
+        Accounting.verifyTransactionMessageForRow(loanShortName + "." + loanAccountShortName + ".DISBURSE", 1);
+        Accounting.verifyTransactionAmountForRow("5000", 1);
+        Accounting.verifyTransactionBalanceForRow("5000", 1);
+        Common.clickBackButtonInTitleBar();
+        Common.clickBackButtonInTitleBar();
+        Accounting.clickLinkShowForAccountWithIdentifier(customerAccount + ".clf.00002");
+        //fees
+        Accounting.viewAccountEntriesForAccount(customerAccount + ".clf.00002");
+        Accounting.verifyTransactionTypeForRow("DEBIT", 1);
+        Accounting.verifyTransactionMessageForRow(loanShortName + "." + loanAccountShortName + ".DISBURSE", 1);
+        Accounting.verifyTransactionAmountForRow("205", 1);
+        Accounting.verifyTransactionBalanceForRow("205", 1);
+        Common.clickBackButtonInTitleBar();
+        Common.clickBackButtonInTitleBar();
+        Accounting.clickLinkShowForAccountWithIdentifier(customerAccount + ".cli.00003");
+        Accounting.verifyAccountInfo("Balance", "0");
     });
     it('should be able to repay loan', function () {
 

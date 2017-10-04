@@ -64,6 +64,12 @@ module.exports = {
         $('a[href="'+ link + '"]').click();
         browser.sleep(1000);
     },
+    goToSubledgersForAccount: function(accountIdentifier){
+        link = "/accounting/ledgers/detail/" + accountIdentifier + "/ledgers";
+        browser.wait(EC.visibilityOf($('a[href="'+ link + '"]')));
+        $('a[href="'+ link + '"]').click();
+        browser.sleep(1000);
+    },
     clickLinkShowForAccountWithName: function(name) {
         browser.wait(EC.invisibilityOf($("div[class='md-padding'] h3")), 5000);
         browser.sleep(1000);

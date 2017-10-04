@@ -91,14 +91,8 @@ module.exports = {
         browser.wait(EC.elementToBeClickable(cashAccountInput), 5000);
         cashAccountInput.click().sendKeys(text);
     },
-    enterTextIntoLoanInProcessLedgerInputField: function(text) {
-        loanInProcessLedgerInput.click().sendKeys(text);
-    },
     enterTextIntoCustomerLoanLedgerInputField: function(text) {
        customerLoanLedgerInput.click().sendKeys(text);
-    },
-    enterTextIntoPendingDisbursalAccountInputField: function(text) {
-        pendingDisbursalAccountInput.click().sendKeys(text);
     },
     enterTextIntoInterestMinimumInputField: function(text) {
         browser.executeScript("arguments[0].scrollIntoView();", interestMinimumInput.getWebElement());
