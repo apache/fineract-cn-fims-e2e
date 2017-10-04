@@ -10,6 +10,8 @@ var amountInput = $("fims-text-input[controlname='amount'] input");
 var primaryButton = $$(".mat-raised-button.mat-primary");
 var checkboxChargesInCash = $("md-checkbox");
 
+var loanAccountSelect = $("md-select[formcontrolname='caseInstance'] .mat-select-trigger");
+
 module.exports = {
     goToTellerManagementViaSidePanel: function() {
         browser.wait(EC.elementToBeClickable($("a[href='/teller']")), 5000);
@@ -135,7 +137,7 @@ module.exports = {
         a = $('a[href= "' + link +'"]');
         browser.wait(EC.elementToBeClickable(a), 3000);
         a.click();
-        browser.wait(EC.visibilityOf($("fims-teller-transaction-form")), 2000);
+        browser.wait(EC.visibilityOf($("fims-loan-transaction-form")), 2000);
     },
     verifyActionRepayLoanNotOfferedForCustomer: function(customerAccount){
         link = "/teller/customers/detail/" + customerAccount + "/transaction/deposit?transactionType=PPAY";
@@ -149,6 +151,14 @@ module.exports = {
         browser.wait(EC.visibilityOf($(".mat-option")), 5000);
         //browser.executeScript("arguments[0].scrollIntoView();", element(by.cssContainingText('.mat-option', accountIdentifier)).getWebElement());
         element(by.cssContainingText('.mat-option', accountIdentifier)).click();
+    },
+    selectLoanAccountToBeAffected: function(loanAccountIdentifier){
+        browser.sleep(2000);
+        browser.wait(EC.elementToBeClickable(loanAccountSelect), 3000);
+        loanAccountSelect.click();
+        browser.wait(EC.visibilityOf($(".mat-option")), 5000);
+        //browser.executeScript("arguments[0].scrollIntoView();", element(by.cssContainingText('.mat-option', accountIdentifier)).getWebElement());
+        element(by.cssContainingText('.mat-option', loanAccountIdentifier)).click();
     },
     enterTextIntoAmountInputField: function(text) {
         browser.wait(EC.elementToBeClickable(amountInput), 5000);
@@ -224,5 +234,7 @@ module.exports = {
     verifyCashdrawLimitHintIsDisplayed: function(text){
       browser.wait(EC.textToBePresentInElement($(".text-md"), text), 2000);
     },
-
+    verifyExpectedPaymentAmount: function(text) {
+        browser.wait(EC.textToBePresentInElement($("fims-loan-transaction-form p"), text), 2000)
+    },
 };
