@@ -593,7 +593,7 @@ describe('Gate 1', function() {
         Accounting.clickSearchButton();
         Accounting.clickSecondJournalEntry();
         Accounting.verifySecondJournalEntry("Principal Payment", "Amount: 408.60");
-        Accounting.verifyAccountHasBeenDebitedWithAmountInRow(tellerAccount, "480.60", 1);
+        Accounting.verifyAccountHasBeenDebitedWithAmountInRow(tellerAccount, "408.60", 1);
         Accounting.verifyAccountHasBeenCreditedWithAmountInRow(customerAccount + ".clf.00002", "205.00", 2);
         Accounting.verifyAccountHasBeenCreditedWithAmountInRow(customerAccount + ".clp.00001", "203.60", 3);
         browser.pause();
