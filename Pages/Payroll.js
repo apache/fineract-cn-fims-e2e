@@ -147,4 +147,34 @@ module.exports = {
         browser.wait(EC.elementToBeClickable(salaryInput.get(paymentNumber-1)), 5000);
         salaryInput.get(paymentNumber-1).click().clear().sendKeys(text);
     },
+    verifyMemberIDForPaymentInRow: function(memberID, row){
+        browser.wait(EC.visibilityOf($("table tbody")), 3000);
+        browser.sleep(1000);
+        expect($$("table tbody tr").get(row - 1).$$(".td-data-table-cell").get(0).getText()).toEqual(memberID);
+    },
+    verifyEmployerForPaymentInRow: function(employer, row){
+        browser.wait(EC.visibilityOf($("table tbody")), 3000);
+        expect($$("table tbody tr").get(row - 1).$$(".td-data-table-cell").get(1).getText()).toEqual(employer);
+    },
+    verifySalaryForPaymentInRow: function(salary, row){
+        browser.wait(EC.visibilityOf($("table tbody")), 3000);
+        expect($$("table tbody tr").get(row - 1).$$(".td-data-table-cell").get(2).getText()).toEqual(salary);
+    },
+    verifyCreatedByForPayrollInRow: function(createdBy, row){
+        browser.wait(EC.visibilityOf($("table tbody")), 3000);
+        expect($$("table tbody tr").get(row - 1).$$(".td-data-table-cell").get(0).getText()).toEqual(createdBy);
+    },
+    verifyAccountNumberForPayrollInRow: function(accountNumber, row){
+        browser.wait(EC.visibilityOf($("table tbody")), 3000);
+        expect($$("table tbody tr").get(row - 1).$$(".td-data-table-cell").get(2).getText()).toEqual(accountNumber);
+    },
+    verifyPayrollInfo: function(heading, value) {
+        expect($$(".md-list-item .mat-list-text").filter(function (elem, index) {
+            return elem.$("h3").getText().then(function (text) {
+                return text === heading;
+            }).$(p).getText().then(function (text) {
+                return text === value;
+            }).toBe(true);
+        }));
+    },
 };

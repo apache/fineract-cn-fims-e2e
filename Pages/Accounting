@@ -235,6 +235,16 @@ module.exports = {
             return text == message;
         })).toBe(true);
     },
+    verifyNoteForJournalEntryIs: function (note){
+        expect($$("md-card .mat-list-text h3").filter(function(elem, index) {
+            return elem.getText().then(function(text) {
+                return text === "Note";
+            });
+        }).first().element(by.xpath("..")).$("p").getText().then(function(text){
+            console.log(text);
+            return text == note;
+        })).toBe(true);
+    },
     //tasks for accounts
     clickButtonToExecuteAction: function(action){
         $$(".mat-raised-button.mat-accent span").filter(function(elem, index) {
