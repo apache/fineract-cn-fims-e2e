@@ -368,7 +368,7 @@ describe('cheque_management', function() {
         Customers.selectCountryByName("Germany");
         Customers.clickEnabledContinueButtonForCustomerAddress();
         Customers.clickEnabledCreateCustomerButton();
-        Common.verifyMessagePopupIsDisplayed("Member is going to be saved")
+        Common.verifyMessagePopupIsDisplayed("Member is going to be saved");
         Common.verifyCardHasTitle("Manage members");
         Common.clickSearchButtonToMakeSearchInputFieldAppear();
         Common.enterTextInSearchInputFieldAndApplySearch(customerAccount2);

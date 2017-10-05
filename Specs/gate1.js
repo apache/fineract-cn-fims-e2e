@@ -571,6 +571,7 @@ describe('Gate 1', function() {
         Accounting.clickLinkShowForAccountWithIdentifier(customerAccount + ".cli.00003");
         Accounting.verifyAccountInfo("Balance", "0");
     });
+    expPayment = "";
     it('should be able to repay loan - expected payment', function () {
         Teller.goToTellerManagementViaSidePanel();
         //will be successful even if the customer does not exist, clicks one of the buttons too quickly: need to fix
@@ -578,10 +579,14 @@ describe('Gate 1', function() {
         Teller.verifyCardTitleHasNameOfCustomer("Thomas Pynchon");
         Teller.clickOnRepayLoanForCustomer(customerAccount);
         Teller.selectLoanAccountToBeAffected(customerAccount + ".clp.00001(" + loanShortName + ")");
-        Teller.verifyExpectedPaymentAmount("Expected payment: 408.6");
-        Teller.enterTextIntoAmountInputField("408.6");
-        Teller.clickEnabledCreateTransactionButton();
-        Teller.verifyTransactionAmount("408.6");
+        //expected payment amount will be similar but not always the same
+        Teller.getExpectedPaymentAmount().then(function(expPaym){
+            console.log(expPaym);
+            expPayment = expPaym;
+            Teller.enterTextIntoAmountInputField(expPayment);
+            Teller.clickEnabledCreateTransactionButton();
+            Teller.verifyTransactionAmount(expPayment);
+        });
         Teller.verifyTransactionCharge("repay-fees", "205");
         Teller.clickEnabledConfirmTransactionButton();
         Common.verifyMessagePopupIsDisplayed("Transaction successfully confirmed");
@@ -592,8 +597,8 @@ describe('Gate 1', function() {
         Accounting.enterTextIntoSearchAccountInputField(customerAccount + ".clp.00001");
         Accounting.clickSearchButton();
         Accounting.clickSecondJournalEntry();
-        Accounting.verifySecondJournalEntry("Principal Payment", "Amount: 408.60");
-        Accounting.verifyAccountHasBeenDebitedWithAmountInRow(tellerAccount, "408.60", 1);
+        Accounting.verifySecondJournalEntry("Principal Payment", "Amount: " + expPayment);
+        Accounting.verifyAccountHasBeenDebitedWithAmountInRow(tellerAccount, expPayment, 1);
         Accounting.verifyAccountHasBeenCreditedWithAmountInRow(customerAccount + ".clf.00002", "205.00", 2);
         Accounting.verifyAccountHasBeenCreditedWithAmountInRow(customerAccount + ".clp.00001", "203.60", 3);
     });

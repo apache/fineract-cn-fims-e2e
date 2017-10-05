@@ -235,6 +235,13 @@ module.exports = {
       browser.wait(EC.textToBePresentInElement($(".text-md"), text), 2000);
     },
     verifyExpectedPaymentAmount: function(text) {
-        browser.wait(EC.textToBePresentInElement($("fims-loan-transaction-form p"), text), 2000)
+        browser.wait(EC.textToBePresentInElement($("fims-loan-transaction-form p"), text), 2000);
+    },
+    getExpectedPaymentAmount: function() {
+        browser.sleep(1000);
+        return $("fims-loan-transaction-form p").getText().then(function(text){
+            console.log(text);
+            return text.substring(18);
+        });
     },
 };
