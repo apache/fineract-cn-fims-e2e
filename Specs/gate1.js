@@ -494,7 +494,7 @@ describe('Gate 1', function() {
         Customers.verifyLoanHasStatus("APPROVED");
     });
     it('should be able to disburse loan - no task', function () {
-        //currently error if this is done too quickly
+        //currently error if this is done too quickly; workaround
         browser.sleep("5000");
         Customers.clickLinkTasks(customerAccount, loanShortName, loanAccountShortName);
         Customers.clickButtonForTask("DISBURSE");
@@ -581,7 +581,6 @@ describe('Gate 1', function() {
         Teller.selectLoanAccountToBeAffected(customerAccount + ".clp.00001(" + loanShortName + ")");
         //expected payment amount will be similar but not always the same
         Teller.getExpectedPaymentAmount().then(function(expPaym){
-            console.log(expPaym);
             expPayment = expPaym;
             Teller.enterTextIntoAmountInputField(expPayment);
             Teller.clickEnabledCreateTransactionButton();
