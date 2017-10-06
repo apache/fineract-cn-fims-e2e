@@ -495,7 +495,7 @@ describe('Gate 1', function() {
     });
     it('should be able to disburse loan - no task', function () {
         //currently error if this is done too quickly; workaround
-        browser.sleep("5000");
+        browser.sleep("10000");
         Customers.clickLinkTasks(customerAccount, loanShortName, loanAccountShortName);
         Customers.clickButtonForTask("DISBURSE");
         Customers.verifyTransactionCharge("processing-fee", "150.00");
@@ -598,7 +598,8 @@ describe('Gate 1', function() {
         Accounting.clickSecondJournalEntry();
         Accounting.verifySecondJournalEntry("Principal Payment", "Amount: " + expPayment);
         Accounting.verifyAccountHasBeenDebitedWithAmountInRow(tellerAccount, expPayment, 1);
-        Accounting.verifyAccountHasBeenCreditedWithAmountInRow(customerAccount + ".clf.00002", "205.00", 2);
-        Accounting.verifyAccountHasBeenCreditedWithAmountInRow(customerAccount + ".clp.00001", "203.60", 3);
+        //not reliable which one comes first
+        Accounting.verifyAccountHasBeenCreditedWithAmountInRow(customerAccount + ".clp.00001", String(expPayment - 205), 2);
+        Accounting.verifyAccountHasBeenCreditedWithAmountInRow(customerAccount + ".clf.00002", "205.00", 3);
     });
 });
