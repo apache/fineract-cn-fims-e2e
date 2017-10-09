@@ -283,7 +283,7 @@ describe('Gate 1', function() {
         Common.clickLinkShowForRowWithId(customerAccount);
         Customers.clickManageDepositAccountsForMember(customerAccount);
         //test might be too fast, account still PENDING here and balance 0.00 (but on leaving and coming back, everything as expected)
-        Customers.verifyStateOfDepositAccountWithIdIs(depositIdentifier, "ACTIVE");
+        Customers.verifyStateOfDepositAccountWithId(depositIdentifier, "ACTIVE");
         Common.clickLinkShowForRowWithId(depositIdentifier);
         Customers.verifyDepositAccountHasStatus("ACTIVE");
         Customers.verifyDepositAccountBalanceIs("100.00");

@@ -243,7 +243,7 @@ module.exports = {
         }).$$(".td-data-table-cell").get(3).getText();
         expect(actualState).toEqual(expectedState);
     },
-    verifyStateOfDepositAccountWithIdIs: function (identifier, expectedState) {
+    verifyStateOfDepositAccountWithId: function (identifier, expectedState) {
         browser.wait(EC.visibilityOf($("tbody tr")), 5000);
         //if > page of entries, need to implement way to page in order to find correct row
         actualState = $$('tbody tr').filter(function (elem, index) {
