@@ -15,6 +15,7 @@ var employerInput = $$("fims-text-input[controlname='employer'] input");
 var salaryInput = $$("fims-number-input[controlname='salary'] input");
 
 var primaryButtons = $$(".mat-raised-button.mat-primary");
+var buttons = $$(".mat-button");
 var removeAllocationButtons = $$("fims-customer-payroll-form .mat-button");
 var removePaymentButtons = $$("fims-payroll-form .mat-button");
 
@@ -67,11 +68,9 @@ module.exports = {
        checkboxProportional.get(allocationNumber-1).click();
     },
     selectAllocationAccountForAllocation: function(accountIdentifier, allocationNumber){
-        browser.executeScript("arguments[0].scrollIntoView();", allocationAccountSelect.get(allocationNumber-1).getWebElement());
-        browser.wait(EC.elementToBeClickable(allocationAccountSelect).get(allocationNumber-1), 3000);
+        browser.wait(EC.elementToBeClickable(allocationAccountSelect.get(allocationNumber-1)), 3000);
         allocationAccountSelect.get(allocationNumber-1).click();
         browser.wait(EC.visibilityOf($(".mat-option")), 5000);
-        //browser.executeScript("arguments[0].scrollIntoView();", element(by.cssContainingText('.mat-option', accountIdentifier)).getWebElement());
         element(by.cssContainingText('.mat-option', accountIdentifier)).click();
     },
     selectMainAccount: function(accountIdentifier){

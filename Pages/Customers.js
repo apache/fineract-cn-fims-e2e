@@ -225,6 +225,7 @@ module.exports = {
     },
 
     verifyDepositAccountBalanceIs: function (expectedBalance) {
+        browser.sleep(1000);
         $$("fims-layout-card-over .mat-list-item .mat-list-text").filter(function (elem, index) {
             return elem.$("h3").getText().then(function (text) {
                 return text === "Balance";
