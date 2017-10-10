@@ -498,9 +498,9 @@ describe('Gate 1', function() {
         browser.sleep("10000");
         Customers.clickLinkTasks(customerAccount, loanShortName, loanAccountShortName);
         Customers.clickButtonForTask("DISBURSE");
-        Customers.verifyTransactionCharge("processing-fee", "150.00");
-        Customers.verifyTransactionCharge("loan-origination-fee", "50.00");
-        Customers.verifyTransactionCharge("disbursement-fee", "05.00");
+        Customers.verifyTransactionCharge("Processing fee", "150.00");
+        Customers.verifyTransactionCharge("Loan origination fee", "50.00");
+        Customers.verifyTransactionCharge("Disbursement fee", "05.00");
         Customers.clickButtonForTransaction("DISBURSE");
         Common.verifyMessagePopupIsDisplayed("Case is going to be updated");
         Customers.verifyLoanHasStatus("ACTIVE");

@@ -153,9 +153,6 @@ describe('payrolls', function() {
         Customers.selectProduct(depositName);
         Customers.clickEnabledButtonCreateDepositAccount();
         Common.verifyMessagePopupIsDisplayed("Deposit account is going to be saved");
-        //might not be in list immediately always
-        Common.clickBackButtonInTitleBar();
-        Customers.clickManageDepositAccountsForMember(customerAccount);
     });
     it('should be able to open account', function () {
         Teller.goToTellerManagementViaSidePanel();
@@ -199,6 +196,9 @@ describe('payrolls', function() {
     });
     it('should set up payroll distribution for member - main account', function () {
         Customers.goToManageCustomersViaSidePanel();
+        Common.clickSearchButtonToMakeSearchInputFieldAppear();
+        Common.enterTextInSearchInputFieldAndApplySearch(customerAccount);
+        Common.verifyFirstRowOfSearchResultHasTextAsId(customerAccount);
         Common.clickLinkShowForRowWithId(customerAccount);
         Customers.clickPayrollForMember(customerAccount);
         Customers.clickEditPayrollDistributionForMember(customerAccount);
@@ -243,6 +243,9 @@ describe('payrolls', function() {
         Accounting.verifyAccountHasBeenCreditedWithAmountInRow(customerAccount + ".9100.00001", "5,000.00", 2);
         //customer has received payment
         Customers.goToManageCustomersViaSidePanel();
+        Common.clickSearchButtonToMakeSearchInputFieldAppear();
+        Common.enterTextInSearchInputFieldAndApplySearch(customerAccount);
+        Common.verifyFirstRowOfSearchResultHasTextAsId(customerAccount);
         Common.clickLinkShowForRowWithId(customerAccount);
         Customers.clickManageDepositAccountsForMember(customerAccount);
         Common.clickLinkShowForFirstRowInTable();
