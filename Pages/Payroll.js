@@ -67,6 +67,9 @@ module.exports = {
     checkCheckboxProportionalForAllocation: function(allocationNumber){
        checkboxProportional.get(allocationNumber-1).click();
     },
+    uncheckCheckboxProportionalForAllocation: function(allocationNumber){
+        checkboxProportional.get(allocationNumber-1).click();
+    },
     selectAllocationAccountForAllocation: function(accountIdentifier, allocationNumber){
         browser.wait(EC.elementToBeClickable(allocationAccountSelect.get(allocationNumber-1)), 3000);
         allocationAccountSelect.get(allocationNumber-1).click();
