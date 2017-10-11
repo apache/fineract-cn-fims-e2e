@@ -520,11 +520,10 @@ describe('cheque_management', function() {
         Common.clickBackButtonInTitleBar();
         Common.clickLinkShowForRowWithId(customerAccount + ".9100.00001");
         Accounting.viewAccountEntriesForAccount(customerAccount + ".9100.00001");
-        Accounting.verifyTransactionTypeForRow("CREDIT", 5);
-        Accounting.verifyTransactionMessageForRow("ORCQ", 5);
-        Accounting.verifyTransactionAmountForRow("5000.00", 5);
-        browser.pause();
-        Accounting.verifyTransactionBalanceForRow("5750.54", 5);
+        Accounting.verifyTransactionTypeForRow("CREDIT", 6);
+        Accounting.verifyTransactionMessageForRow("ORCQ", 6);
+        Accounting.verifyTransactionAmountForRow("5000", 6);
+        Accounting.verifyTransactionBalanceForRow("10750.54", 6);
     });
     it('customer should not be able to cash cheque if account is locked - cheque is on us', function () {
         //lock second customer's account
