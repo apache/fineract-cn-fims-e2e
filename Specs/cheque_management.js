@@ -375,7 +375,7 @@ describe('cheque_management', function() {
         Cheques.clickIssueChequesButton();
         Common.verifyMessagePopupIsDisplayed("Cheques are going to be issued");
     });
-    it('customer should be able to cash cheque - cheque is not open/on us', function () {
+    it('customer should not be able to cash cheque - insufficient balance on issuer account', function () {
         //Or shouldn't he? Customer issuing the cheque has no money on his account; account isn't even open
         Teller.goToTellerManagementViaSidePanel();
         Teller.enterTextIntoSearchInputField(customerAccount);
@@ -395,7 +395,49 @@ describe('cheque_management', function() {
         Cheques.enterTextIntoAmountInputField("250.54");
         Cheques.selectAccountToTransferTo(customerAccount + ".9100.00001(" + depositIdentifier +")");
         Cheques.clickCreateTransactionButton();
+        Cheques.verifyErrorMessageDisplayedWithTitleAndText("Invalid transaction", "Cheque not covered.");
+        Cheques.clickButtonOKInErrorMessage();
+        //change branch sort code and verify transaction goes through as cheque not on us
+        Cheques.enterTextIntoBranchSortCodeInputField("Nina");
+        Cheques.clickCreateTransactionButton();
         Cheques.verifyTransactionAmount("250.54");
+        Cheques.clickConfirmTransactionButton();
+        Common.verifyMessagePopupIsDisplayed("Transaction successfully confirmed");
+    });
+
+    it('customer should be able to cash cheque - cheque is not open/on us', function () {
+        //open customer's account with sufficient balance
+        Teller.goToTellerManagementViaSidePanel();
+        Teller.enterTextIntoSearchInputField(customerAccount2);
+        Teller.clickButtonShowAtIndex(0);
+        Teller.verifyCardTitleHasNameOfCustomer("Cormac McCarthy");
+        Teller.clickOnOpenAccountForCustomer(customerAccount2);
+        Common.verifyCardHasTitle("Teller transaction");
+        Teller.selectAccountToBeAffected(customerAccount2 + ".9100.00001(" + depositIdentifier +")");
+        Teller.enterTextIntoAmountInputField("5000");
+        Teller.clickEnabledCreateTransactionButton();
+        Teller.verifyTransactionAmount("5000");
+        Teller.clickEnabledConfirmTransactionButton();
+        Common.verifyMessagePopupIsDisplayed("Transaction successfully confirmed");
+        Teller.goToTellerManagementViaSidePanel();
+        Teller.enterTextIntoSearchInputField(customerAccount);
+        Teller.clickButtonShowAtIndex(0);
+        Teller.verifyCardTitleHasNameOfCustomer("Thomas Pynchon");
+        Teller.clickOnCashChequeForCustomer(customerAccount);
+        Cheques.enterTextIntoChequeNumberInputField("200");
+        Cheques.enterTextIntoBranchSortCodeInputField(officeIdentifier);
+        Cheques.enterTextIntoAccountNumberInputField(customerAccount2 + ".9100.00001");
+        Cheques.clickButtonDetermineFromMICR();
+        Cheques.verifyWarningIsNotDisplayedIfIssuingBankCouldBeDetermined();
+        Cheques.verifyPayeeHasTextAndCannotBeChanged("Thomas Pynchon");
+        Cheques.enterTextIntoDateIssuedInputField("992017");
+        Cheques.verifyWarningIsDisplayedIfChequeIsNotOpen();
+        Cheques.verifyIssuingBankHasText("Branch " + officeIdentifier);
+        Cheques.verifyIssuerHasText("Cormac McCarthy");
+        Cheques.enterTextIntoAmountInputField("5000");
+        Cheques.selectAccountToTransferTo(customerAccount + ".9100.00001(" + depositIdentifier +")");
+        Cheques.clickCreateTransactionButton();
+        Cheques.verifyTransactionAmount("5000");
         Cheques.clickConfirmTransactionButton();
         Common.verifyMessagePopupIsDisplayed("Transaction successfully confirmed");
     });
@@ -439,7 +481,7 @@ describe('cheque_management', function() {
         Accounting.goToJournalEntries();
         Accounting.enterTextIntoSearchAccountInputField(customerAccount2 + ".9100.00001");
         Accounting.clickSearchButton();
-        Accounting.verifyFirstJournalEntry("Order Cheque", "Amount: 250.54");
+        Accounting.verifySecondJournalEntry("Order Cheque", "Amount: 5,000.00");
         Common.clickBackButtonInTitleBar();
         Common.clickLinkShowForRowWithId("9000");
         Common.clickLinkShowForRowWithId("9100");
@@ -447,15 +489,16 @@ describe('cheque_management', function() {
         Accounting.viewAccountEntriesForAccount(customerAccount2 + ".9100.00001");
         Accounting.verifyTransactionTypeForRow("DEBIT", 1);
         Accounting.verifyTransactionMessageForRow("ORCQ", 1);
-        Accounting.verifyTransactionAmountForRow("250.54", 1);
-        Accounting.verifyTransactionBalanceForRow("-250.54", 1);
+        Accounting.verifyTransactionAmountForRow("5000.00", 1);
+        Accounting.verifyTransactionBalanceForRow("-5000", 1);
         Common.clickBackButtonInTitleBar();
         Common.clickBackButtonInTitleBar();
         Common.clickLinkShowForRowWithId(customerAccount + ".9100.00001");
         Accounting.viewAccountEntriesForAccount(customerAccount + ".9100.00001");
         Accounting.verifyTransactionTypeForRow("CREDIT", 5);
         Accounting.verifyTransactionMessageForRow("ORCQ", 5);
-        Accounting.verifyTransactionAmountForRow("250.54", 5);
+        Accounting.verifyTransactionAmountForRow("5000.00", 5);
+        browser.pause();
         Accounting.verifyTransactionBalanceForRow("5750.54", 5);
     });
     it('customer should not be able to cash cheque if account is locked - cheque is on us', function () {
@@ -503,7 +546,7 @@ describe('cheque_management', function() {
         Accounting.goToJournalEntries();
         Accounting.enterTextIntoSearchAccountInputField(chequesReceivableAccount);
         Accounting.clickSearchButton();
-        Accounting.verifyFourthJournalEntry("Order Cheque", "Amount: 400.00");
+        Accounting.verifyFifthJournalEntry("Order Cheque", "Amount: 400.00");
     });
     it('input should be validated and CREATE TRANSACTION button is only enabled with valid input', function () {
         Teller.goToTellerManagementViaSidePanel();

@@ -214,6 +214,15 @@ module.exports = {
             return text === transactionAmount;
         })).toBe(true);
     },
+    verifyFifthJournalEntry: function(transactionType, transactionAmount){
+        browser.sleep(500);
+        expect($$("fims-layout-card-over .mat-list-item .mat-list-text p").get(8).getText().then(function(text){
+            return text === transactionType;
+        })).toBe(true);
+        expect($$("fims-layout-card-over .mat-list-item .mat-list-text p").get(9).getText().then(function(text){
+            return text === transactionAmount;
+        })).toBe(true);
+    },
     verifyAccountHasBeenDebitedWithAmountInRow: function(account, amount, row) {
         browser.wait(EC.visibilityOf($("table tbody")), 3000);
         expect($$("table tbody tr").get(row - 1).$$(".td-data-table-cell").get(0).getText()).toEqual(account);
