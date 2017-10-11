@@ -24,6 +24,7 @@ describe('payrolls', function() {
     tellerIdentifier = helper.getRandomString(4);
     chequeReceivablesAccount = helper.getRandomString(4);
     tellerAccount = helper.getRandomString(4);
+    headquarterIdentifier = "hqo1";
 
     it('should create a new employees with administrator permissions', function () {
         Employees.goToManageEmployeesViaSidePanel();
@@ -75,6 +76,7 @@ describe('payrolls', function() {
         Common.verifyFirstRowOfSearchResultHasTextAsId(customerAccount);
         Common.clickLinkShowForFirstRowInTable();
         Customers.verifyMemberHasStatusInactive();
+        //ToDo: verify you cannot set up payroll distribution for member that is not active yet; add here
         Customers.clickButtonGoToTasks();
         Customers.clickButtonActivate();
         Common.verifyMessagePopupIsDisplayed("Command is going to be executed");
@@ -82,8 +84,8 @@ describe('payrolls', function() {
     });
     it('should create a new teller for the branch office', function () {
         Offices.goToManageOfficesViaSidePanel();
-        Offices.goToManageTellersForOfficeByIdentifier("hqo1");
-        Offices.clickCreateTellerForOfficeByIdentifier("hqo1");
+        Offices.goToManageTellersForOfficeByIdentifier(headquarterIdentifier);
+        Offices.clickCreateTellerForOfficeByIdentifier(headquarterIdentifier);
         Offices.enterTextIntoTellerNumberInputField(tellerIdentifier);
         Offices.enterTextIntoPasswordInputField("qazwsx123!!");
         Offices.enterTextIntoCashWithdrawalLimitInputField("1000");
@@ -94,11 +96,11 @@ describe('payrolls', function() {
         Common.verifyMessagePopupIsDisplayed("Teller is going to be saved");
         //workaround for current bug that teller is not always listed immediately
         Common.clickBackButtonInTitleBar();
-        Offices.goToManageTellersForOfficeByIdentifier("hqo1");
+        Offices.goToManageTellersForOfficeByIdentifier(headquarterIdentifier);
         Common.clickLinkShowForRowWithId(tellerIdentifier);
     });
     it('should open the teller and assign it to an employee', function () {
-        Offices.clickActionOpenForTellerOfOffice(tellerIdentifier, "hqo1");
+        Offices.clickActionOpenForTellerOfOffice(tellerIdentifier, headquarterIdentifier);
         Offices.enterTextIntoAssignedEmployeeInputField(employeeIdentifier);
         Offices.selectOptionInListByName("Auster, Paul");
         Offices.clickEnabledOpenTellerButton();
@@ -511,7 +513,7 @@ describe('payrolls', function() {
     });
     //allocations - three accounts, mixed
     //same deposit account selected twice, not possible
-    //closed dep account
+    //pending/closed dep account
     //payment smaller than amounts  for allocations
     //allocations exceeding 100% (proportional)
     //payment just enough for allocations
