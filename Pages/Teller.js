@@ -161,6 +161,7 @@ module.exports = {
         element(by.cssContainingText('.mat-option', loanAccountIdentifier)).click();
     },
     enterTextIntoAmountInputField: function(text) {
+        browser.sleep(1000);
         browser.wait(EC.elementToBeClickable(amountInput), 5000);
         amountInput.click().clear().sendKeys(text);
     },
