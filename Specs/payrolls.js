@@ -22,8 +22,9 @@ describe('payrolls', function() {
     depositIdentifier = helper.getRandomString(5);
     depositName = helper.getRandomString(8);
     tellerIdentifier = helper.getRandomString(4);
-    chequeReceivablesAccount = helper.getRandomString(4);
-    tellerAccount = helper.getRandomString(4);
+    chequeReceivablesAccount = "ChequeReceivables_" + helper.getRandomString(4);
+    payrollAccount = "Payroll_" + helper.getRandomString(4);
+    tellerAccount = "Teller_" + helper.getRandomString(4);
     headquarterIdentifier = "hqo1";
 
     it('should create a new employees with administrator permissions', function () {
@@ -53,6 +54,29 @@ describe('payrolls', function() {
         Accounting.enterTextIntoAccountNameInputField("My teller");
         Accounting.clickButtonCreateAccount();
         Common.verifyMessagePopupIsDisplayed("Account is going to be saved");
+        Accounting.goToAccountingViaSidePanel();
+        Common.clickLinkShowForRowWithId("7000");
+        Common.clickLinkShowForRowWithId("7300");
+        Accounting.clickCreateNewAccountInLedger("7300");
+        Accounting.enterTextIntoAccountIdentifierInputField(payrollAccount);
+        Accounting.verifyRadioAssetToBeSelected();
+        Accounting.verifyRadioAssetToBeDisabled();
+        Accounting.enterTextIntoAccountNameInputField("Cash account for payroll distributions");
+        Accounting.clickButtonCreateAccount();
+        Common.verifyMessagePopupIsDisplayed("Account is going to be saved");
+    });
+    it('should transfer funds onto Payroll account', function () {
+        Accounting.goToAccountingViaSidePanel();
+        Accounting.goToJournalEntries();
+        Accounting.clickButtonAddJournalEntry();
+        Accounting.enterTextIntoTransactionIdentifierInputField("Money for payroll");
+        Accounting.enterTextIntoTransactionTypeInputFieldAndSelectMatchingEntry("ACCT");
+        Accounting.clickButtonContinue();
+        Accounting.enterTextIntoDebitAccountNameInputField(payrollAccount);
+        Accounting.enterTextIntoDebitAmountInputField("100000");
+        Accounting.enterTextIntoCreditAccountNameInputField("1290");
+        Accounting.enterTextIntoCreditAmountInputField("100000");
+        Accounting.clickButtonCreateJournalEntry();
     });
     it('should be able to create customer', function () {
         Customers.goToManageCustomersViaSidePanel();
@@ -198,7 +222,7 @@ describe('payrolls', function() {
         Accounting.goToAccountingViaSidePanel();
         Accounting.goToPayrolls();
         Payroll.clickButtonCreatePayroll();
-        Payroll.enterTextIntoFromAccountInputFieldForPayment("1101");
+        Payroll.enterTextIntoFromAccountInputFieldForPayment(payrollAccount);
         Payroll.enterTextIntoMemberInputFieldForPayment(customerAccount, 1);
         Payroll.enterTextIntoEmployerInputFieldForPayment("SweetWater Brewing Company", 1);
         Payroll.verifyMemberInputFieldHasError("Invalid member or has no payroll created");
@@ -224,7 +248,7 @@ describe('payrolls', function() {
         Accounting.goToAccountingViaSidePanel();
         Accounting.goToPayrolls();
         Payroll.clickButtonCreatePayroll();
-        Payroll.enterTextIntoFromAccountInputFieldForPayment("1101");
+        Payroll.enterTextIntoFromAccountInputFieldForPayment(payrollAccount);
         Payroll.enterTextIntoMemberInputFieldForPayment(customerAccount, 1);
         Payroll.enterTextIntoEmployerInputFieldForPayment("SweetWater Brewing Company", 1);
         Payroll.enterTextIntoSalaryInputFieldForPayment("5000", 1);
@@ -232,7 +256,7 @@ describe('payrolls', function() {
         Common.verifyMessagePopupIsDisplayed("Payroll is going to be created");
         //verify details
         Payroll.verifyCreatedByForPayrollInRow(employeeIdentifier, 1);
-        Payroll.verifyAccountNumberForPayrollInRow("1101", 1);
+        Payroll.verifyAccountNumberForPayrollInRow(payrollAccount, 1);
         //created by
         Common.clickLinkShowForRowWithId(employeeIdentifier);
         //verify details
@@ -250,7 +274,7 @@ describe('payrolls', function() {
         Accounting.clickSecondJournalEntry();
         Accounting.verifyClerkForJournalEntryIs(employeeIdentifier);
         Accounting.verifyNoteForJournalEntryIs("Payroll Distribution");
-        Accounting.verifyAccountHasBeenDebitedWithAmountInRow("1101", "5,000.00", 1);
+        Accounting.verifyAccountHasBeenDebitedWithAmountInRow(payrollAccount, "5,000.00", 1);
         Accounting.verifyAccountHasBeenCreditedWithAmountInRow(customerAccount + ".9100.00001", "5,000.00", 2);
         //customer has received payment
         Customers.goToManageCustomersViaSidePanel();
@@ -280,7 +304,7 @@ describe('payrolls', function() {
         Accounting.goToAccountingViaSidePanel();
         Accounting.goToPayrolls();
         Payroll.clickButtonCreatePayroll();
-        Payroll.enterTextIntoFromAccountInputFieldForPayment("1101");
+        Payroll.enterTextIntoFromAccountInputFieldForPayment(payrollAccount);
         Payroll.enterTextIntoMemberInputFieldForPayment(customerAccount, 1);
         Payroll.enterTextIntoEmployerInputFieldForPayment("SweetWater Brewing Company", 1);
         Payroll.enterTextIntoSalaryInputFieldForPayment("2000", 1);
@@ -288,7 +312,7 @@ describe('payrolls', function() {
         Common.verifyMessagePopupIsDisplayed("Payroll is going to be created");
         //verify details
         Payroll.verifyCreatedByForPayrollInRow(employeeIdentifier, 1);
-        Payroll.verifyAccountNumberForPayrollInRow("1101", 1);
+        Payroll.verifyAccountNumberForPayrollInRow(payrollAccount, 1);
         //created by
         Common.clickLinkShowForFirstRowInTable();
         //verify details
@@ -306,10 +330,10 @@ describe('payrolls', function() {
         Accounting.clickSecondJournalEntry();
         Accounting.verifyClerkForJournalEntryIs(employeeIdentifier);
         Accounting.verifyNoteForJournalEntryIs("Payroll Distribution");
-        Accounting.verifyAccountHasBeenDebitedWithAmountInRow("1101", "2,000.00", 1);
+        Accounting.verifyAccountHasBeenDebitedWithAmountInRow(payrollAccount, "2,000.00", 1);
         //order might change here
         Accounting.verifyAccountHasBeenCreditedWithAmountInRow(customerAccount + ".9100.00001", "800.00", 2);
-        Accounting.verifyAccountHasBeenCreditedWithAmountInRow(customerAccount + ".9100.00002", "1.200.00", 3);
+        Accounting.verifyAccountHasBeenCreditedWithAmountInRow(customerAccount + ".9100.00002", "1,200.00", 3);
     });
     it('should update payroll allocation for member to proportional', function () {
         Customers.goToManageCustomersViaSidePanel();
@@ -328,7 +352,7 @@ describe('payrolls', function() {
         Accounting.goToAccountingViaSidePanel();
         Accounting.goToPayrolls();
         Payroll.clickButtonCreatePayroll();
-        Payroll.enterTextIntoFromAccountInputFieldForPayment("1101");
+        Payroll.enterTextIntoFromAccountInputFieldForPayment(payrollAccount);
         Payroll.enterTextIntoMemberInputFieldForPayment(customerAccount, 1);
         Payroll.enterTextIntoEmployerInputFieldForPayment("SweetWater Brewing Company", 1);
         Payroll.enterTextIntoSalaryInputFieldForPayment("1000", 1);
@@ -340,7 +364,7 @@ describe('payrolls', function() {
         Common.verifyMessagePopupIsDisplayed("Payroll is going to be created");
         //verify details
         Payroll.verifyCreatedByForPayrollInRow(employeeIdentifier, 1);
-        Payroll.verifyAccountNumberForPayrollInRow("1101", 1);
+        Payroll.verifyAccountNumberForPayrollInRow(payrollAccount, 1);
         //created by
         Common.clickLinkShowForFirstRowInTable();
         //verify details
@@ -361,7 +385,7 @@ describe('payrolls', function() {
         Accounting.verifyThirdJournalEntry("Payroll/Salary Payment", "Amount: 1,000.00");
         Accounting.verifyClerkForJournalEntryIs(employeeIdentifier);
         Accounting.verifyNoteForJournalEntryIs("Payroll Distribution");
-        Accounting.verifyAccountHasBeenDebitedWithAmountInRow("1101",  "1,000.00", 1);
+        Accounting.verifyAccountHasBeenDebitedWithAmountInRow(payrollAccount,  "1,000.00", 1);
         //ToDo: Why still not changed?
         // Accounting.verifyAccountHasBeenCreditedWithAmountInRow(customerAccount + ".9100.00001", "591.00", 2);
         // Accounting.verifyAccountHasBeenCreditedWithAmountInRow(customerAccount + ".9100.00001", "409.00", 3);
@@ -369,7 +393,7 @@ describe('payrolls', function() {
         // Accounting.verifyFourthJournalEntry("Payroll/Salary Payment", "Amount: 450.00");
         // Accounting.verifyClerkForJournalEntryIs(employeeIdentifier);
         // Accounting.verifyNoteForJournalEntryIs("Payroll Distribution");
-        // Accounting.verifyAccountHasBeenDebitedWithAmountInRow("1101",  "450.00", 1);
+        // Accounting.verifyAccountHasBeenDebitedWithAmountInRow(payrollAccount,  "450.00", 1);
         // Accounting.verifyAccountHasBeenCreditedWithAmountInRow(customerAccount + ".9100.00001", "265.95", 2);
         // Accounting.verifyAccountHasBeenCreditedWithAmountInRow(customerAccount + ".9100.00001", "184.05", 3);
     });
@@ -425,7 +449,7 @@ describe('payrolls', function() {
         Accounting.goToAccountingViaSidePanel();
         Accounting.goToPayrolls();
         Payroll.clickButtonCreatePayroll();
-        Payroll.enterTextIntoFromAccountInputFieldForPayment("1101");
+        Payroll.enterTextIntoFromAccountInputFieldForPayment(payrollAccount);
         Payroll.enterTextIntoMemberInputFieldForPayment(customerAccount, 1);
         Payroll.enterTextIntoEmployerInputFieldForPayment("Wicked Weed", 1);
         Payroll.enterTextIntoSalaryInputFieldForPayment("888.88", 1);
@@ -433,7 +457,7 @@ describe('payrolls', function() {
         Common.verifyMessagePopupIsDisplayed("Payroll is going to be created");
         //verify details
         Payroll.verifyCreatedByForPayrollInRow(employeeIdentifier, 1);
-        Payroll.verifyAccountNumberForPayrollInRow("1101", 1);
+        Payroll.verifyAccountNumberForPayrollInRow(payrollAccount, 1);
         //created by
         Common.clickLinkShowForFirstRowInTable();
         //verify details
@@ -451,7 +475,7 @@ describe('payrolls', function() {
         Accounting.clickSecondJournalEntry();
         Accounting.verifyClerkForJournalEntryIs(employeeIdentifier);
         Accounting.verifyNoteForJournalEntryIs("Payroll Distribution");
-        Accounting.verifyAccountHasBeenDebitedWithAmountInRow("1101", "888.88", 1);
+        Accounting.verifyAccountHasBeenDebitedWithAmountInRow(payrollAccount, "888.88", 1);
         //order might change here
         Accounting.verifyAccountHasBeenCreditedWithAmountInRow(customerAccount + ".9100.00003", "400.00", 2);
         Accounting.verifyAccountHasBeenCreditedWithAmountInRow(customerAccount + ".9100.00002", "270.00", 3);
@@ -465,10 +489,8 @@ describe('payrolls', function() {
         Common.clickLinkShowForRowWithId(customerAccount);
         Customers.clickPayrollForMember(customerAccount);
         Payroll.clickButtonEditPayrollDistribution(customerAccount);
-        Payroll.selectAllocationAccountForAllocation(customerAccount + ".9100.00002", 1);
         Payroll.enterTextIntoAmountInputFieldForAllocation("2600", 1);
         Payroll.uncheckCheckboxProportionalForAllocation(1);
-        Payroll.selectAllocationAccountForAllocation(customerAccount + ".9100.00003", 2);
         Payroll.uncheckCheckboxProportionalForAllocation(2);
         Payroll.enterTextIntoAmountInputFieldForAllocation("25.50", 2);
         Payroll.verifyButtonUpdateAllocationsEnabled();
@@ -478,7 +500,7 @@ describe('payrolls', function() {
         Accounting.goToAccountingViaSidePanel();
         Accounting.goToPayrolls();
         Payroll.clickButtonCreatePayroll();
-        Payroll.enterTextIntoFromAccountInputFieldForPayment("1101");
+        Payroll.enterTextIntoFromAccountInputFieldForPayment(payrollAccount);
         Payroll.enterTextIntoMemberInputFieldForPayment(customerAccount, 1);
         Payroll.enterTextIntoEmployerInputFieldForPayment("New Belgium", 1);
         Payroll.enterTextIntoSalaryInputFieldForPayment("3000", 1);
@@ -486,7 +508,7 @@ describe('payrolls', function() {
         Common.verifyMessagePopupIsDisplayed("Payroll is going to be created");
         //verify details
         Payroll.verifyCreatedByForPayrollInRow(employeeIdentifier, 1);
-        Payroll.verifyAccountNumberForPayrollInRow("1101", 1);
+        Payroll.verifyAccountNumberForPayrollInRow(payrollAccount, 1);
         //created by
         Common.clickLinkShowForFirstRowInTable();
         //verify details
@@ -500,14 +522,14 @@ describe('payrolls', function() {
         Accounting.goToJournalEntries();
         Accounting.enterTextIntoSearchAccountInputField(customerAccount + ".9100.00003");
         Accounting.clickSearchButton();
-        Accounting.verifyThirdJournalEntry("Payroll/Salary Payment", "Amount: 3000.00");
+        Accounting.verifyThirdJournalEntry("Payroll/Salary Payment", "Amount: 3,000.00");
         Accounting.clickThirdJournalEntry();
         Accounting.verifyClerkForJournalEntryIs(employeeIdentifier);
         Accounting.verifyNoteForJournalEntryIs("Payroll Distribution");
-        Accounting.verifyAccountHasBeenDebitedWithAmountInRow("1101", "3000.00", 1);
+        Accounting.verifyAccountHasBeenDebitedWithAmountInRow(payrollAccount, "3,000.00", 1);
         //order might change here
         Accounting.verifyAccountHasBeenCreditedWithAmountInRow(customerAccount + ".9100.00003", "25.50", 2);
-        Accounting.verifyAccountHasBeenCreditedWithAmountInRow(customerAccount + ".9100.00002", "2600.00", 3);
+        Accounting.verifyAccountHasBeenCreditedWithAmountInRow(customerAccount + ".9100.00002", "2,600.00", 3);
         Accounting.verifyAccountHasBeenCreditedWithAmountInRow(customerAccount + ".9100.00001", "374.50", 4);
         browser.pause();
     });

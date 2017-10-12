@@ -9,11 +9,18 @@ var accountNameInput = $("fims-text-input[controlname='name'] input");
 var descriptionInput = $("input[formcontrolname='description']");
 var accountBalanceInput = $("fims-text-input[controlname='balance'] input");
 var primaryButton = $$(".mat-raised-button.mat-primary");
+var button = $$(".mat-raised-button.mat-accent");
 var radioButtonAsset = $$("md-radio-button").get(0);
 var radioButtonRevenue = $$("md-radio-button").get(4);
 
 //journal entries
 var accountSearchInputField = $("fims-text-input[controlname='account'] input");
+var transactionIdentifierInput = $("fims-id-input[controlname='transactionIdentifier'] input");
+var transactionTypeInput = $("fims-transaction-type-select[formcontrolname='transactionType'] input");
+var debitAccountInput = $$("fims-account-select[formcontrolname='accountNumber'] input").get(0);
+var creditAccountInput = $$("fims-account-select[formcontrolname='accountNumber'] input").get(1);
+var debitAmountInput = $$("fims-text-input[controlname='amount'] input").get(0);
+var creditAmountInput = $$("fims-text-input[controlname='amount'] input").get(1);
 
 module.exports = {
     goToAccountingViaSidePanel: function() {
@@ -248,7 +255,6 @@ module.exports = {
                 return text === "Message";
             });
         }).first().element(by.xpath("..")).$("p").getText().then(function(text){
-            console.log(text);
             return text == message;
         })).toBe(true);
     },
@@ -269,5 +275,51 @@ module.exports = {
                 return text === action;
             });
         }).first().click();
+    },
+
+    //journal entries
+    clickButtonAddJournalEntry: function() {
+        browser.sleep(1000);
+        browser.wait(EC.elementToBeClickable($("fims-fab-button a[href='/accounting/journalEntries/create']")), 5000);
+        $("fims-fab-button a[href='/accounting/journalEntries/create']").click();
+    },
+    enterTextIntoTransactionIdentifierInputField: function(text) {
+        browser.wait(EC.visibilityOf(transactionIdentifierInput), 5000);
+        transactionIdentifierInput.click().sendKeys(text);
+    },
+    enterTextIntoTransactionTypeInputFieldAndSelectMatchingEntry: function(text) {
+        transactionTypeInput.click().clear().sendKeys(text);
+        browser.wait(EC.visibilityOf($(".mat-option")), 5000);
+        $$(".mat-option").first().click();
+    },
+    clickButtonContinue: function(){
+        button.filter(function(elem, index) {
+            return elem.$("span").getText().then(function(text) {
+                return text === "CONTINUE";
+            });
+        }).click();
+    },
+    enterTextIntoDebitAccountNameInputField: function(text) {
+        browser.wait(EC.visibilityOf(debitAccountInput), 5000);
+        debitAccountInput.click().sendKeys(text);
+    },
+    enterTextIntoDebitAmountInputField: function(text) {
+        browser.wait(EC.visibilityOf(debitAmountInput), 5000);
+        debitAmountInput.click().sendKeys(text);
+    },
+    enterTextIntoCreditAccountNameInputField: function(text) {
+        browser.wait(EC.visibilityOf(creditAccountInput), 5000);
+        creditAccountInput.click().sendKeys(text);
+    },
+    enterTextIntoCreditAmountInputField: function(text) {
+        browser.wait(EC.visibilityOf(creditAmountInput), 5000);
+        creditAmountInput.click().sendKeys(text);
+    },
+    clickButtonCreateJournalEntry: function(){
+        primaryButton.filter(function(elem, index) {
+            return elem.$("span").getText().then(function(text) {
+                return text === "CREATE JOURNAL ENTRY";
+            });
+        }).click();
     },
 };

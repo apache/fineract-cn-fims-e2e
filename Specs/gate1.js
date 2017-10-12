@@ -579,6 +579,7 @@ describe('Gate 1', function() {
         Teller.verifyCardTitleHasNameOfCustomer("Thomas Pynchon");
         Teller.clickOnRepayLoanForCustomer(customerAccount);
         Teller.selectLoanAccountToBeAffected(customerAccount + ".clp.00001(" + loanShortName + ")");
+        browser.pause();
         //expected payment amount will be similar but not always the same
         Teller.getExpectedPaymentAmount().then(function(expPaym){
             expPayment = expPaym;
