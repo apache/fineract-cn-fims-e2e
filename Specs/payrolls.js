@@ -641,7 +641,14 @@ describe('payrolls', function() {
     //     Accounting.verifyNoteForJournalEntryIs("Payroll Distribution");
     //     Accounting.verifyAccountHasBeenDebitedWithAmountInRow(payrollAccount, "5,000.00", 1);
     // });
+    it('set up second member with deposit account and payroll distribution', function () {
+
+
+    });
+    it('make payments to two members at the same time', function () {
+
+
+    });
     //closed dep account already selected for payroll; ATEN-461
     //allocations exceeding 100% (proportional); same behavior as above (ATEN-457)
-    //several payments at once (same member/different members)
 });
