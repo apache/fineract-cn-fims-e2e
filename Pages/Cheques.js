@@ -41,6 +41,7 @@ module.exports = {
     enterTextIntoAccountNumberInputField: function(text) {
         browser.executeScript("arguments[0].scrollIntoView();", accountNumberInput.getWebElement());
         browser.wait(EC.visibilityOf(accountNumberInput), 1000);
+        browser.sleep(200);
         accountNumberInput.click().clear().sendKeys(text);
     },
     enterTextIntoIssuingBankInputField: function(text) {

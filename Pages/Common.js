@@ -68,6 +68,7 @@ module.exports = {
     clickFirstColumnHeaderInTableToResortTable: function(){
         browser.wait(EC.visibilityOf($("th")), 5000);
         $$("th").first().click();
+        browser.sleep(200);
     },
     clickLinkShowForRowWithId2: function(identifier) {
         numberPages = 1;

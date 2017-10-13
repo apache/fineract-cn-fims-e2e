@@ -487,6 +487,7 @@ describe('cheque_management', function() {
         Common.clickLinkShowForRowWithId("9100");
         Common.clickLinkShowForRowWithId(customerAccount2 + ".9100.00001");
         Accounting.viewAccountEntriesForAccount(customerAccount2 + ".9100.00001");
+        Common.clickFirstColumnHeaderInTableToResortTable();
         Accounting.verifyTransactionTypeForRow("DEBIT", 1);
         Accounting.verifyTransactionMessageForRow("ORCQ", 1);
         Accounting.verifyTransactionAmountForRow("5000.00", 1);
@@ -531,6 +532,10 @@ describe('cheque_management', function() {
         Cheques.enterTextIntoAccountNumberInputField(customerAccount2 + ".9100.00005");
         Cheques.clickCreateTransactionButton();
         Cheques.verifyErrorMessageDisplayedWithTitleAndText("Invalid transaction", "Account " + customerAccount2 + ".9100.00005 not found.");
+        Cheques.clickButtonOKInErrorMessage();
+        Cheques.enterTextIntoAccountNumberInputField(customerAccount2 + ".9100.0000");
+        Cheques.clickCreateTransactionButton();
+        Cheques.verifyErrorMessageDisplayedWithTitleAndText("Invalid transaction", "Account " + customerAccount2 + ".9100.0000 not found.");
         Cheques.clickButtonOKInErrorMessage();
         //change branch sort code to a code that is not one of the office identifiers for the client and verify transaction goes through
         Cheques.enterTextIntoBranchSortCodeInputField("boa");
