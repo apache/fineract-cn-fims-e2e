@@ -134,19 +134,19 @@ describe('cheque_management', function() {
     it('should create customer and activate customer', function () {
         Customers.goToManageCustomersViaSidePanel();
         Common.verifyCardHasTitle("Manage members");
-        Customers.clickButtonOrLinkCreateNewCustomer();
+        Customers.clickButtonOrLinkCreateNewMember();
         Common.verifyCardHasTitle("Create new member");
         Customers.enterTextIntoAccountInputField(customerAccount);
         Customers.enterTextIntoFirstNameInputField("Thomas");
         Customers.enterTextIntoLastNameInputField("Pynchon");
         Customers.enterTextIntoDayOfBirthInputField("9211978");
         Customers.verifyIsMemberCheckboxSelected();
-        Customers.clickEnabledContinueButtonForCustomerDetails();
+        Customers.clickEnabledContinueButtonForMemberDetails();
         Customers.enterTextIntoStreetInputField("800 Chatham Road #326");
         Customers.enterTextIntoCityInputField("Winston-Salem");
         Customers.selectCountryByName("Germany");
-        Customers.clickEnabledContinueButtonForCustomerAddress();
-        Customers.clickEnabledCreateCustomerButton();
+        Customers.clickEnabledContinueButtonForMemberAddress();
+        Customers.clickEnabledCreateMemberButton();
         Common.verifyMessagePopupIsDisplayed("Member is going to be saved")
         Common.verifyCardHasTitle("Manage members");
         Common.clickSearchButtonToMakeSearchInputFieldAppear();
@@ -356,19 +356,19 @@ describe('cheque_management', function() {
     it('should create another customer', function () {
         Customers.goToManageCustomersViaSidePanel();
         Common.verifyCardHasTitle("Manage members");
-        Customers.clickButtonOrLinkCreateNewCustomer();
+        Customers.clickButtonOrLinkCreateNewMember();
         Common.verifyCardHasTitle("Create new member");
         Customers.enterTextIntoAccountInputField(customerAccount2);
         Customers.enterTextIntoFirstNameInputField("Cormac");
         Customers.enterTextIntoLastNameInputField("McCarthy");
         Customers.enterTextIntoDayOfBirthInputField("7281958");
         Customers.verifyIsMemberCheckboxSelected();
-        Customers.clickEnabledContinueButtonForCustomerDetails();
+        Customers.clickEnabledContinueButtonForMemberDetails();
         Customers.enterTextIntoStreetInputField("800 Chatham Road #326");
         Customers.enterTextIntoCityInputField("Winston-Salem");
         Customers.selectCountryByName("Germany");
-        Customers.clickEnabledContinueButtonForCustomerAddress();
-        Customers.clickEnabledCreateCustomerButton();
+        Customers.clickEnabledContinueButtonForMemberAddress();
+        Customers.clickEnabledCreateMemberButton();
         Common.verifyMessagePopupIsDisplayed("Member is going to be saved")
         Common.verifyCardHasTitle("Manage members");
         Common.clickSearchButtonToMakeSearchInputFieldAppear();

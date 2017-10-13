@@ -172,20 +172,20 @@ describe('custom_fields_members', function() {
         Common.clickBackButtonInTitleBar();
     });
     it('should create member', function () {
-        Customers.clickButtonOrLinkCreateNewCustomer();
+        Customers.clickButtonOrLinkCreateNewMember();
         Common.verifyCardHasTitle("Create new member");
         Customers.enterTextIntoAccountInputField(customerAccount);
         Customers.enterTextIntoFirstNameInputField("Thomas");
         Customers.enterTextIntoLastNameInputField("Pynchon");
         Customers.enterTextIntoDayOfBirthInputField("9211978");
         Customers.verifyIsMemberCheckboxSelected();
-        Customers.clickEnabledContinueButtonForCustomerDetails();
+        Customers.clickEnabledContinueButtonForMemberDetails();
         Customers.enterTextIntoStreetInputField("800 Chatham Road #326");
         Customers.enterTextIntoCityInputField("Winston-Salem");
         Customers.selectCountryByName("Germany");
-        Customers.clickEnabledContinueButtonForCustomerAddress();
+        Customers.clickEnabledContinueButtonForMemberAddress();
         Customers.enterTextIntoEmailInputField("nds@yahoo.de");
-        Customers.clickEnabledContinueButtonForCustomerContact();
+        Customers.clickEnabledContinueButtonForMemberContact();
         Customers.goToStepCustomFields();
         CustomFields.verifyCustomFieldsTitle("My custom fields #2");
         //CREATE MEMBER disabled if no radio button selected (mandatory field); bug
@@ -210,7 +210,7 @@ describe('custom_fields_members', function() {
         Customers.verifyButtonCreateMemberDisabled();
         CustomFields.enterTextIntoCustomFieldOfTypeNumber("1", identifier2);
         Customers.verifyButtonCreateMemberEnabled();
-        Customers.clickEnabledCreateCustomerButton();
+        Customers.clickEnabledCreateMemberButton();
         Common.verifyMessagePopupIsDisplayed("Member is going to be saved")
     });
     //should it be able to update/delete fields once in use???

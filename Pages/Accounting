@@ -240,6 +240,16 @@ module.exports = {
         expect($$("table tbody tr").get(row - 1).$$(".td-data-table-cell").get(1).getText()).toEqual(account);
         expect($$("table tbody tr").get(row - 1).$$(".td-data-table-cell").get(2).getText()).toEqual(amount);
     },
+    verifyAccountHasBeenCreditedWithAmount: function(account, amount) {
+        browser.wait(EC.visibilityOf($("table tbody")), 3000);
+        expect($$("table tbody tr .td-data-table-cell").filter(function(elem, index) {
+            return elem.getText().then(function(text) {
+                return text === account;
+            });
+        }).first().element(by.xpath("..")).$$(".td-data-table-cell").last().getText().then(function(text){
+            return text == amount;
+        })).toBe(true);
+    },
     verifyClerkForJournalEntryIs: function (clerk){
         expect($$("md-card .mat-list-text h3").filter(function(elem, index) {
             return elem.getText().then(function(text) {
@@ -300,7 +310,7 @@ module.exports = {
         }).click();
     },
     enterTextIntoDebitAccountNameInputField: function(text) {
-        browser.wait(EC.visibilityOf(debitAccountInput), 5000);
+        browser.wait(EC.elementToBeClickable(debitAccountInput), 5000);
         debitAccountInput.click().sendKeys(text);
     },
     enterTextIntoDebitAmountInputField: function(text) {
@@ -316,6 +326,7 @@ module.exports = {
         creditAmountInput.click().sendKeys(text);
     },
     clickButtonCreateJournalEntry: function(){
+        browser.wait(EC.elementToBeClickable(primaryButton.get(0)), 5000);
         primaryButton.filter(function(elem, index) {
             return elem.$("span").getText().then(function(text) {
                 return text === "CREATE JOURNAL ENTRY";

@@ -2,6 +2,7 @@
 
 //Actions specific to the Customers section
 
+var Common = require('./Common.js');
 var EC = protractor.ExpectedConditions;
 
 //create customer
@@ -55,6 +56,22 @@ var primaryButton =  $$(".mat-raised-button.mat-primary");
 var continueButton = $$(".mat-raised-button.mat-accent");
 
 module.exports = {
+    createNewMember: function (customerAccount, firstName, lastName, dayOfBirth, street, city, country ) {
+        this.clickButtonOrLinkCreateNewMember();
+        Common.verifyCardHasTitle("Create new member");
+        this.enterTextIntoAccountInputField(customerAccount);
+        this.enterTextIntoFirstNameInputField(firstName);
+        this.enterTextIntoLastNameInputField(lastName);
+        this.enterTextIntoDayOfBirthInputField(dayOfBirth);
+        this.clickEnabledContinueButtonForMemberDetails();
+        this.enterTextIntoStreetInputField(street);
+        this.enterTextIntoCityInputField(city);
+        this.selectCountryByName(country);
+        this.clickEnabledContinueButtonForMemberAddress();
+        this.clickEnabledCreateMemberButton();
+        Common.verifyMessagePopupIsDisplayed("Member is going to be saved");
+        Common.verifyCardHasTitle("Manage members");
+    },
     enterTextIntoAccountInputField: function (text) {
         browser.wait(EC.visibilityOf(accountInput), 3000);
         accountInput.click().sendKeys(text);
@@ -90,29 +107,29 @@ module.exports = {
     enterTextIntoMobileInputField: function (text) {
         mobileInput.click().sendKeys(text);
     },
-    clickEnabledContinueButtonForCustomerDetails: function () {
+    clickEnabledContinueButtonForMemberDetails: function () {
         browser.wait(EC.elementToBeClickable(continueButton.get(0)), 5000);
         expect(continueButton.get(0).isEnabled()).toBeTruthy();
         continueButton.get(0).click();
     },
-    clickEnabledContinueButtonForCustomerAddress: function () {
+    clickEnabledContinueButtonForMemberAddress: function () {
         browser.wait(EC.elementToBeClickable(continueButton.get(1)), 5000);
         expect(continueButton.get(1).isEnabled()).toBeTruthy();
         continueButton.get(1).click();
     },
-    clickEnabledContinueButtonForCustomerContact: function () {
+    clickEnabledContinueButtonForMemberContact: function () {
         browser.wait(EC.elementToBeClickable(continueButton.get(2)), 5000);
         expect(continueButton.get(2).isEnabled()).toBeTruthy();
         continueButton.get(2).click();
     },
-    clickEnabledCreateCustomerButton: function () {
+    clickEnabledCreateMemberButton: function () {
         browser.executeScript("arguments[0].scrollIntoView();", primaryButton.first().getWebElement());
         browser.wait(EC.elementToBeClickable(primaryButton.first()), 5000);
         expect(primaryButton.first().isEnabled()).toBeTruthy();
         browser.wait(EC.elementToBeClickable(primaryButton.first()), 5000);
         primaryButton.first().click();
     },
-    clickButtonOrLinkCreateNewCustomer: function () {
+    clickButtonOrLinkCreateNewMember: function () {
         browser.wait(EC.visibilityOf($("a[href='/customers/create']")), 5000);
         $("a[href='/customers/create']").click();
     },

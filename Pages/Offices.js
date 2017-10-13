@@ -1,5 +1,5 @@
 //Offices.js
-var Common = require('../Pages/Common.js');
+var Common = require('./Common.js');
 
 //office creation
 var officeIdentifierInput = $(".mat-input-infix input[placeholder='Identifier']");

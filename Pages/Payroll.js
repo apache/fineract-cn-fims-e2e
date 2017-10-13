@@ -30,6 +30,7 @@ module.exports = {
         amountInput.get(allocationNumber-1).click().clear().sendKeys(text);
     },
     clickButtonAddAllocations: function(){
+        browser.sleep(200);
         buttons.filter(function(elem, index) {
             return elem.$("span").getText().then(function(text) {
                 return text === "Add allocation";
@@ -76,7 +77,18 @@ module.exports = {
         browser.wait(EC.visibilityOf($(".mat-option")), 5000);
         element(by.cssContainingText('.mat-option', accountIdentifier)).click();
     },
+    selectAllocationAccountFromOpenList: function(accountIdentifier){
+        browser.wait(EC.visibilityOf($(".mat-option")), 5000);
+        element(by.cssContainingText('.mat-option', accountIdentifier)).click();
+    },
+    verifyAccountNotOfferedForSelection: function(accountIdentifier, allocationNumber){
+        browser.wait(EC.elementToBeClickable(allocationAccountSelect.get(allocationNumber-1)), 3000);
+        allocationAccountSelect.get(allocationNumber-1).click();
+        browser.wait(EC.visibilityOf($(".mat-option")), 5000);
+        expect(element(by.cssContainingText('.mat-option', accountIdentifier)).isPresent()).toBe(false);
+    },
     selectMainAccount: function(accountIdentifier){
+        browser.sleep(500);
         browser.executeScript("arguments[0].scrollIntoView();", mainAccountSelect.getWebElement());
         browser.wait(EC.elementToBeClickable(mainAccountSelect), 3000);
         mainAccountSelect.click();
@@ -178,5 +190,9 @@ module.exports = {
                 return text === value;
             }).toBe(true);
         }));
+    },
+    verifyErrorIsDisplayedIfSameAccountSelectedTwice: function() {
+        browser.wait(EC.textToBePresentInElement($(".tc-red-600"),"Allocation accounts can't use main account or overlap with other allocation accounts."), 2000);
+        expect($(".tc-red-600").getText()).toMatch("Allocation accounts can't use main account or overlap with other allocation accounts.");
     },
 };

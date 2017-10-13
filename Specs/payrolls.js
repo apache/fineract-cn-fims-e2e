@@ -17,6 +17,7 @@ var Payroll = require('../Pages/Payroll');
 describe('payrolls', function() {
     var EC = protractor.ExpectedConditions;
     employeeIdentifier = helper.getRandomString(6);
+    entryIdentifier = helper.getRandomString(6);
     customerAccount = helper.getRandomString(5);
     customerAccount2 = helper.getRandomString(5);
     depositIdentifier = helper.getRandomString(5);
@@ -69,7 +70,7 @@ describe('payrolls', function() {
         Accounting.goToAccountingViaSidePanel();
         Accounting.goToJournalEntries();
         Accounting.clickButtonAddJournalEntry();
-        Accounting.enterTextIntoTransactionIdentifierInputField("Money for payroll");
+        Accounting.enterTextIntoTransactionIdentifierInputField(entryIdentifier);
         Accounting.enterTextIntoTransactionTypeInputFieldAndSelectMatchingEntry("ACCT");
         Accounting.clickButtonContinue();
         Accounting.enterTextIntoDebitAccountNameInputField(payrollAccount);
@@ -77,30 +78,30 @@ describe('payrolls', function() {
         Accounting.enterTextIntoCreditAccountNameInputField("1290");
         Accounting.enterTextIntoCreditAmountInputField("100000");
         Accounting.clickButtonCreateJournalEntry();
+        Common.verifyMessagePopupIsDisplayed("Journal entry is going to be processed");
     });
-    it('should be able to create customer', function () {
+    it('should be able to create customers', function () {
         Customers.goToManageCustomersViaSidePanel();
         Common.verifyCardHasTitle("Manage members");
-        Customers.clickButtonOrLinkCreateNewCustomer();
+        Customers.clickButtonOrLinkCreateNewMember();
         Common.verifyCardHasTitle("Create new member");
         Customers.enterTextIntoAccountInputField(customerAccount);
         Customers.enterTextIntoFirstNameInputField("Samuel");
         Customers.enterTextIntoLastNameInputField("Beckett");
         Customers.enterTextIntoDayOfBirthInputField("9211978");
-        Customers.clickEnabledContinueButtonForCustomerDetails();
+        Customers.clickEnabledContinueButtonForMemberDetails();
         Customers.enterTextIntoStreetInputField("800 Chatham Road #326");
         Customers.enterTextIntoCityInputField("Winston-Salem");
         Customers.selectCountryByName("Germany");
-        Customers.clickEnabledContinueButtonForCustomerAddress();
-        Customers.clickEnabledCreateCustomerButton();
-        Common.verifyMessagePopupIsDisplayed("Member is going to be saved")
+        Customers.clickEnabledContinueButtonForMemberAddress();
+        Customers.clickEnabledCreateMemberButton();
+        Common.verifyMessagePopupIsDisplayed("Member is going to be saved");
         Common.verifyCardHasTitle("Manage members");
+        Customers.createNewMember(customerAccount2, "Nina", "Delvos", "7112002", "Mulholland Road 1234", "City of Angels", "United States of America");
+        //ToDo: verify you cannot set up payroll distribution for member that is not active yet; add here once ATEN-478 has been fixed
         Common.clickSearchButtonToMakeSearchInputFieldAppear();
         Common.enterTextInSearchInputFieldAndApplySearch(customerAccount);
-        Common.verifyFirstRowOfSearchResultHasTextAsId(customerAccount);
         Common.clickLinkShowForFirstRowInTable();
-        Customers.verifyMemberHasStatusInactive();
-        //ToDo: verify you cannot set up payroll distribution for member that is not active yet; add here
         Customers.clickButtonGoToTasks();
         Customers.clickButtonActivate();
         Common.verifyMessagePopupIsDisplayed("Command is going to be executed");
@@ -292,9 +293,10 @@ describe('payrolls', function() {
         Customers.clickPayrollForMember(customerAccount);
         Payroll.clickButtonEditPayrollDistribution(customerAccount);
         Payroll.clickButtonAddAllocations();
+        //allocation account is the same as main account
         Payroll.selectAllocationAccountForAllocation(customerAccount + ".9100.00001", 1);
         Payroll.enterTextIntoAmountInputFieldForAllocation("1200", 1);
-        //not possible, error
+        Payroll.verifyErrorIsDisplayedIfSameAccountSelectedTwice();
         Payroll.verifyButtonUpdateAllocationsDisabled();
         Payroll.selectAllocationAccountForAllocation(customerAccount + ".9100.00002", 1);
         Payroll.verifyButtonUpdateAllocationsEnabled();
@@ -331,9 +333,8 @@ describe('payrolls', function() {
         Accounting.verifyClerkForJournalEntryIs(employeeIdentifier);
         Accounting.verifyNoteForJournalEntryIs("Payroll Distribution");
         Accounting.verifyAccountHasBeenDebitedWithAmountInRow(payrollAccount, "2,000.00", 1);
-        //order might change here
-        Accounting.verifyAccountHasBeenCreditedWithAmountInRow(customerAccount + ".9100.00001", "800.00", 2);
-        Accounting.verifyAccountHasBeenCreditedWithAmountInRow(customerAccount + ".9100.00002", "1,200.00", 3);
+        Accounting.verifyAccountHasBeenCreditedWithAmount(customerAccount + ".9100.00001", "800.00");
+        Accounting.verifyAccountHasBeenCreditedWithAmount(customerAccount + ".9100.00002", "1,200.00");
     });
     it('should update payroll allocation for member to proportional', function () {
         Customers.goToManageCustomersViaSidePanel();
@@ -344,7 +345,7 @@ describe('payrolls', function() {
         Customers.clickPayrollForMember(customerAccount);
         Payroll.clickButtonEditPayrollDistribution(customerAccount);
         Payroll.checkCheckboxProportionalForAllocation(1);
-        Payroll.enterTextIntoAmountInputFieldForAllocation("40.9", 1);
+        Payroll.enterTextIntoAmountInputFieldForAllocation("40.8", 1);
         Payroll.verifyButtonUpdateAllocationsEnabled();
         Payroll.clickButtonUpdateAllocations("Payroll is going to be saved");
     });
@@ -375,7 +376,7 @@ describe('payrolls', function() {
         Payroll.verifyEmployerForPaymentInRow("Ballast Point", 2);
         Payroll.verifySalaryForPaymentInRow("450", 2);
     });
-    it('verify transaction has been booked as expected', function () {
+    it('verify transaction has been booked as expected - main account & one allocation, proportional', function () {
         //journal entry
         Accounting.goToAccountingViaSidePanel();
         Accounting.goToJournalEntries();
@@ -386,7 +387,7 @@ describe('payrolls', function() {
         Accounting.verifyClerkForJournalEntryIs(employeeIdentifier);
         Accounting.verifyNoteForJournalEntryIs("Payroll Distribution");
         Accounting.verifyAccountHasBeenDebitedWithAmountInRow(payrollAccount,  "1,000.00", 1);
-        //ToDo: Why still not changed?
+        //ToDo: ATEN-477
         // Accounting.verifyAccountHasBeenCreditedWithAmountInRow(customerAccount + ".9100.00001", "591.00", 2);
         // Accounting.verifyAccountHasBeenCreditedWithAmountInRow(customerAccount + ".9100.00001", "409.00", 3);
         // Accounting.clickJournalEntry(4);
@@ -414,7 +415,13 @@ describe('payrolls', function() {
         Customers.clickPayrollForMember(customerAccount);
         Payroll.clickButtonEditPayrollDistribution(customerAccount);
         Payroll.clickButtonAddAllocations();
-        //ToDo: check pending deposit account should not be offered for selection
+        Payroll.verifyButtonUpdateAllocationsDisabled();
+        Payroll.verifyAccountNotOfferedForSelection(customerAccount + ".9100.00003", 2);
+        //same allocation account selected
+        Payroll.selectAllocationAccountFromOpenList(customerAccount + ".9100.00002");
+        Payroll.verifyErrorIsDisplayedIfSameAccountSelectedTwice();
+        Payroll.clickButtonRemoveAllocation(2);
+        Payroll.verifyButtonUpdateAllocationsEnabled();
         //open account
         Teller.goToTellerManagementViaSidePanel();
         Teller.enterTextIntoSearchInputField(customerAccount);
@@ -476,12 +483,11 @@ describe('payrolls', function() {
         Accounting.verifyClerkForJournalEntryIs(employeeIdentifier);
         Accounting.verifyNoteForJournalEntryIs("Payroll Distribution");
         Accounting.verifyAccountHasBeenDebitedWithAmountInRow(payrollAccount, "888.88", 1);
-        //order might change here
-        Accounting.verifyAccountHasBeenCreditedWithAmountInRow(customerAccount + ".9100.00003", "400.00", 2);
-        Accounting.verifyAccountHasBeenCreditedWithAmountInRow(customerAccount + ".9100.00002", "270.00", 3);
-        Accounting.verifyAccountHasBeenCreditedWithAmountInRow(customerAccount + ".9100.00001", "218.88", 4);
+        Accounting.verifyAccountHasBeenCreditedWithAmount(customerAccount + ".9100.00001", "218.88");
+        Accounting.verifyAccountHasBeenCreditedWithAmount(customerAccount + ".9100.00002", "270.00");
+        Accounting.verifyAccountHasBeenCreditedWithAmount(customerAccount + ".9100.00003", "400.00");
     });
-    it('should update payroll allocation for member - three accounts', function () {
+    it('should update payroll allocation for member - main account & two allocations (not proportional)', function () {
         Customers.goToManageCustomersViaSidePanel();
         Common.clickSearchButtonToMakeSearchInputFieldAppear();
         Common.enterTextInSearchInputFieldAndApplySearch(customerAccount);
@@ -527,19 +533,115 @@ describe('payrolls', function() {
         Accounting.verifyClerkForJournalEntryIs(employeeIdentifier);
         Accounting.verifyNoteForJournalEntryIs("Payroll Distribution");
         Accounting.verifyAccountHasBeenDebitedWithAmountInRow(payrollAccount, "3,000.00", 1);
-        //order might change here
-        Accounting.verifyAccountHasBeenCreditedWithAmountInRow(customerAccount + ".9100.00003", "25.50", 2);
-        Accounting.verifyAccountHasBeenCreditedWithAmountInRow(customerAccount + ".9100.00002", "2,600.00", 3);
-        Accounting.verifyAccountHasBeenCreditedWithAmountInRow(customerAccount + ".9100.00001", "374.50", 4);
-        browser.pause();
+        Accounting.verifyAccountHasBeenCreditedWithAmount(customerAccount + ".9100.00001", "374.50");
+        Accounting.verifyAccountHasBeenCreditedWithAmount(customerAccount + ".9100.00002", "2,600.00");
+        Accounting.verifyAccountHasBeenCreditedWithAmount(customerAccount + ".9100.00003", "25.50");
     });
-    //allocations - three accounts, mixed
-    //same deposit account selected twice, not possible
-    //pending/closed dep account
-    //payment smaller than amounts  for allocations
-    //allocations exceeding 100% (proportional)
-    //payment just enough for allocations
+    it('should update payroll allocation for member - main account & two allocations (mixed)', function () {
+        Customers.goToManageCustomersViaSidePanel();
+        Common.clickSearchButtonToMakeSearchInputFieldAppear();
+        Common.enterTextInSearchInputFieldAndApplySearch(customerAccount);
+        Common.verifyFirstRowOfSearchResultHasTextAsId(customerAccount);
+        Common.clickLinkShowForRowWithId(customerAccount);
+        Customers.clickPayrollForMember(customerAccount);
+        Payroll.clickButtonEditPayrollDistribution(customerAccount);
+        Payroll.checkCheckboxProportionalForAllocation(2);
+        Payroll.enterTextIntoAmountInputFieldForAllocation("50", 2);
+        Payroll.verifyButtonUpdateAllocationsEnabled();
+        Payroll.clickButtonUpdateAllocations("Payroll is going to be saved");
+    });
+    it('should pay salary - main account & 2 allocation (mixed) - sufficient payment', function () {
+        Accounting.goToAccountingViaSidePanel();
+        Accounting.goToPayrolls();
+        Payroll.clickButtonCreatePayroll();
+        Payroll.enterTextIntoFromAccountInputFieldForPayment(payrollAccount);
+        Payroll.enterTextIntoMemberInputFieldForPayment(customerAccount, 1);
+        Payroll.enterTextIntoEmployerInputFieldForPayment("Deschutes", 1);
+        Payroll.enterTextIntoSalaryInputFieldForPayment("6000", 1);
+        Payroll.clickCreatePaymentsButton();
+        Common.verifyMessagePopupIsDisplayed("Payroll is going to be created");
+        Common.clickLinkShowForFirstRowInTable();
+        //verify details
+        Payroll.verifyMemberIDForPaymentInRow(customerAccount, 1);
+        Payroll.verifyEmployerForPaymentInRow("Deschutes", 1);
+        Payroll.verifySalaryForPaymentInRow("6000", 1);
+    });
+    it('should pay salary - main account & 2 allocation (mixed) - exactly enough for allocations', function () {
+        Accounting.goToAccountingViaSidePanel();
+        Accounting.goToPayrolls();
+        Payroll.clickButtonCreatePayroll();
+        Payroll.enterTextIntoFromAccountInputFieldForPayment(payrollAccount);
+        Payroll.enterTextIntoMemberInputFieldForPayment(customerAccount, 1);
+        Payroll.enterTextIntoEmployerInputFieldForPayment("Deschutes 2", 1);
+        Payroll.enterTextIntoSalaryInputFieldForPayment("5200", 1);
+        Payroll.clickCreatePaymentsButton();
+        Common.verifyMessagePopupIsDisplayed("Payroll is going to be created");
+        Common.clickLinkShowForFirstRowInTable();
+        //verify details
+        Payroll.verifyMemberIDForPaymentInRow(customerAccount, 1);
+        Payroll.verifyEmployerForPaymentInRow("Deschutes 2", 1);
+        Payroll.verifySalaryForPaymentInRow("5200", 1);
+    });
+    it('should pay salary - main account & 2 allocation (mixed) - insufficient payment', function () {
+        Accounting.goToAccountingViaSidePanel();
+        Accounting.goToPayrolls();
+        Payroll.clickButtonCreatePayroll();
+        Payroll.enterTextIntoFromAccountInputFieldForPayment(payrollAccount);
+        Payroll.enterTextIntoMemberInputFieldForPayment(customerAccount, 1);
+        Payroll.enterTextIntoEmployerInputFieldForPayment("Deschutes 3", 1);
+        Payroll.enterTextIntoSalaryInputFieldForPayment("5000", 1);
+        Payroll.clickCreatePaymentsButton();
+        Common.verifyMessagePopupIsDisplayed("Payroll is going to be created");
+        Common.clickLinkShowForFirstRowInTable();
+        //verify details
+        Payroll.verifyMemberIDForPaymentInRow(customerAccount, 1);
+        Payroll.verifyEmployerForPaymentInRow("Deschutes 3", 1);
+        Payroll.verifySalaryForPaymentInRow("5000", 1);
+    });
+    it('verify transaction has been booked as expected - sufficient payment', function () {
+        //journal entry
+        Accounting.goToAccountingViaSidePanel();
+        Accounting.goToJournalEntries();
+        Accounting.enterTextIntoSearchAccountInputField(customerAccount + ".9100.00003");
+        Accounting.clickSearchButton();
+        Accounting.verifyFourthJournalEntry("Payroll/Salary Payment", "Amount: 6,000.00");
+        Accounting.clickJournalEntry(4);
+        Accounting.verifyClerkForJournalEntryIs(employeeIdentifier);
+        Accounting.verifyNoteForJournalEntryIs("Payroll Distribution");
+        Accounting.verifyAccountHasBeenDebitedWithAmountInRow(payrollAccount, "6,000.00", 1);
+        //order might change here
+        Accounting.verifyAccountHasBeenCreditedWithAmount(customerAccount + ".9100.00003", "3,000.00");
+        Accounting.verifyAccountHasBeenCreditedWithAmount(customerAccount + ".9100.00002", "2,600.00");
+        Accounting.verifyAccountHasBeenCreditedWithAmount(customerAccount + ".9100.00001", "400.00");
+    });
+    it('verify transaction has been booked as expected - payment exactly covering allocations', function () {
+        //journal entry
+        Accounting.goToAccountingViaSidePanel();
+        Accounting.goToJournalEntries();
+        Accounting.enterTextIntoSearchAccountInputField(customerAccount + ".9100.00003");
+        Accounting.clickSearchButton();
+        Accounting.verifyFifthJournalEntry("Payroll/Salary Payment", "Amount: 5,200.00");
+        Accounting.clickJournalEntry(5);
+        Accounting.verifyClerkForJournalEntryIs(employeeIdentifier);
+        Accounting.verifyNoteForJournalEntryIs("Payroll Distribution");
+        Accounting.verifyAccountHasBeenDebitedWithAmountInRow(payrollAccount, "5,200.00", 1);
+        //order might change here
+        Accounting.verifyAccountHasBeenCreditedWithAmount(customerAccount + ".9100.00002", "2,600.00");
+        Accounting.verifyAccountHasBeenCreditedWithAmount(customerAccount + ".9100.00003", "2,600.00");
+    });
+    // it('verify transaction has been booked as expected - payment insufficient to cover allocations', function () {
+    //     //journal entry
+    //     //ToDo: no journal entry exists, payment has not been made though created: ATEN-457
+    //     Accounting.goToAccountingViaSidePanel();
+    //     Accounting.goToJournalEntries();
+    //     Accounting.enterTextIntoSearchAccountInputField(customerAccount + ".9100.00003");
+    //     Accounting.clickSearchButton();
+    //     Accounting.clickJournalEntry(6);
+    //     Accounting.verifyClerkForJournalEntryIs(employeeIdentifier);
+    //     Accounting.verifyNoteForJournalEntryIs("Payroll Distribution");
+    //     Accounting.verifyAccountHasBeenDebitedWithAmountInRow(payrollAccount, "5,000.00", 1);
+    // });
+    //closed dep account already selected for payroll; ATEN-461
+    //allocations exceeding 100% (proportional); same behavior as above (ATEN-457)
     //several payments at once (same member/different members)
-    //loan account apparently too now
-
 });

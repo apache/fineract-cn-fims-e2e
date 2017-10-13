@@ -70,18 +70,18 @@ describe('teller_management', function() {
     it('should be able to create customer', function () {
         Customers.goToManageCustomersViaSidePanel();
         Common.verifyCardHasTitle("Manage members");
-        Customers.clickButtonOrLinkCreateNewCustomer();
+        Customers.clickButtonOrLinkCreateNewMember();
         Common.verifyCardHasTitle("Create new member");
         Customers.enterTextIntoAccountInputField(customerAccount);
         Customers.enterTextIntoFirstNameInputField("Samuel");
         Customers.enterTextIntoLastNameInputField("Beckett");
         Customers.enterTextIntoDayOfBirthInputField("9211978");
-        Customers.clickEnabledContinueButtonForCustomerDetails();
+        Customers.clickEnabledContinueButtonForMemberDetails();
         Customers.enterTextIntoStreetInputField("800 Chatham Road #326");
         Customers.enterTextIntoCityInputField("Winston-Salem");
         Customers.selectCountryByName("Germany");
-        Customers.clickEnabledContinueButtonForCustomerAddress();
-        Customers.clickEnabledCreateCustomerButton();
+        Customers.clickEnabledContinueButtonForMemberAddress();
+        Customers.clickEnabledCreateMemberButton();
         Common.verifyMessagePopupIsDisplayed("Member is going to be saved")
         Common.verifyCardHasTitle("Manage members");
     });
