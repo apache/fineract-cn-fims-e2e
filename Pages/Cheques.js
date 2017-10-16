@@ -11,11 +11,11 @@ var issuingBankInput = $("fims-text-input[controlname='drawee'] input");
 var issuerInput = $("fims-text-input[controlname='drawer'] input");
 var payeeInput = $("fims-text-input[controlname='payee'] input");
 var dateIssuedInput = $("fims-date-input[controlname='dateIssued'] input");
-var checkboxIsChequeOpen = $("md-checkbox[formcontrolname='openCheque']");
+var checkboxIsChequeOpen = $("mat-checkbox[formcontrolname='openCheque']");
 var warningIssuingBankIssuerCouldNotBeDetermined = $("td-message[label='Issuing Bank/Issuer could not be determined in our system from the MICR you entered.']");
 var warningToCheckCustomerID = $("td-message[label='Please check identification card of member']");
 var amountInput = $("fims-text-input[controlname='amount'] input");
-var accountSelect = $("md-select[formcontrolname='productInstance'] .mat-select-trigger");
+var accountSelect = $("mat-select[formcontrolname='productInstance'] .mat-select-trigger");
 // three buttons (DETERMINE FROM MICR, CREATE TRANSACTION, CONFIRM TRANSACTION
 var primaryButtons = $$(".mat-raised-button.mat-primary");
 
@@ -27,7 +27,7 @@ module.exports = {
     },
     verifyChequeNumberInputHasErrorIfInputNoNumber: function(text) {
         expect(chequeNumberInput.getAttribute("class")).toMatch("ng-invalid");
-        expect(chequeNumberInput.element(by.xpath("..")).element(by.xpath("..")).element(by.xpath("..")).$("md-error").getText()).toEqual("Must be a number");
+        expect(chequeNumberInput.element(by.xpath("..")).element(by.xpath("..")).element(by.xpath("..")).$("mat-error").getText()).toEqual("Must be a number");
     },
     enterTextIntoBranchSortCodeInputField: function(text) {
         browser.executeScript("arguments[0].scrollIntoView();", branchSortCodeInput.getWebElement());
@@ -36,7 +36,7 @@ module.exports = {
     },
     verifyBranchSortCodeInputHasErrorIfCharacterLimitExceeded: function() {
         expect(branchSortCodeInput.getAttribute("class")).toMatch("ng-invalid");
-        expect(branchSortCodeInput.element(by.xpath("..")).element(by.xpath("..")).element(by.xpath("..")).$("md-error").getText()).toEqual("Only 11 characters allowed.");
+        expect(branchSortCodeInput.element(by.xpath("..")).element(by.xpath("..")).element(by.xpath("..")).$("mat-error").getText()).toEqual("Only 11 characters allowed.");
     },
     enterTextIntoAccountNumberInputField: function(text) {
         browser.executeScript("arguments[0].scrollIntoView();", accountNumberInput.getWebElement());
@@ -93,13 +93,13 @@ module.exports = {
     },
     verifyIssuingBankHasError: function(){
         browser.sleep(1000);
-        expect(issuingBankInput.element(by.xpath("..")).element(by.xpath("..")).element(by.xpath("..")).$("md-error").getText()).toEqual("Required");
+        expect(issuingBankInput.element(by.xpath("..")).element(by.xpath("..")).element(by.xpath("..")).$("mat-error").getText()).toEqual("Required");
     },
     verifyIssuerHasText: function(issuer){
         expect(issuerInput.getAttribute("value")).toEqual(issuer);
     },
     verifyIssuerHasError: function(){
-        expect(issuerInput.element(by.xpath("..")).element(by.xpath("..")).element(by.xpath("..")).$("md-error").getText()).toEqual("Required");
+        expect(issuerInput.element(by.xpath("..")).element(by.xpath("..")).element(by.xpath("..")).$("mat-error").getText()).toEqual("Required");
     },
     checkCheckboxIsChequeOpen: function(){
        checkboxIsChequeOpen.click();
@@ -108,7 +108,7 @@ module.exports = {
         amountInput.click().clear().sendKeys(text);
     },
     verifyAmountInputHasErrorIfInput0OrNegative: function(text) {
-       expect(amountInput.element(by.xpath("..")).element(by.xpath("..")).element(by.xpath("..")).$("md-error").getText()).toEqual("Value must be greater than 0");
+       expect(amountInput.element(by.xpath("..")).element(by.xpath("..")).element(by.xpath("..")).$("mat-error").getText()).toEqual("Value must be greater than 0");
     },
     verifyWarningIsDisplayedIfChequeIsNotOpen: function(){
         browser.wait(EC.visibilityOf(warningToCheckCustomerID), 2000);
@@ -192,7 +192,7 @@ module.exports = {
     },
     clickButtonCancelForChequeWithIdentifier: function(id) {
         browser.sleep(1000);
-        browser.wait(EC.invisibilityOf($("div[class='md-padding'] h3")), 5000);
+        browser.wait(EC.invisibilityOf($("div[class='mat-padding'] h3")), 5000);
         browser.wait(EC.textToBePresentInElement($$("tbody tr .td-data-table-cell").last(), "CANCEL"), 3000);
         $$('tbody tr').filter(function(elem, index) {
             return elem.$$(".td-data-table-cell").first().getText().then(function(text) {
@@ -202,7 +202,7 @@ module.exports = {
     },
     clickButtonApproveForChequeWithIdentifier: function(id) {
         browser.sleep(1000);
-        browser.wait(EC.invisibilityOf($("div[class='md-padding'] h3")), 5000);
+        browser.wait(EC.invisibilityOf($("div[class='mat-padding'] h3")), 5000);
         browser.wait(EC.textToBePresentInElement($$("tbody tr .td-data-table-cell").last(), "CANCEL"), 3000);
         $$('tbody tr').filter(function(elem, index) {
             return elem.$$(".td-data-table-cell").first().getText().then(function(text) {
