@@ -78,7 +78,7 @@ module.exports = {
         browser.sleep(1000);
     },
     clickLinkShowForAccountWithName: function(name) {
-        browser.wait(EC.invisibilityOf($("div[class='md-padding'] h3")), 5000);
+        browser.wait(EC.invisibilityOf($("div[class='mat-padding'] h3")), 5000);
         browser.sleep(1000);
         browser.wait(EC.textToBePresentInElement($$("tbody tr .td-data-table-cell").last(), "SHOW"), 5000);
         $$('tbody tr').filter(function(elem, index) {
@@ -88,7 +88,7 @@ module.exports = {
         }).$$(".td-data-table-cell").last().click();
     },
     clickLinkShowForAccountWithIdentifier: function(identifier) {
-        browser.wait(EC.invisibilityOf($("div[class='md-padding'] h3")), 5000);
+        browser.wait(EC.invisibilityOf($("div[class='mat-padding'] h3")), 5000);
         browser.sleep(1000);
         browser.wait(EC.textToBePresentInElement($$("tbody tr .td-data-table-cell").last(), "SHOW"), 5000);
         $$('tbody tr').filter(function(elem, index) {
@@ -104,7 +104,7 @@ module.exports = {
             })).toBe(true);
     },
     verifyAccountInfo: function(heading, value) {
-        expect($$(".md-list-item .mat-list-text").filter(function (elem, index) {
+        expect($$(".mat-list-item .mat-list-text").filter(function (elem, index) {
             return elem.$("h3").getText().then(function (text) {
                 return text === heading;
             }).$(p).getText().then(function (text) {
@@ -169,7 +169,7 @@ module.exports = {
     },
     clickSearchButton: function(){
        $$("button").filter(function(elem, index) {
-            return elem.$("span md-icon").getText().then(function(text) {
+            return elem.$("span mat-icon").getText().then(function(text) {
                 return text === "search";
             });
         }).click();
@@ -193,15 +193,15 @@ module.exports = {
         })).toBe(true);
     },
     clickSecondJournalEntry: function(){
-        $$("fims-layout-card-over md-nav-list a").get(1).click();
+        $$("fims-layout-card-over mat-nav-list a").get(1).click();
         browser.sleep(500);
     },
     clickThirdJournalEntry: function(){
-        $$("fims-layout-card-over md-nav-list a").get(2).click();
+        $$("fims-layout-card-over mat-nav-list a").get(2).click();
         browser.sleep(500);
     },
     clickJournalEntry: function(number){
-        $$("fims-layout-card-over md-nav-list a").get(number-1).click();
+        $$("fims-layout-card-over mat-nav-list a").get(number-1).click();
         browser.sleep(500);
     },
     verifyThirdJournalEntry: function(transactionType, transactionAmount){
@@ -251,7 +251,7 @@ module.exports = {
         })).toBe(true);
     },
     verifyClerkForJournalEntryIs: function (clerk){
-        expect($$("md-card .mat-list-text h3").filter(function(elem, index) {
+        expect($$("mat-card .mat-list-text h3").filter(function(elem, index) {
             return elem.getText().then(function(text) {
                 return text === "Clerk";
             });
@@ -260,7 +260,7 @@ module.exports = {
         })).toBe(true);
     },
     verifyMessageForJournalEntryIs: function (message){
-        expect($$("md-card .mat-list-text h3").filter(function(elem, index) {
+        expect($$("mat-card .mat-list-text h3").filter(function(elem, index) {
             return elem.getText().then(function(text) {
                 return text === "Message";
             });
@@ -269,7 +269,7 @@ module.exports = {
         })).toBe(true);
     },
     verifyNoteForJournalEntryIs: function (note){
-        expect($$("md-card .mat-list-text h3").filter(function(elem, index) {
+        expect($$("mat-card .mat-list-text h3").filter(function(elem, index) {
             return elem.getText().then(function(text) {
                 return text === "Note";
             });
