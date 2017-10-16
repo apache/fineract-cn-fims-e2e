@@ -4,10 +4,10 @@
 
 var EC = protractor.ExpectedConditions;
 
-var mainAccountSelect = $("md-select[formcontrolname='mainAccountNumber'] .mat-select-trigger");
+var mainAccountSelect = $("mat-select[formcontrolname='mainAccountNumber'] .mat-select-trigger");
 var amountInput = $$("fims-number-input[controlname='amount'] input");
-var allocationAccountSelect = $$("md-select[formcontrolname='accountNumber'] .mat-select-trigger");
-var checkboxProportional = $$("md-checkbox[formcontrolname='proportional']");
+var allocationAccountSelect = $$("mat-select[formcontrolname='accountNumber'] .mat-select-trigger");
+var checkboxProportional = $$("mat-checkbox[formcontrolname='proportional']");
 
 var fromAccountInput = $("fims-account-select[formcontrolname='sourceAccountNumber'] input");
 var memberInput = $$("fims-customer-select[formcontrolname='customerIdentifier'] input");
@@ -150,8 +150,8 @@ module.exports = {
         memberInput.get(paymentNumber-1).click().clear().sendKeys(text);
     },
     verifyMemberInputFieldHasError: function(errorMessage) {
-        browser.wait(EC.textToBePresentInElement($$("md-hint").get(1), "Invalid member or has no payroll created"), 2000);
-        expect(memberInput.first().element(by.xpath("..")).element(by.xpath("..")).element(by.xpath("..")).$("md-hint").getText()).toEqual(errorMessage);
+        browser.wait(EC.textToBePresentInElement($$("mat-hint").get(1), "Invalid member or has no payroll created"), 2000);
+        expect(memberInput.first().element(by.xpath("..")).element(by.xpath("..")).element(by.xpath("..")).$("mat-hint").getText()).toEqual(errorMessage);
     },
     enterTextIntoEmployerInputFieldForPayment: function(text, paymentNumber) {
         browser.wait(EC.elementToBeClickable(employerInput.get(paymentNumber-1)), 5000);
@@ -183,7 +183,7 @@ module.exports = {
         expect($$("table tbody tr").get(row - 1).$$(".td-data-table-cell").get(2).getText()).toEqual(accountNumber);
     },
     verifyPayrollInfo: function(heading, value) {
-        expect($$(".md-list-item .mat-list-text").filter(function (elem, index) {
+        expect($$(".mat-list-item .mat-list-text").filter(function (elem, index) {
             return elem.$("h3").getText().then(function (text) {
                 return text === heading;
             }).$(p).getText().then(function (text) {

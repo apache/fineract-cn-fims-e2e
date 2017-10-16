@@ -6,7 +6,7 @@ exports.config = {
 
   framework: 'jasmine',
   specs: [
-      'Specs/custom_fields_members.js'
+      'Specs/payrolls.js'
   ],
     directConnect: true,
     allScriptsTimeout: 45000,

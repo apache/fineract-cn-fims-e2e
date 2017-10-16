@@ -370,6 +370,7 @@ module.exports = {
         }).click();
     },
     goToStepCustomFields: function(){
+        browser.sleep(100);
         browser.wait(EC.elementToBeClickable($$(".td-step-label").get(5)), 3000);
         $$(".td-step-label").get(5).click();
     },

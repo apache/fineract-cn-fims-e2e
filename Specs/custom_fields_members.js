@@ -188,13 +188,12 @@ describe('custom_fields_members', function() {
         Customers.clickEnabledContinueButtonForMemberContact();
         Customers.goToStepCustomFields();
         CustomFields.verifyCustomFieldsTitle("My custom fields #2");
-        //CREATE MEMBER disabled if no radio button selected (mandatory field); bug
-        //Customers.verifyButtonCreateMemberDisabled();
+        Customers.verifyButtonCreateMemberDisabled();
         CustomFields.enterTextIntoCustomFieldOfTypeText("abc", identifier1);
         CustomFields.enterTextIntoCustomFieldOfTypeNumber("100", identifier2);
         CustomFields.enterTextIntoCustomDateInputField("09/04/1999", identifier3);
         CustomFields.selectOptionForMultiSelection("Option 1", identifier5);
-        //Customers.verifyButtonCreateMemberDisabled();
+        Customers.verifyButtonCreateMemberDisabled();
         CustomFields.selectRadioButtonForSingleSelection(1, identifier4);
         Customers.verifyButtonCreateMemberEnabled();
         CustomFields.enterTextIntoCustomFieldOfTypeText("This text is too long.", identifier1);
@@ -211,10 +210,19 @@ describe('custom_fields_members', function() {
         CustomFields.enterTextIntoCustomFieldOfTypeNumber("1", identifier2);
         Customers.verifyButtonCreateMemberEnabled();
         Customers.clickEnabledCreateMemberButton();
-        Common.verifyMessagePopupIsDisplayed("Member is going to be saved")
+        Common.verifyMessagePopupIsDisplayed("Member is going to be saved");
     });
-    //should it be able to update/delete fields once in use???
-    it('should not be able to delete custom fields anymore', function () {
+    it('should be able to add custom fields to catalog', function () {
+        //ToDo: not possible yet
+    });
+    //should it be able to update fields once in use???
+    it('should not be able to delete custom fields that are in use', function () {
+
+    });
+    it('should update member to no longer use custom field', function () {
+
+    });
+    it('should be able to update/delete custom field that is no longer in use', function () {
 
     });
 
