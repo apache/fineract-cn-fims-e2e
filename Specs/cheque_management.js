@@ -490,7 +490,7 @@ describe('cheque_management', function() {
         Common.clickFirstColumnHeaderInTableToResortTable();
         Accounting.verifyTransactionTypeForRow("DEBIT", 1);
         Accounting.verifyTransactionMessageForRow("ORCQ", 1);
-        Accounting.verifyTransactionAmountForRow("5000.00", 1);
+        Accounting.verifyTransactionAmountForRow("5000", 1);
         Accounting.verifyTransactionBalanceForRow("-5000", 1);
         Common.clickBackButtonInTitleBar();
         Common.clickBackButtonInTitleBar();
