@@ -5,27 +5,27 @@
 var EC = protractor.ExpectedConditions;
 var titleRow = $("fims-layout-card-over .mat-toolbar-row span");
 var createDeposit = $("a[href='/deposits/create']");
-var radioGroupType = $("md-radio-group[formcontrolname='type']")
-var radioChecking = $$("md-radio-group md-radio-button").get(0);
-var radioSavings = $$("md-radio-group md-radio-button").get(1);
-var radioShare = $$("md-radio-group md-radio-button").get(2);
+var radioGroupType = $("mat-radio-group[formcontrolname='type']")
+var radioChecking = $$("mat-radio-group mat-radio-button").get(0);
+var radioSavings = $$("mat-radio-group mat-radio-button").get(1);
+var radioShare = $$("mat-radio-group mat-radio-button").get(2);
 var shortNameInput = $("fims-id-input[controlname='identifier'] input");
 var nameInput = $("fims-text-input[controlname='name'] input");
 var descriptionInput = $(".mat-input-infix input[formcontrolname='description']");
 var minimumBalanceInput = $("fims-number-input[controlname='minimumBalance'] input");
-var currencySelect = $("md-select[formcontrolname='currencyCode']");
-var radioGroupInterest = $("md-radio-group[formcontrolname='termInterestPayable']");
-var radioMaturity = radioGroupInterest.$$("md-radio-button").get(0);
-var radioAnnually = radioGroupInterest.$$("md-radio-button").get(1);
-var radioQuarterly = radioGroupInterest.$$("md-radio-button").get(2);
-var radioMonthly = radioGroupInterest.$$("md-radio-button").get(3);
-var checkboxFlexibleInterest = $("md-checkbox[formcontrolname='flexible']")
+var currencySelect = $("mat-select[formcontrolname='currencyCode']");
+var radioGroupInterest = $("mat-radio-group[formcontrolname='termInterestPayable']");
+var radioMaturity = radioGroupInterest.$$("mat-radio-button").get(0);
+var radioAnnually = radioGroupInterest.$$("mat-radio-button").get(1);
+var radioQuarterly = radioGroupInterest.$$("mat-radio-button").get(2);
+var radioMonthly = radioGroupInterest.$$("mat-radio-button").get(3);
+var checkboxFlexibleInterest = $("mat-checkbox[formcontrolname='flexible']")
 var interestInput = $("fims-number-input[controlname='interest'] input");
 var termPeriodInput = $("fims-text-input[controlname='termPeriod'] input");
-var fixedTermEnabledToggle = $("md-slide-toggle[formcontrolname='fixedTermEnabled']");
-var termTimeUnit = $("md-radio-group[formcontrolname='termTimeUnit']");
-var radioMonth = termTimeUnit.$$("md-radio-button").get(0);
-var radioYear = termTimeUnit.$$("md-radio-button").get(1);
+var fixedTermEnabledToggle = $("mat-slide-toggle[formcontrolname='fixedTermEnabled']");
+var termTimeUnit = $("mat-radio-group[formcontrolname='termTimeUnit']");
+var radioMonth = termTimeUnit.$$("mat-radio-button").get(0);
+var radioYear = termTimeUnit.$$("mat-radio-button").get(1);
 
 var cashAccountInput = $("fims-account-select[formcontrolname='cashAccountIdentifier'] input");
 var expenseAccountInput = $("fims-account-select[formcontrolname='expenseAccountIdentifier'] input");
@@ -37,12 +37,12 @@ var chargeNameInput2 = $$("fims-deposit-product-charges-form fims-text-input[con
 var chargeDescriptionInput = $("input[formcontrolname='description']");
 var chargeAmountInput1 = $$("fims-number-input[controlname='amount'] input").get(0);
 var chargeAmountInput2 = $$("fims-number-input[controlname='amount'] input").get(1);
-var chargeTypeSelect1 = $$("md-select[formcontrolname='actionIdentifier']").get(0);
-var chargeTypeSelect2 = $$("md-select[formcontrolname='actionIdentifier']").get(1);
+var chargeTypeSelect1 = $$("mat-select[formcontrolname='actionIdentifier']").get(0);
+var chargeTypeSelect2 = $$("mat-select[formcontrolname='actionIdentifier']").get(1);
 var incomeAccountInput1 = $$("fims-account-select[formcontrolname='incomeAccountIdentifier'] input").get(0);
 var incomeAccountInput2 = $$("fims-account-select[formcontrolname='incomeAccountIdentifier'] input").get(1);
-var checkboxProportional1 = $$("md-checkbox[formcontrolname='proportional']").get(0);
-var checkboxProportional2 = $$("md-checkbox[formcontrolname='proportional'] label").get(1);
+var checkboxProportional1 = $$("mat-checkbox[formcontrolname='proportional']").get(0);
+var checkboxProportional2 = $$("mat-checkbox[formcontrolname='proportional'] label").get(1);
 var primaryButton = $$(".mat-raised-button.mat-primary");
 
 module.exports = {
@@ -139,12 +139,12 @@ module.exports = {
         expect(termPeriodInput.isEnabled()).toBe(true);
     },
     verifyRadioButtonsMonthAndYearDisabled: function() {
-        expect(termTimeUnit.$$("md-radio-button input").get(0).isEnabled()).toBe(false);
-        expect(termTimeUnit.$$("md-radio-button input").get(1).isEnabled()).toBe(false);
+        expect(termTimeUnit.$$("mat-radio-button input").get(0).isEnabled()).toBe(false);
+        expect(termTimeUnit.$$("mat-radio-button input").get(1).isEnabled()).toBe(false);
     },
     verifyRadioButtonsMonthAndYearEnabled: function() {
-        expect(termTimeUnit.$$("md-radio-button input").get(0).isEnabled()).toBe(true);
-        expect(termTimeUnit.$$("md-radio-button input").get(1).isEnabled()).toBe(true);
+        expect(termTimeUnit.$$("mat-radio-button input").get(0).isEnabled()).toBe(true);
+        expect(termTimeUnit.$$("mat-radio-button input").get(1).isEnabled()).toBe(true);
     },
     selectRadioButtonMonth: function(){
         browser.executeScript("arguments[0].scrollIntoView();", radioMonth.getWebElement());

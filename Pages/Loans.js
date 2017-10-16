@@ -9,11 +9,11 @@ var nameInput = $("fims-text-input[controlname='name'] input");
 var descriptionInput = $(".mat-input-infix textarea[formcontrolname='description']");
 var minimumPrincipalInput = $("fims-min-max input[placeholder='Minimum principal amount']");
 var maximumPrincipalInput = $("fims-min-max input[placeholder='Maximum principal amount']");
-var currencySelect = $("md-select[formcontrolname='currencyCode']");
+var currencySelect = $("mat-select[formcontrolname='currencyCode']");
 var termInput = $("fims-text-input[controlname='term'] input");
-var radioWeeks = $$("md-radio-group .mat-radio-button").first();
-var radioMonths =  $$("md-radio-group .mat-radio-button").get(1);
-var radioYears =  $$("md-radio-group .mat-radio-button").get(2);
+var radioWeeks = $$("mat-radio-group .mat-radio-button").first();
+var radioMonths =  $$("mat-radio-group .mat-radio-button").get(1);
+var radioYears =  $$("mat-radio-group .mat-radio-button").get(2);
 
 var cashAccountInput = $("fims-account-select[formcontrolname='loanFundAccount'] input");
 var loanInProcessLedgerInput = $("fims-ledger-select[formcontrolname='loansPayableLedger'] input");
@@ -35,17 +35,17 @@ var arrearsAllowanceAccountInput = $("fims-account-select[formcontrolname='accou
 var primaryButton = $$(".mat-raised-button.mat-primary");
 
 var feeAmountInput = $("fims-text-input[controlname='amount'] input");
-var feeProportionalToSelect = $("md-select[formcontrolname='proportionalTo'] .mat-select-trigger");
-var radioFixed = $$("md-radio-group[formcontrolname='chargeMethod'] md-radio-button").get(0);
-var radioProportional = $$("md-radio-group[formcontrolname='chargeMethod'] md-radio-button").get(1);
+var feeProportionalToSelect = $("mat-select[formcontrolname='proportionalTo'] .mat-select-trigger");
+var radioFixed = $$("mat-radio-group[formcontrolname='chargeMethod'] mat-radio-button").get(0);
+var radioProportional = $$("mat-radio-group[formcontrolname='chargeMethod'] mat-radio-button").get(1);
 
 var taskIdentifierInput = $("fims-id-input[controlname='identifier'] input");
 var taskNameInput = $("fims-text-input[controlname='name'] input");
 var taskDescriptionInput = $(".mat-input-infix textarea[formcontrolname='description']");
-var mandatoryCheckbox = $("md-checkbox[formcontrolname='mandatory']");
-var fourEyesCheckbox = $("md-checkbox[formcontrolname='fourEyes']");
-var actionSelect1 = $("md-select[formcontrolname='action'] .mat-select-trigger");
-var actionSelect2 = $$("md-select[formcontrolname='action'] .mat-select-trigger").get(1);
+var mandatoryCheckbox = $("mat-checkbox[formcontrolname='mandatory']");
+var fourEyesCheckbox = $("mat-checkbox[formcontrolname='fourEyes']");
+var actionSelect1 = $("mat-select[formcontrolname='action'] .mat-select-trigger");
+var actionSelect2 = $$("mat-select[formcontrolname='action'] .mat-select-trigger").get(1);
 
 module.exports = {
     goToLoanProductsViaSidePanel: function() {
@@ -126,6 +126,7 @@ module.exports = {
         $$(".mat-raised-button").get(3).click();
     },
     enterTextIntoProcessingFeeIncomeAccountInputField: function(text) {
+        browser.sleep(100);
         browser.executeScript("arguments[0].scrollIntoView();", processingFeeIncomeAccountInput.getWebElement());
         browser.wait(EC.elementToBeClickable(processingFeeIncomeAccountInput), 2000);
         processingFeeIncomeAccountInput.click().sendKeys(text);

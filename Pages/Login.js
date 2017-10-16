@@ -10,7 +10,7 @@ var inputUsername = $(".mat-input-element[formcontrolname='username']");
 var inputPassword = $(".mat-input-element[formcontrolname='password']");
 var inputNewPassword = $(".mat-input-element[formcontrolname='newPassword']");
 var inputConfirmNewPassword = $(".mat-input-element[formcontrolname='confirmNewPassword']");
-var userAccountButton =$$("md-toolbar-row .mat-icon-button").get(1);
+var userAccountButton =$$("mat-toolbar-row .mat-icon-button").get(1);
 var buttonSignOut = $$(".mat-menu-panel .mat-menu-item").get(2);
 
 module.exports = {

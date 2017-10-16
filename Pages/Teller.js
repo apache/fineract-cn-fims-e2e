@@ -5,12 +5,12 @@
 var EC = protractor.ExpectedConditions;
 var tellerNumberInput = $("input[placeholder='Teller number']");
 var passwordInput = $("input[formcontrolname='password']");
-var accountSelect =  $("md-select[formcontrolname='productInstance'] .mat-select-trigger");
+var accountSelect =  $("mat-select[formcontrolname='productInstance'] .mat-select-trigger");
 var amountInput = $("fims-text-input[controlname='amount'] input");
 var primaryButton = $$(".mat-raised-button.mat-primary");
-var checkboxChargesInCash = $("md-checkbox");
+var checkboxChargesInCash = $("mat-checkbox");
 
-var loanAccountSelect = $("md-select[formcontrolname='caseInstance'] .mat-select-trigger");
+var loanAccountSelect = $("mat-select[formcontrolname='caseInstance'] .mat-select-trigger");
 
 module.exports = {
     goToTellerManagementViaSidePanel: function() {
@@ -166,9 +166,9 @@ module.exports = {
         amountInput.click().clear().sendKeys(text);
     },
     verifyAmountInputFieldHasError: function(text) {
-        $(".text-md").click();
+        $(".text-mat").click();
         expect(amountInput.getAttribute("class")).toMatch("ng-invalid");
-        expect(amountInput.element(by.xpath("..")).element(by.xpath("..")).element(by.xpath("..")).$("md-error").getText()).toEqual(text);
+        expect(amountInput.element(by.xpath("..")).element(by.xpath("..")).element(by.xpath("..")).$("mat-error").getText()).toEqual(text);
     },
     clickEnabledCreateTransactionButton: function(){
         primaryButton.filter(function(elem, index) {
@@ -233,7 +233,7 @@ module.exports = {
         })).toBe(true);
     },
     verifyCashdrawLimitHintIsDisplayed: function(text){
-      browser.wait(EC.textToBePresentInElement($(".text-md"), text), 2000);
+      browser.wait(EC.textToBePresentInElement($(".text-mat"), text), 2000);
     },
     verifyExpectedPaymentAmount: function(text) {
         browser.wait(EC.textToBePresentInElement($("fims-loan-transaction-form p"), text), 2000);

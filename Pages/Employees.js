@@ -64,7 +64,7 @@ module.exports = {
     },
     selectRoleByName: function(name){
         browser.sleep();
-        roleSelection = $("md-select[formcontrolname='role'] .mat-select-trigger");
+        roleSelection = $("mat-select[formcontrolname='role'] .mat-select-trigger");
         browser.wait(EC.elementToBeClickable(roleSelection), 3000);
         roleSelection.click();
         browser.wait(EC.visibilityOf($(".mat-option")), 5000);

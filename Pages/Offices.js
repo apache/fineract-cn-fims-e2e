@@ -22,9 +22,9 @@ var chequesReceivableAccountInput = $("fims-account-select[formcontrolname='cheq
 //open teller
 var assignedEmployeeInput = $("fims-employee-auto-complete[formcontrolname='assignedEmployeeIdentifier'] input");
 var amountInput = $("fims-text-input[controlname='amount'] input");
-var radioNone = $$("md-radio-group[formcontrolname='adjustment'] md-radio-button").first();
-var radioCashIn = $$("md-radio-group[formcontrolname='adjustment'] md-radio-button").last();
-var radioCashOut = $$("md-radio-group[formcontrolname='adjustment'] md-radio-button").last();
+var radioNone = $$("mat-radio-group[formcontrolname='adjustment'] mat-radio-button").first();
+var radioCashIn = $$("mat-radio-group[formcontrolname='adjustment'] mat-radio-button").last();
+var radioCashOut = $$("mat-radio-group[formcontrolname='adjustment'] mat-radio-button").last();
 
 
 //general elements
@@ -106,7 +106,7 @@ module.exports = {
     },
     verifyCashWithdrawalLimitInputFieldHasError: function(text) {
         expect(withdrawalLimitInput.getAttribute("class")).toMatch("ng-invalid");
-        expect(withdrawalLimitInput.element(by.xpath("..")).element(by.xpath("..")).element(by.xpath("..")).$("md-error").getText()).toEqual(text);
+        expect(withdrawalLimitInput.element(by.xpath("..")).element(by.xpath("..")).element(by.xpath("..")).$("mat-error").getText()).toEqual(text);
     },
     enterTextIntoTellerAccountInputFieldAndSelectMatchingEntry: function(text) {
         tellerAccountInput.click().clear().sendKeys(text);
@@ -123,7 +123,7 @@ module.exports = {
     },
     verifyVaultAccountInputFieldHasError: function(text) {
         expect(vaultAccountInput.getAttribute("class")).toMatch("ng-invalid");
-        expect(vaultAccountInput.element(by.xpath("..")).element(by.xpath("..")).element(by.xpath("..")).$("md-error").getText()).toEqual(text);
+        expect(vaultAccountInput.element(by.xpath("..")).element(by.xpath("..")).element(by.xpath("..")).$("mat-error").getText()).toEqual(text);
     },
     enterTextIntoChequesReceivableAccountInputFieldAndSelectMatchingEntry: function(text) {
         chequesReceivableAccountInput.click().clear().sendKeys(text);
@@ -134,8 +134,8 @@ module.exports = {
         chequesReceivableAccountInput.click().clear().sendKeys(text);
     },
     verifyChequesReceivableAccountInputFieldHasError: function(text) {
-        browser.wait(EC.presenceOf($("md-hint")), 2500);
-        expect(chequesReceivableAccountInput.element(by.xpath("..")).element(by.xpath("..")).element(by.xpath("..")).$("md-hint").getText()).toEqual(text);
+        browser.wait(EC.presenceOf($("mat-hint")), 2500);
+        expect(chequesReceivableAccountInput.element(by.xpath("..")).element(by.xpath("..")).element(by.xpath("..")).$("mat-hint").getText()).toEqual(text);
     },
     verifyRadioNoneSelected: function(){
         expect(radioNone.getAttribute('class')).toMatch("mat-radio-checked");

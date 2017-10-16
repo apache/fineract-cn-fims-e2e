@@ -10,8 +10,8 @@ var descriptionInput = $("input[formcontrolname='description']");
 var accountBalanceInput = $("fims-text-input[controlname='balance'] input");
 var primaryButton = $$(".mat-raised-button.mat-primary");
 var button = $$(".mat-raised-button.mat-accent");
-var radioButtonAsset = $$("md-radio-button").get(0);
-var radioButtonRevenue = $$("md-radio-button").get(4);
+var radioButtonAsset = $$("mat-radio-button").get(0);
+var radioButtonRevenue = $$("mat-radio-button").get(4);
 
 //journal entries
 var accountSearchInputField = $("fims-text-input[controlname='account'] input");

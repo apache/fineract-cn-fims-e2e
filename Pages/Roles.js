@@ -4,7 +4,7 @@
 
 var EC = protractor.ExpectedConditions;
 var identifierInput = $(".mat-input-infix input[placeholder='Identifier']");
-var checkboxAllPermissionsDelete = $$("md-checkbox").get(2);
+var checkboxAllPermissionsDelete = $$("mat-checkbox").get(2);
 var createNewRoleQA =  $("a[href='/roles/create']");
 var titleRow = $("fims-layout-card-over .mat-toolbar-row span");
 var primaryButton = $$(".mat-raised-button.mat-primary");
