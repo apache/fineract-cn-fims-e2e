@@ -10,9 +10,9 @@ var descriptionInput = $("textarea[formcontrolname='description']");
 var identifierInput = $$("fims-id-input[controlname='identifier'] input");
 var labelInput = $$("fims-custom-field-form fims-text-input[controlname='label'] input");
 var hintInput = $$("fims-text-input[controlname='hint'] input");
-var checkboxMandatory = $$("md-checkbox[formcontrolname='mandatory']");
+var checkboxMandatory = $$("mat-checkbox[formcontrolname='mandatory']");
 var descriptionInputField = $$("textarea[formcontrolname='description']");
-var radioButtonGroupDataType = $$("md-radio-group[formcontrolname='dataType']");
+var radioButtonGroupDataType = $$("mat-radio-group[formcontrolname='dataType']");
 
 var lengthInput = $$("fims-text-input[controlname='length'] input");
 var maxDigitsInput = $$("fims-text-input[controlname='precision'] input");
@@ -68,22 +68,22 @@ module.exports = {
         descriptionInputField.get(fieldNumber).click().clear().sendKeys(text);
     },
     verifyRadioTextIsSelectedForField: function(fieldNumber) {
-        expect(radioButtonGroupDataType.get(fieldNumber-1).$$("md-radio-button").get(0).getAttribute("class")).toMatch("mat-radio-checked");
+        expect(radioButtonGroupDataType.get(fieldNumber-1).$$("mat-radio-button").get(0).getAttribute("class")).toMatch("mat-radio-checked");
     },
     verifyRadioTextIsDisabledForField: function(fieldNumber) {
-        expect(radioButtonGroupDataType.get(fieldNumber-1).$$("md-radio-button").get(0).getAttribute("class")).toMatch("mat-radio-disabled");
+        expect(radioButtonGroupDataType.get(fieldNumber-1).$$("mat-radio-button").get(0).getAttribute("class")).toMatch("mat-radio-disabled");
     },
     selectRadioButtonNumberForField: function(fieldNumber){
-        radioButtonGroupDataType.get(fieldNumber-1).$$("md-radio-button").get(1).click();
+        radioButtonGroupDataType.get(fieldNumber-1).$$("mat-radio-button").get(1).click();
     },
     selectRadioButtonDateForField: function(fieldNumber){
-        radioButtonGroupDataType.get(fieldNumber-1).$$("md-radio-button").get(2).click();
+        radioButtonGroupDataType.get(fieldNumber-1).$$("mat-radio-button").get(2).click();
     },
     selectRadioButtonSingleSelectionForField: function(fieldNumber){
-        radioButtonGroupDataType.get(fieldNumber-1).$$("md-radio-button").get(3).click();
+        radioButtonGroupDataType.get(fieldNumber-1).$$("mat-radio-button").get(3).click();
     },
     selectRadioButtonMultiSelectionForField: function(fieldNumber){
-        radioButtonGroupDataType.get(fieldNumber-1).$$("md-radio-button").get(4).click();
+        radioButtonGroupDataType.get(fieldNumber-1).$$("mat-radio-button").get(4).click();
     },
     enterTextIntoLengthInputFieldForField: function(text, fieldNumber) {
         browser.wait(EC.elementToBeClickable(lengthInput.get(fieldNumber-1)), 5000);
@@ -295,8 +295,8 @@ module.exports = {
         elem.sendKeys(date);
     },
     selectRadioButtonForSingleSelection: function(optionNumber, fieldId){
-        elem = $('md-radio-group[ng-reflect-name= "' + fieldId +'"]');
-        elem.$$("md-radio-button").get(optionNumber-1).click();
+        elem = $('mat-radio-group[ng-reflect-name= "' + fieldId +'"]');
+        elem.$$("mat-radio-button").get(optionNumber-1).click();
     },
     selectOptionForMultiSelection: function(option, fieldId){
         elem = $('td-chips[ng-reflect-name= "' + fieldId +'"]');
@@ -306,10 +306,10 @@ module.exports = {
     },
     verifyCustomTextFieldInputHasError: function(fieldId, errorMessage) {
         elem = $('input[id= "' + fieldId +'"]');
-        expect(elem.element(by.xpath("..")).element(by.xpath("..")).element(by.xpath("..")).$("md-error").getText()).toEqual(errorMessage);
+        expect(elem.element(by.xpath("..")).element(by.xpath("..")).element(by.xpath("..")).$("mat-error").getText()).toEqual(errorMessage);
     },
     verifyCustomNumberFieldInputHasError: function(fieldId, errorMessage) {
         elem = $('input[id= "' + fieldId +'"]');
-        expect(elem.element(by.xpath("..")).element(by.xpath("..")).element(by.xpath("..")).$("md-error").getText()).toEqual(errorMessage);
+        expect(elem.element(by.xpath("..")).element(by.xpath("..")).element(by.xpath("..")).$("mat-error").getText()).toEqual(errorMessage);
     },
 };
