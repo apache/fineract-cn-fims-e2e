@@ -416,8 +416,8 @@ describe('Gate 1', function() {
         Loans.enterTextIntoShortNameInputField(loanShortName);
         Loans.enterTextIntoNameInputField("My loan " + loanShortName);
         Loans.enterTextIntoDescriptionInputField("My loan " + loanShortName);
-        Loans.enterTextIntoMinimumPrincipalInputField("200");
-        Loans.enterTextIntoMaximumPrincipalInputField("1000");
+        Loans.enterTextIntoMinimumPrincipalInputField("1000");
+        Loans.enterTextIntoMaximumPrincipalInputField("10000");
         Loans.enterTextIntoTermInputField("12");
         Loans.clickEnabledContinueButtonForProductDetails();
         Loans.enterTextIntoCashAccountInputField(tellerAccount);
@@ -475,7 +475,7 @@ describe('Gate 1', function() {
         Customers.clickCreateLoanAccountForMember(customerAccount);
         Customers.selectProduct("My loan " + loanShortName);
         Customers.enterTextIntoShortNameInputField(loanAccountShortName);
-        Customers.enterTextIntoPrincipalAmountInputField("1000");
+        Customers.enterTextIntoPrincipalAmountInputField("5000");
         Customers.enterTextIntoTermInputField("12");
         //verify correct radio button selected; BUG
         Customers.selectDayForMonthlyRepayment("3.");
