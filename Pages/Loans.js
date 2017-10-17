@@ -13,14 +13,17 @@ var currencySelect = $("mat-select[formcontrolname='currencyCode']");
 var termInput = $("fims-text-input[controlname='term'] input");
 var radioWeeks = $$("mat-radio-group .mat-radio-button").first();
 var radioMonths =  $$("mat-radio-group .mat-radio-button").get(1);
-var radioYears =  $$("mat-radio-group .mat-radio-button").get(2);
+var radioYears =  $$("mat-radio-group[formcontrolname='temporalUnit'] .mat-radio-button").get(2);
 
 var cashAccountInput = $("fims-account-select[formcontrolname='loanFundAccount'] input");
 var loanInProcessLedgerInput = $("fims-ledger-select[formcontrolname='loansPayableLedger'] input");
 var customerLoanLedgerInput = $("fims-ledger-select[formcontrolname='customerLoanLedger'] input");
 var pendingDisbursalAccountInput = $("fims-account-select[formcontrolname='pendingDisbursal'] input");
 
-var interestMinimumInput = $("fims-number-input[controlname='minimum'] input");
+var interestRateInput = $("fims-number-input[controlname='minimum'] input");
+var interestRangeMinimumInput = $("input[placeholder='Minimum interest rate']");
+var interestRangeMaximumInput = $("input[placeholder='Maximum interest rate']");
+var interestRangeToggle = $("mat-slide-toggle[formcontrolname='interestRangeEnabled']");
 var incomeAccountInput = $("fims-account-select[formcontrolname='incomeAccount'] input");
 var accrualAccountInput = $("fims-account-select[formcontrolname='accrualAccount'] input");
 
@@ -67,20 +70,26 @@ module.exports = {
     },
     enterTextIntoMinimumPrincipalInputField: function(text) {
         browser.executeScript("arguments[0].scrollIntoView();", minimumPrincipalInput.getWebElement());
-        minimumPrincipalInput.click().sendKeys(protractor.Key.ARROW_LEFT);
-        minimumPrincipalInput.sendKeys(protractor.Key.ARROW_LEFT);
-        minimumPrincipalInput.sendKeys(protractor.Key.ARROW_LEFT);
-        minimumPrincipalInput.sendKeys(protractor.Key.ARROW_LEFT);
-        minimumPrincipalInput.sendKeys(protractor.Key.ARROW_LEFT);
+        minimumPrincipalInput.click().sendKeys(protractor.Key.BACK_SPACE);
+        minimumPrincipalInput.sendKeys(protractor.Key.BACK_SPACE);
+        minimumPrincipalInput.sendKeys(protractor.Key.BACK_SPACE);
+        minimumPrincipalInput.sendKeys(protractor.Key.BACK_SPACE);
+        minimumPrincipalInput.sendKeys(protractor.Key.BACK_SPACE);
         minimumPrincipalInput.sendKeys(text);
     },
     enterTextIntoMaximumPrincipalInputField: function(text) {
-        maximumPrincipalInput.click().sendKeys(protractor.Key.ARROW_LEFT);
-        maximumPrincipalInput.sendKeys(protractor.Key.ARROW_LEFT);
-        maximumPrincipalInput.sendKeys(protractor.Key.ARROW_LEFT);
-        maximumPrincipalInput.sendKeys(protractor.Key.ARROW_LEFT);
-        maximumPrincipalInput.sendKeys(protractor.Key.ARROW_LEFT);
+        maximumPrincipalInput.click().sendKeys(protractor.Key.BACK_SPACE);
+        maximumPrincipalInput.sendKeys(protractor.Key.BACK_SPACE);
+        maximumPrincipalInput.sendKeys(protractor.Key.BACK_SPACE);
+        maximumPrincipalInput.sendKeys(protractor.Key.BACK_SPACE);
+        maximumPrincipalInput.sendKeys(protractor.Key.BACK_SPACE);
         maximumPrincipalInput.sendKeys(text);
+    },
+    verifyPrincipalAmountInputFieldsHaveError: function(text) {
+        expect($("fims-min-max mat-error").getText()).toEqual(text);
+    },
+    verifyInterestRangeInputFieldsHaveError: function(text) {
+        expect($("fims-min-max mat-error").getText()).toEqual(text);
     },
     enterTextIntoTermInputField: function(text) {
         browser.executeScript("arguments[0].scrollIntoView();", termInput.getWebElement());
@@ -94,10 +103,38 @@ module.exports = {
     enterTextIntoCustomerLoanLedgerInputField: function(text) {
        customerLoanLedgerInput.click().sendKeys(text);
     },
-    enterTextIntoInterestMinimumInputField: function(text) {
-        browser.executeScript("arguments[0].scrollIntoView();", interestMinimumInput.getWebElement());
-        browser.wait(EC.elementToBeClickable(interestMinimumInput), 5000);
-        interestMinimumInput.click().clear().sendKeys(text);
+    verifyInterestRangeToggleSetToOff: function(){
+        toggleClass = interestRangeToggle.getAttribute('class');
+        expect(toggleClass).not.toContain("mat-checked");
+    },
+    verifyInterestRangeToggleSetToOn: function(){
+        toggleClass = interestRangeToggle.getAttribute('class');
+        expect(toggleClass).toContain("mat-checked");
+    },
+    toggleInterestRangeToOn: function() {
+        this.verifyInterestRangeToggleSetToOff();
+        $(".mat-slide-toggle-content").click();
+        this.verifyInterestRangeToggleSetToOn();
+    },
+    toggleInterestRangeToOff: function() {
+        this.verifyInterestRangeToggleSetToOn();
+        $(".mat-slide-toggle-content").click();
+        this.verifyInterestRangeToggleSetToOff();
+    },
+    enterTextIntoInterestRateInputField: function(text) {
+        browser.executeScript("arguments[0].scrollIntoView();", interestRateInput.getWebElement());
+        browser.wait(EC.elementToBeClickable(interestRateInput), 5000);
+        interestRateInput.click().clear().sendKeys(text);
+    },
+    enterTextIntoInterestRangeMinInputField: function(text) {
+        browser.executeScript("arguments[0].scrollIntoView();", interestRangeMinimumInput.getWebElement());
+        browser.wait(EC.elementToBeClickable(interestRangeMinimumInput), 5000);
+        interestRangeMinimumInput.click().clear().sendKeys(text);
+    },
+    enterTextIntoInterestRangeMaxInputField: function(text) {
+        browser.executeScript("arguments[0].scrollIntoView();", interestRangeMaximumInput.getWebElement());
+        browser.wait(EC.elementToBeClickable(interestRangeMaximumInput), 5000);
+        interestRangeMaximumInput.click().clear().sendKeys(text);
     },
     enterTextIntoIncomeAccountAccountInputField: function(text) {
         incomeAccountInput.click().sendKeys(text);
@@ -114,6 +151,7 @@ module.exports = {
         browser.executeScript("arguments[0].scrollIntoView();", $$(".mat-raised-button").get(1).getWebElement());
         expect($$(".mat-raised-button").get(1).isEnabled()).toBeTruthy();
         $$(".mat-raised-button").get(1).click();
+        browser.sleep(1000);
     },
     clickEnabledContinueButtonForInterestSettings: function(){
         browser.executeScript("arguments[0].scrollIntoView();", $$(".mat-raised-button").get(2).getWebElement());
@@ -254,5 +292,8 @@ module.exports = {
     clickButtonEnableProduct: function(){
         browser.wait(EC.elementToBeClickable($("td-message button")), 2000);
         $("td-message button").click();
+    },
+    selectRadioButtonYears: function(){
+        radioYears.click();
     },
 };

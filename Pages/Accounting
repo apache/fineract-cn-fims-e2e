@@ -11,6 +11,8 @@ var accountBalanceInput = $("fims-text-input[controlname='balance'] input");
 var primaryButton = $$(".mat-raised-button.mat-primary");
 var button = $$(".mat-raised-button.mat-accent");
 var radioButtonAsset = $$("mat-radio-button").get(0);
+var radioButtonEquity = $$("mat-radio-button").get(2);
+var radioButtonExpense = $$("mat-radio-button").get(3);
 var radioButtonRevenue = $$("mat-radio-button").get(4);
 
 //journal entries
@@ -160,6 +162,12 @@ module.exports = {
     },
     verifyRadioRevenueToBeSelected: function() {
         expect(radioButtonRevenue.getAttribute("class")).toMatch("mat-radio-checked");
+    },
+    verifyRadioExpenseToBeSelected: function() {
+        expect(radioButtonExpense.getAttribute("class")).toMatch("mat-radio-checked");
+    },
+    verifyRadioEquityToBeSelected: function() {
+        expect(radioButtonEquity.getAttribute("class")).toMatch("mat-radio-checked");
     },
 
     //Journal entries

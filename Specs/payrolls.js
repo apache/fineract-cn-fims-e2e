@@ -61,7 +61,6 @@ describe('payrolls', function() {
         Accounting.clickCreateNewAccountInLedger("7300");
         Accounting.enterTextIntoAccountIdentifierInputField(payrollAccount);
         Accounting.verifyRadioAssetToBeSelected();
-        Accounting.verifyRadioAssetToBeDisabled();
         Accounting.enterTextIntoAccountNameInputField("Cash account for payroll distributions");
         Accounting.clickButtonCreateAccount();
         Common.verifyMessagePopupIsDisplayed("Account is going to be saved");
@@ -75,7 +74,7 @@ describe('payrolls', function() {
         Accounting.clickButtonContinue();
         Accounting.enterTextIntoDebitAccountNameInputField(payrollAccount);
         Accounting.enterTextIntoDebitAmountInputField("100000");
-        Accounting.enterTextIntoCreditAccountNameInputField("1290");
+        Accounting.enterTextIntoCreditAccountNameInputField("9310");
         Accounting.enterTextIntoCreditAmountInputField("100000");
         Accounting.clickButtonCreateJournalEntry();
         Common.verifyMessagePopupIsDisplayed("Journal entry is going to be processed");
@@ -180,9 +179,6 @@ describe('payrolls', function() {
         Customers.selectProduct(depositName);
         Customers.clickEnabledButtonCreateDepositAccount();
         Common.verifyMessagePopupIsDisplayed("Deposit account is going to be saved");
-        //might not be in list immediately always
-        Common.clickBackButtonInTitleBar();
-        Customers.clickManageDepositAccountsForMember(customerAccount);
     });
     it('should assign another deposit account to customer', function () {
         Customers.clickCreateDepositAccountForMember(customerAccount);
@@ -197,7 +193,6 @@ describe('payrolls', function() {
         Teller.clickEnabledUnlockTellerButton();
         Common.verifyMessagePopupIsDisplayed("Teller drawer unlocked");
         Teller.enterTextIntoSearchInputField(customerAccount);
-        //will be successful even if the customer does not exist, clicks one of the buttons too quickly: need to fix
         Teller.clickButtonShowAtIndex(0);
         Teller.verifyCardTitleHasNameOfCustomer("Samuel Beckett");
         Teller.clickOnOpenAccountForCustomer(customerAccount);

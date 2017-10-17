@@ -91,8 +91,9 @@ module.exports = {
         birthDayInput.sendKeys(date);
     },
     enterTextIntoStreetInputField: function (text) {
-        browser.wait(EC.elementToBeClickable(streetInput), 3000);
-        streetInput.click().sendKeys(text);
+        browser.sleep(100);
+        browser.wait(EC.elementToBeClickable(streetInput), 5000);
+        streetInput.clear().click().sendKeys(text);
     },
     enterTextIntoCityInputField: function (text) {
         cityInput.click().sendKeys(text);

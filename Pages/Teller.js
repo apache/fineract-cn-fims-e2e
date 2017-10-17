@@ -159,14 +159,14 @@ module.exports = {
         browser.wait(EC.visibilityOf($(".mat-option")), 5000);
         //browser.executeScript("arguments[0].scrollIntoView();", element(by.cssContainingText('.mat-option', accountIdentifier)).getWebElement());
         element(by.cssContainingText('.mat-option', loanAccountIdentifier)).click();
+        browser.sleep(1500);
     },
     enterTextIntoAmountInputField: function(text) {
-        browser.sleep(1000);
         browser.wait(EC.elementToBeClickable(amountInput), 5000);
         amountInput.click().clear().sendKeys(text);
     },
     verifyAmountInputFieldHasError: function(text) {
-        $(".text-mat").click();
+        $(".text-md").click();
         expect(amountInput.getAttribute("class")).toMatch("ng-invalid");
         expect(amountInput.element(by.xpath("..")).element(by.xpath("..")).element(by.xpath("..")).$("mat-error").getText()).toEqual(text);
     },
@@ -233,7 +233,7 @@ module.exports = {
         })).toBe(true);
     },
     verifyCashdrawLimitHintIsDisplayed: function(text){
-      browser.wait(EC.textToBePresentInElement($(".text-mat"), text), 2000);
+      browser.wait(EC.textToBePresentInElement($(".text-md"), text), 5000);
     },
     verifyExpectedPaymentAmount: function(text) {
         browser.wait(EC.textToBePresentInElement($("fims-loan-transaction-form p"), text), 2000);

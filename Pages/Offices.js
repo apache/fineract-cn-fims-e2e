@@ -16,8 +16,10 @@ var numberInput = $(".mat-input-infix input[placeholder='Number']");
 var passwordInput = $("input[formcontrolname='password']");
 var withdrawalLimitInput = $("fims-text-input[controlname='cashdrawLimit'] input");
 var tellerAccountInput = $("fims-account-select[formcontrolname='tellerAccountIdentifier'] input");
-var vaultAccountInput =$("fims-account-select[formcontrolname='vaultAccountIdentifier'] input");
+var vaultAccountInput = $("fims-account-select[formcontrolname='vaultAccountIdentifier'] input");
 var chequesReceivableAccountInput = $("fims-account-select[formcontrolname='chequesReceivableAccount'] input");
+var cashOverShortAccountInput = $("fims-account-select[formcontrolname='cashOverShortAccount'] input");
+var checkboxDenominationRequired = $("mat-checkbox[formcontrolname='denominationRequired']");
 
 //open teller
 var assignedEmployeeInput = $("fims-employee-auto-complete[formcontrolname='assignedEmployeeIdentifier'] input");
@@ -115,6 +117,11 @@ module.exports = {
     },
     enterTextIntoVaultAccountInputFieldAndSelectMatchingEntry: function(text) {
         vaultAccountInput.click().clear().sendKeys(text);
+        browser.wait(EC.visibilityOf($(".mat-option")), 5000);
+        $$(".mat-option").first().click();
+    },
+    enterTextIntoCashOverShortInputFieldAndSelectMatchingEntry: function(text) {
+        cashOverShortAccountInput.click().clear().sendKeys(text);
         browser.wait(EC.visibilityOf($(".mat-option")), 5000);
         $$(".mat-option").first().click();
     },

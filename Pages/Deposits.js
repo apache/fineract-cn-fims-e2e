@@ -77,7 +77,7 @@ module.exports = {
         radioChecking.click();
     },
     enterTextIntoShortNameInputField: function(text) {
-        browser.wait(EC.visibilityOf(shortNameInput), 5000);
+        browser.wait(EC.elementToBeClickable(shortNameInput), 5000);
         shortNameInput.click().sendKeys(text);
     },
     verifyShortNameInputFieldHasText: function(text) {

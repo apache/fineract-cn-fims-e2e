@@ -171,7 +171,7 @@ describe('teller_management', function() {
         Offices.verifyAssignedEmployeeForTellerIs(employeeIdentifier2);
         Offices.viewTellerBalanceForTellerInOffice(tellerIdentifier, officeIdentifier);
         Offices.verifyTellerTransactionMessageForRow("Teller adjustment.", 1);
-        Offices.verifyTellerDebitTransactionAmountForRow("2,500", 1);
+        Offices.verifyTellerDebitTransactionAmountForRow("2,500.00", 1);
     });
     it('Journey entry has been created and account entries are as expected', function () {
         Accounting.goToAccountingViaSidePanel();
@@ -212,26 +212,26 @@ describe('teller_management', function() {
         Teller.enterTextIntoSearchInputField(customerAccount);
         Teller.clickButtonShowAtIndex(0);
         Teller.verifyCardTitleHasNameOfCustomer("Samuel Beckett");
-        //only action possible: Open account
+        //only action possible for customer with PENDING account: Open account
         Teller.verifyActionCloseAccountNotOfferedForCustomer(customerAccount);
         Teller.verifyActionAccountTransferNotOfferedForCustomer(customerAccount);
         Teller.verifyActionCashDepositNotOfferedForCustomer(customerAccount);
         Teller.verifyActionCashWithdrawalNotOfferedForCustomer(customerAccount);
         Teller.verifyActionCashChequeNotDisplayedForCustomer(customerAccount);
         Teller.verifyActionRepayLoanNotOfferedForCustomer(customerAccount);
-        //open the customer's account
+        //open the customer's account to be able to verify cashdraw limit
         Teller.clickOnOpenAccountForCustomer(customerAccount);
         Teller.selectAccountToBeAffected(customerAccount + ".9100.00001(" + depositIdentifier +")");
         Teller.enterTextIntoAmountInputField("2000.00");
         Teller.clickEnabledCreateTransactionButton();
         Teller.clickEnabledConfirmTransactionButton();
         Common.verifyMessagePopupIsDisplayed("Transaction successfully confirmed");
-        //workaround for actions not updating immediately
+        //ToDo: workaround for actions not updating immediately; remove when bug fixed
         Teller.goToTellerManagementViaSidePanel();
         Teller.enterTextIntoSearchInputField(customerAccount);
         Teller.clickButtonShowAtIndex(0);
         Teller.verifyCardTitleHasNameOfCustomer("Samuel Beckett");
-        //action no longer possible: Open account; instead closing account not possible
+        //action no longer possible: Open account; instead closing account now possible
         Teller.verifyActionCloseAccountOfferedForCustomer(customerAccount);
         Teller.verifyActionOpenAccountNotOfferedForCustomer(customerAccount);
         Teller.clickOnCashWithdrawalForCustomer(customerAccount);
@@ -240,10 +240,13 @@ describe('teller_management', function() {
         Teller.enterTextIntoAmountInputField("1000.01");
         Teller.verifyAmountInputFieldHasError("Value must be smaller than or equal to 1000");
         Teller.verifyCreateTransactionButtonIsDisabled();
+        Teller.goToTellerManagementViaSidePanel();
+        Teller.pauseTeller();
+        Common.verifyMessagePopupIsDisplayed("Teller drawer is now locked");
+        Teller.verifyTellerIsLocked();
     });
     it('employee not assigned to teller should not be able to unlock the teller', function () {
-        //workaround for bug on logging out from within teller transaction
-        Teller.goToTellerManagementViaSidePanel();
+        //ToDO: workaround for bug on logging out from within teller transaction; remove when bug is fixed
         Login.signOut();
         Login.logInWithTenantUserAndPassword("playground", employeeIdentifier, "abc123??");
         Teller.goToTellerManagementViaSidePanel();
@@ -269,8 +272,7 @@ describe('teller_management', function() {
         Offices.enterTextIntoTellerAccountInputFieldAndSelectMatchingEntry("7353");
         Offices.clickUpdateTellerButton();
         Common.verifyMessagePopupIsDisplayed("Teller is going to be saved");
-        //when does teller status change from OPEN to ACTIVE?
-        Offices.verifyTellerStatusIs("ACTIVE");
+        Offices.verifyTellerStatusIs("PAUSED");
         Offices.verifyCashWithdrawalLimitIs("500");
         Offices.verifyTellerAccountIs("7353");
         //bug, "Last modified by" not updated immediately
@@ -278,7 +280,6 @@ describe('teller_management', function() {
         //teller balance empty since account now different (7353 might not be empty, create new account)
         Offices.viewTellerBalanceForTellerInOffice(tellerIdentifier, officeIdentifier);
         Offices.verifyCurrentTellerBalance("0");
-
     });
     it('teller should have updated as expected', function () {
         Login.signOut();
@@ -398,4 +399,5 @@ describe('teller_management', function() {
         //verify office cannot be deleted; delete icon is hidden
     });
     //teller transactions
+
 });
