@@ -63,7 +63,7 @@ module.exports = {
         createEmployee.click();
     },
     selectRoleByName: function(name){
-        browser.sleep();
+        browser.sleep(100);
         roleSelection = $("mat-select[formcontrolname='role'] .mat-select-trigger");
         browser.wait(EC.elementToBeClickable(roleSelection), 3000);
         roleSelection.click();

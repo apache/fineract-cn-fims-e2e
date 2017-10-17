@@ -39,7 +39,7 @@ var Accounting = require('../Pages/Accounting');
 var Loans = require('../Pages/Loans');
 
 
-describe('Loans 1', function() {
+describe('Gate 1', function() {
     var EC = protractor.ExpectedConditions;
     employeeIdentifier = helper.getRandomString(6);
     officeIdentifier = helper.getRandomString(6);
@@ -475,7 +475,7 @@ describe('Loans 1', function() {
         Customers.clickCreateLoanAccountForMember(customerAccount);
         Customers.selectProduct("My loan " + loanShortName);
         Customers.enterTextIntoShortNameInputField(loanAccountShortName);
-        Customers.enterTextIntoPrincipalAmountInputField("5000");
+        Customers.enterTextIntoPrincipalAmountInputField("1000");
         Customers.enterTextIntoTermInputField("12");
         //verify correct radio button selected; BUG
         Customers.selectDayForMonthlyRepayment("3.");

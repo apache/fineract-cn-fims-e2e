@@ -33,8 +33,8 @@ module.exports = {
         browser.wait(EC.not(EC.presenceOf($('.td-loading'))), 10000);
     },
     verifyMessageForUnsuccessfulLoginIsDisplayed: function(){
-        browser.wait(EC.visibilityOf($("div p.md-caption")), 2000);
-        message = $("div p.md-caption").getText();
+        browser.wait(EC.visibilityOf($("div p.mat-caption")), 2000);
+        message = $("div p.mat-caption").getText();
         expect(message).toEqual("Sorry, that login did not work.");
     },
     clearInputFieldForUsername: function(){

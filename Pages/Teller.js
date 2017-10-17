@@ -189,7 +189,7 @@ module.exports = {
             return elem.$("span").getText().then(function(text) {
                 return text === "CREATE TRANSACTION";
             });
-        }).isEnabled()).toBe(true);
+        }).first().isEnabled()).toBe(true);
     },
     clickEnabledConfirmTransactionButton: function(){
         browser.executeScript("arguments[0].scrollIntoView();", primaryButton.get(1).getWebElement());

@@ -19,7 +19,7 @@ var tellerAccountInput = $("fims-account-select[formcontrolname='tellerAccountId
 var vaultAccountInput = $("fims-account-select[formcontrolname='vaultAccountIdentifier'] input");
 var chequesReceivableAccountInput = $("fims-account-select[formcontrolname='chequesReceivableAccount'] input");
 var cashOverShortAccountInput = $("fims-account-select[formcontrolname='cashOverShortAccount'] input");
-var checkboxDenominationRequired = $("mat-checkbox[formcontrolname='denominationRequired']");
+var checkboxDenominationRequired = $("mat-checkbox[formcontrolname='denominationRequired'] label");
 
 //open teller
 var assignedEmployeeInput = $("fims-employee-auto-complete[formcontrolname='assignedEmployeeIdentifier'] input");
@@ -144,6 +144,13 @@ module.exports = {
         browser.wait(EC.presenceOf($("mat-hint")), 2500);
         expect(chequesReceivableAccountInput.element(by.xpath("..")).element(by.xpath("..")).element(by.xpath("..")).$("mat-hint").getText()).toEqual(text);
     },
+    verifyCheckboxDenominationRequiredChecked: function () {
+        expect(checkboxDenominationRequired.getAttribute("class")).toMatch("mat-checkbox-checked");
+    },
+    checkCheckboxDenominationRequired: function () {
+        checkboxDenominationRequired.click();
+    },
+    //open teller
     verifyRadioNoneSelected: function(){
         expect(radioNone.getAttribute('class')).toMatch("mat-radio-checked");
     },
@@ -239,15 +246,6 @@ module.exports = {
     verifyMessageDisplayed: function(message){
         expect($("td-message .td-message-label").getText()).toEqual(message);
     },
-    verifyAssignedEmployeeForTellerIs: function(assignedEmployee) {
-        expect($$("fims-layout-card-over .mat-list-text").filter(function (elem, index) {
-            return elem.$("h3").getText().then(function (text) {
-                return text === "Assigned employee";
-            });
-        }).first().$("p").getText().then(function (text) {
-            return text === assignedEmployee;
-        })).toBe(true);
-    },
     verifyNumberForTellerIs: function(tellerNumber) {
         expect($$("fims-layout-card-over .mat-list-text").filter(function (elem, index) {
             return elem.$("h3").getText().then(function (text) {
@@ -293,6 +291,33 @@ module.exports = {
             return text === account;
         })).toBe(true);
     },
+    verifyCashOverShortAccountIs: function(account) {
+        expect($$("fims-layout-card-over .mat-list-text").filter(function (elem, index) {
+            return elem.$("h3").getText().then(function (text) {
+                return text === "Cash over short account";
+            });
+        }).first().$("p").getText().then(function (text) {
+            return text === account;
+        })).toBe(true);
+    },
+    verifyDenominationRequiredIs: function(expText) {
+        expect($$("fims-layout-card-over .mat-list-text").filter(function (elem, index) {
+            return elem.$("h3").getText().then(function (text) {
+                return text === "Denomination required?";
+            });
+        }).first().$("p").getText().then(function (text) {
+            return text === expText;
+        })).toBe(true);
+    },
+    verifyAssignedEmployeeForTellerIs: function(assignedEmployee) {
+        expect($$("fims-layout-card-over .mat-list-text").filter(function (elem, index) {
+            return elem.$("h3").getText().then(function (text) {
+                return text === "Assigned employee";
+            });
+        }).first().$("p").getText().then(function (text) {
+            return text === assignedEmployee;
+        })).toBe(true);
+    },
     verifyCreatedByForTellerIs: function(createdBy){
         expect($$("fims-layout-card-over .mat-list-text").filter(function (elem, index) {
             return elem.$("h3").getText().then(function (text) {
@@ -311,32 +336,36 @@ module.exports = {
             return text.indexOf(modifiedBy) >= 0;
         })).toBe(true);
     },
+    verifyLastOpenedByForTellerIs: function(openedBy){
+        expect($$("fims-layout-card-over .mat-list-text").filter(function (elem, index) {
+            return elem.$("h3").getText().then(function (text) {
+                return text === "Last opened by";
+            });
+        }).first().$("p").getText().then(function (text) {
+            return text.indexOf(openedBy) >= 0;
+        })).toBe(true);
+    },
     viewTellerBalanceForTellerInOffice: function(tellerIdentifier, officeIdentifier){
         link = "/offices/detail/" + officeIdentifier + "/tellers/detail/" + tellerIdentifier + "/balance";
         browser.wait(EC.visibilityOf($("a[href='"+link+"']")), 2000);
         $("a[href='"+link+"']").click();
         browser.wait(EC.textToBePresentInElement($$("fims-layout-card-over .mat-toolbar-row span").get(1), "Teller balance"), 2000);
     },
-    verifyCurrentTellerBalance: function(balance){
-        expect($$('tbody tr').filter(function (elem, index) {
-            return elem.$(".td-data-table-cell").getText().then(function (text) {
-                return text === "Current balance";
-            });
-        }).$$(".td-data-table-cell").get(2).getText().then(function (text){
-            return text === balance;
-        })).toBe(true);
-    },
     verifyTellerTransactionMessageForRow: function(message, row) {
         browser.wait(EC.visibilityOf($("table tbody")), 3000);
         browser.wait(EC.textToBePresentInElement($$("table tbody tr").get(row - 1).$$(".td-data-table-cell").get(1), message));
     },
-    verifyTellerCreditTransactionAmountForRow: function(amount, row) {
+    verifyTellerCashDisbursedAmountForRow: function(amount, row) {
         browser.wait(EC.visibilityOf($("table tbody")), 3000);
         expect($$("table tbody tr").get(row - 1).$$(".td-data-table-cell").get(3).getText()).toEqual(amount);
     },
-    verifyTellerDebitTransactionAmountForRow: function(amount, row) {
+    verifyTellerCashReceivedAmountForRow: function(amount, row) {
         browser.wait(EC.visibilityOf($("table tbody")), 3000);
         expect($$("table tbody tr").get(row - 1).$$(".td-data-table-cell").get(2).getText()).toEqual(amount);
+    },
+    verifyTotalCashOnHand: function(amount) {
+        browser.wait(EC.visibilityOf($("table tbody")), 3000);
+        expect($$("table tbody tr b").get(5).getText()).toEqual(amount);
     },
     clickButtonCancel: function(){
         $$(".mat-button span").filter(function(elem, index){
