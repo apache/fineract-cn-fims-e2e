@@ -408,7 +408,7 @@ describe('teller_management', function() {
         Accounting.clickSearchButton();
         Accounting.verifySecondJournalEntry("Credit Adjustments", "Amount: 50.00");
         Accounting.clickSecondJournalEntry();
-        Accounting.verifyClerkForJournalEntryIs(employeeIdentifier);
+        //Accounting.verifyClerkForJournalEntryIs(employeeIdentifier);
         Accounting.verifyMessageForJournalEntryIs("Teller adjustment.");
         Accounting.verifyAccountHasBeenDebitedWithAmountInRow(vaultAccount, "50.00", 1);
         Accounting.verifyAccountHasBeenCreditedWithAmountInRow(tellerAccount2, "50.00", 2);
@@ -545,6 +545,7 @@ describe('teller_management', function() {
         Accounting.goToJournalEntries();
         Accounting.enterTextIntoSearchAccountInputField(cashOverShortAccount);
         Accounting.clickSearchButton();
+        Accounting.clickSecondJournalEntry();
         Accounting.verifySecondJournalEntry("Debit Adjustments", "Amount: 30.00");
         Accounting.verifyAccountHasBeenDebitedWithAmountInRow(tellerAccount3, "30.00", 1);
         Accounting.verifyAccountHasBeenCreditedWithAmountInRow(cashOverShortAccount, "30.00", 1);

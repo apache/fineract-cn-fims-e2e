@@ -391,6 +391,6 @@ module.exports = {
         }).click();
     },
     verifyDeleteOfficeIconIsNotDisplayed: function(){
-        expect($("button[title='Delete this office']").isDisplayed()).toBe(false);
+        expect($("button[title='Delete this office']").isPresent()).toBe(false);
     }
 }
