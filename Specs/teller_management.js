@@ -27,6 +27,7 @@ describe('teller_management', function() {
     depositIdentifier = helper.getRandomString(5);
     depositName = helper.getRandomString(8);
     tellerAccount = helper.getRandomString(4);
+    tellerAccount2 = helper.getRandomString(4);
     vaultAccount = helper.getRandomString(4);
     chequesReceivableAccount = helper.getRandomString(4);
     cashOverShortAccount = helper.getRandomString(4);
@@ -44,6 +45,11 @@ describe('teller_management', function() {
         Accounting.clickCreateNewAccountInLedger("7300");
         Accounting.enterTextIntoAccountIdentifierInputField(tellerAccount);
         Accounting.enterTextIntoAccountNameInputField("My teller");
+        Accounting.clickButtonCreateAccount();
+        Common.verifyMessagePopupIsDisplayed("Account is going to be saved");
+        Accounting.clickCreateNewAccountInLedger("7300");
+        Accounting.enterTextIntoAccountIdentifierInputField(tellerAccount2);
+        Accounting.enterTextIntoAccountNameInputField("My teller 2");
         Accounting.clickButtonCreateAccount();
         Common.verifyMessagePopupIsDisplayed("Account is going to be saved");
         Accounting.clickCreateNewAccountInLedger("7300");
@@ -292,11 +298,11 @@ describe('teller_management', function() {
         Offices.clickButtonEditForTellerInOffice(tellerIdentifier, officeIdentifier);
         Offices.enterTextIntoPasswordInputField("123abc!!");
         Offices.enterTextIntoCashWithdrawalLimitInputField("500");
-        Offices.enterTextIntoTellerAccountInputFieldAndSelectMatchingEntry("7354");
+        Offices.enterTextIntoTellerAccountInputFieldAndSelectMatchingEntry(tellerAccount2);
         Offices.clickUpdateTellerButton();
         Common.verifyMessagePopupIsDisplayed("Teller is going to be saved");
         Offices.verifyCashWithdrawalLimitIs("500");
-        Offices.verifyTellerAccountIs("7354");
+        Offices.verifyTellerAccountIs(tellerAccount2);
         //bug, "Last modified by" not updated immediately
         //Offices.verifyLastModifiedByForTellerIs(employeeIdentifier);
         //teller balance empty since account now different (not necessarily empty)
@@ -326,13 +332,13 @@ describe('teller_management', function() {
         Teller.clickEnabledCreateTransactionButton();
         Teller.clickEnabledConfirmTransactionButton();
         Common.verifyMessagePopupIsDisplayed("Transaction successfully confirmed");
-        //verify money has been taken out of account 7354
+        //verify money has been taken out of account tellerAccount2
         Accounting.goToAccountingViaSidePanel();
         Accounting.goToJournalEntries();
-        Accounting.enterTextIntoSearchAccountInputField("7354");
+        Accounting.enterTextIntoSearchAccountInputField(tellerAccount2);
         Accounting.clickSearchButton();
         Accounting.verifyFirstJournalEntry("Cash Withdrawal", "Amount: 500.00");
-        Accounting.verifyAccountHasBeenCreditedWithAmountInRow("7354", "500.00", 2);
+        Accounting.verifyAccountHasBeenCreditedWithAmountInRow(tellerAccount2, "500.00", 2);
         //teller balance
         Offices.goToManageOfficesViaSidePanel();
         Common.clickLinkShowForRowWithId(officeIdentifier);
@@ -403,7 +409,7 @@ describe('teller_management', function() {
         Accounting.verifyClerkForJournalEntryIs(employeeIdentifier);
         Accounting.verifyMessageForJournalEntryIs("Teller adjustment.");
         Accounting.verifyAccountHasBeenDebitedWithAmountInRow(vaultAccount, "50.00", 1);
-        Accounting.verifyAccountHasBeenCreditedWithAmountInRow("7354", "50.00", 2);
+        Accounting.verifyAccountHasBeenCreditedWithAmountInRow(tellerAccount2, "50.00", 2);
         //employee has been unassigned and can no longer log into the teller
         Login.signOut();
         Login.logInWithTenantUserAndPassword("playground", employeeIdentifier2, "abc123??");
@@ -427,7 +433,43 @@ describe('teller_management', function() {
         Offices.verifyTellerStatusIs("OPEN");
         Offices.verifyAssignedEmployeeForTellerIs(employeeIdentifier2);
     });
+    it('teller can not be closed without denomination', function (){
+        Offices.clickActionCloseForTellerOfOffice(tellerIdentifier2, officeIdentifier);
+        Offices.verifyRadioNoneSelected();
+        Offices.clickCloseTellerButton();
+        Common.verifyErrorMessageDisplayedWithTitleAndText("Denomination required", "This teller requires a denomination before it can be closed.");
+        Common.clickButtonOKInErrorMessage();
+        Offices.clickButtonCancel();
+        Offices.verifyTellerStatusIs("OPEN");
+    });
+    it('denomination cannot be created when teller is open', function (){
+        Offices.goToDenominationsForTellerInOffice();
+        Offices.verifyMessagesAreDisplayed("Teller is not paused", "Teller must be paused to create denominations");
+        //Offices.verifyButtonCreateDenominationsIsDisabled();
+        Login.signOut();
+        Login.logInWithTenantUserAndPassword("playground", employeeIdentifier2, "123abc??");
+        Teller.goToTellerManagementViaSidePanel();
+        Teller.enterTextIntoTellerNumberInputField(tellerIdentifier);
+        Teller.enterTextIntoPasswordInputField("hqo1_abc");
+        Teller.clickEnabledUnlockTellerButton();
+        Common.verifyMessagePopupIsDisplayed("Teller drawer unlocked");
+        Teller.pauseTeller();
+        Login.signOut();
+        browser.pause();
+    });
+    it('denomination - not enough cash in teller', function (){
 
+    });
+    it('denomination - too much cash in teller', function (){
+
+    });
+    it('denomination - expected amount of cash in teller', function (){
+
+    });
+    it('teller can now be closed', function (){
+        //close teller
+        //denomination cannot be created for closed teller
+    });
     it('office with teller cannot be deleted', function () {
         Offices.goToManageOfficesViaSidePanel();
         Common.clickLinkShowForRowWithId(officeIdentifier);

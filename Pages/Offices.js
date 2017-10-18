@@ -246,6 +246,10 @@ module.exports = {
     verifyMessageDisplayed: function(message){
         expect($("td-message .td-message-label").getText()).toEqual(message);
     },
+    verifyMessagesAreDisplayed: function(message, message2){
+        expect($("td-message .td-message-label").getText()).toEqual(message);
+        expect($("td-message .td-message-sublabel").getText()).toEqual(message2);
+    },
     verifyNumberForTellerIs: function(tellerNumber) {
         expect($$("fims-layout-card-over .mat-list-text").filter(function (elem, index) {
             return elem.$("h3").getText().then(function (text) {
@@ -350,6 +354,12 @@ module.exports = {
         browser.wait(EC.visibilityOf($("a[href='"+link+"']")), 2000);
         $("a[href='"+link+"']").click();
         browser.wait(EC.textToBePresentInElement($$("fims-layout-card-over .mat-toolbar-row span").get(1), "Teller balance"), 2000);
+    },
+    goToDenominationsForTellerInOffice: function(tellerIdentifier, officeIdentifier){
+        link = "/offices/detail/" + officeIdentifier + "/tellers/detail/" + tellerIdentifier + "/denominations";
+        browser.wait(EC.visibilityOf($("a[href='"+link+"']")), 2000);
+        $("a[href='"+link+"']").click();
+        browser.wait(EC.textToBePresentInElement($$("fims-layout-card-over .mat-toolbar-row span").get(1), "Manage denominations"), 2000);
     },
     verifyTellerTransactionMessageForRow: function(message, row) {
         browser.wait(EC.visibilityOf($("table tbody")), 3000);
