@@ -548,7 +548,7 @@ describe('teller_management', function() {
         Accounting.clickSecondJournalEntry();
         Accounting.verifySecondJournalEntry("Debit Adjustments", "Amount: 30.00");
         Accounting.verifyAccountHasBeenDebitedWithAmountInRow(tellerAccount3, "30.00", 1);
-        Accounting.verifyAccountHasBeenCreditedWithAmountInRow(cashOverShortAccount, "30.00", 1);
+        Accounting.verifyAccountHasBeenCreditedWithAmountInRow(cashOverShortAccount, "30.00", 2);
     });
     it('denomination - expected amount of cash in teller', function (){
         Offices.goToManageOfficesViaSidePanel();
