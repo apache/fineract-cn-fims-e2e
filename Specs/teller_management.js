@@ -12,7 +12,7 @@ var Teller = require('../Pages/Teller');
 var Customers = require('../Pages/Customers');
 var Deposits = require('../Pages/Deposits');
 var Accounting = require('../Pages/Accounting');
-var Cheques = require('../Pages/Cheques');
+var Denominations = require('../Pages/Denominations');
 
 describe('teller_management', function() {
     var EC = protractor.ExpectedConditions;
@@ -28,15 +28,12 @@ describe('teller_management', function() {
     depositName = helper.getRandomString(8);
     tellerAccount = helper.getRandomString(4);
     tellerAccount2 = helper.getRandomString(4);
+    tellerAccount3 = helper.getRandomString(4);
     vaultAccount = helper.getRandomString(4);
     chequesReceivableAccount = helper.getRandomString(4);
     cashOverShortAccount = helper.getRandomString(4);
     revenueAccount = helper.getRandomString(4);
-    loanShortName = helper.getRandomString(6);
-    taskIdentifier = helper.getRandomString(3);
-    loanAccountShortName =  helper.getRandomString(4);
-    branchSortCode = helper.getRandomString(11);
-    branchSortCode2 = helper.getRandomString(11);
+    headquarterIdentifier = "hqo1";
 
     it('should create new accounts', function () {
         Accounting.goToAccountingViaSidePanel();
@@ -50,6 +47,11 @@ describe('teller_management', function() {
         Accounting.clickCreateNewAccountInLedger("7300");
         Accounting.enterTextIntoAccountIdentifierInputField(tellerAccount2);
         Accounting.enterTextIntoAccountNameInputField("My teller 2");
+        Accounting.clickButtonCreateAccount();
+        Common.verifyMessagePopupIsDisplayed("Account is going to be saved");
+        Accounting.clickCreateNewAccountInLedger("7300");
+        Accounting.enterTextIntoAccountIdentifierInputField(tellerAccount3);
+        Accounting.enterTextIntoAccountNameInputField("My teller 3");
         Accounting.clickButtonCreateAccount();
         Common.verifyMessagePopupIsDisplayed("Account is going to be saved");
         Accounting.clickCreateNewAccountInLedger("7300");
@@ -349,12 +351,12 @@ describe('teller_management', function() {
     });
     it('should create a new teller - denomination required', function () {
         Offices.goToManageOfficesViaSidePanel();
-        Offices.goToManageTellersForOfficeByIdentifier("hqo1");
-        Offices.clickCreateTellerForOfficeByIdentifier("hqo1");
+        Offices.goToManageTellersForOfficeByIdentifier(headquarterIdentifier);
+        Offices.clickCreateTellerForOfficeByIdentifier(headquarterIdentifier);
         Offices.enterTextIntoTellerNumberInputField(tellerIdentifier2);
         Offices.enterTextIntoPasswordInputField("hqo1_abc");
         Offices.enterTextIntoCashWithdrawalLimitInputField("0");
-        Offices.enterTextIntoTellerAccountInputFieldAndSelectMatchingEntry(tellerAccount);
+        Offices.enterTextIntoTellerAccountInputFieldAndSelectMatchingEntry(tellerAccount3);
         Offices.enterTextIntoVaultAccountInputFieldAndSelectMatchingEntry(vaultAccount);
         Offices.enterTextIntoChequesReceivableAccountInputFieldAndSelectMatchingEntry(chequesReceivableAccount);
         Offices.enterTextIntoCashOverShortInputFieldAndSelectMatchingEntry(cashOverShortAccount);
@@ -377,9 +379,9 @@ describe('teller_management', function() {
     it('should not be able to assign the same employee to another teller', function () {
         //workaround for teller not showing up immediately
         Common.clickBackButtonInTitleBar();
-        Offices.goToManageTellersForOfficeByIdentifier("hqo1");
+        Offices.goToManageTellersForOfficeByIdentifier(headquarterIdentifier);
         Common.clickLinkShowForRowWithId(tellerIdentifier2);
-        Offices.clickActionOpenForTellerOfOffice(tellerIdentifier2, "hqo1");
+        Offices.clickActionOpenForTellerOfOffice(tellerIdentifier2, headquarterIdentifier);
         Offices.enterTextIntoAssignedEmployeeInputField(employeeIdentifier2);
         Offices.clickEnabledOpenTellerButton();
         Common.verifyErrorMessageDisplayedWithTitleAndText("Employee already assigned", "Employees can only be assigned to one teller. Please choose a different employee or unassign the employee first.")
@@ -422,9 +424,9 @@ describe('teller_management', function() {
         //employee can now be assigned to a different teller
         Login.logInWithTenantUserAndPassword("playground", employeeIdentifier, "abc123??");
         Offices.goToManageOfficesViaSidePanel();
-        Offices.goToManageTellersForOfficeByIdentifier("hqo1");
+        Offices.goToManageTellersForOfficeByIdentifier(headquarterIdentifier);
         Common.clickLinkShowForRowWithId(tellerIdentifier2);
-        Offices.clickActionOpenForTellerOfOffice(tellerIdentifier2, "hqo1");
+        Offices.clickActionOpenForTellerOfOffice(tellerIdentifier2, headquarterIdentifier);
         Offices.enterTextIntoAssignedEmployeeInputField(employeeIdentifier2);
         Offices.selectRadioCashIn();
         Offices.enterTextIntoAmountInputField("1200");
@@ -433,8 +435,8 @@ describe('teller_management', function() {
         Offices.verifyTellerStatusIs("OPEN");
         Offices.verifyAssignedEmployeeForTellerIs(employeeIdentifier2);
     });
-    it('teller can not be closed without denomination', function (){
-        Offices.clickActionCloseForTellerOfOffice(tellerIdentifier2, officeIdentifier);
+    it('should not be able to close teller without denomination', function (){
+        Offices.clickActionCloseForTellerOfOffice(tellerIdentifier2, headquarterIdentifier);
         Offices.verifyRadioNoneSelected();
         Offices.clickCloseTellerButton();
         Common.verifyErrorMessageDisplayedWithTitleAndText("Denomination required", "This teller requires a denomination before it can be closed.");
@@ -443,38 +445,151 @@ describe('teller_management', function() {
         Offices.verifyTellerStatusIs("OPEN");
     });
     it('denomination cannot be created when teller is open', function (){
-        Offices.goToDenominationsForTellerInOffice();
+        Offices.goToDenominationsForTellerInOffice(tellerIdentifier2, headquarterIdentifier);
         Offices.verifyMessagesAreDisplayed("Teller is not paused", "Teller must be paused to create denominations");
-        //Offices.verifyButtonCreateDenominationsIsDisabled();
+        Denominations.verifyCreateDenominationButtonIsDisabled();
         Login.signOut();
-        Login.logInWithTenantUserAndPassword("playground", employeeIdentifier2, "123abc??");
+        Login.logInWithTenantUserAndPassword("playground", employeeIdentifier2, "abc123??");
         Teller.goToTellerManagementViaSidePanel();
-        Teller.enterTextIntoTellerNumberInputField(tellerIdentifier);
+        Teller.enterTextIntoTellerNumberInputField(tellerIdentifier2);
         Teller.enterTextIntoPasswordInputField("hqo1_abc");
         Teller.clickEnabledUnlockTellerButton();
         Common.verifyMessagePopupIsDisplayed("Teller drawer unlocked");
         Teller.pauseTeller();
         Login.signOut();
-        browser.pause();
     });
-    it('denomination - not enough cash in teller', function (){
-
+    it('denomination - less cash than on hand', function (){
+        Login.logInWithTenantUserAndPassword("playground", employeeIdentifier, "abc123??");
+        Offices.goToManageOfficesViaSidePanel();
+        Offices.goToManageTellersForOfficeByIdentifier(headquarterIdentifier);
+        Common.clickLinkShowForRowWithId(tellerIdentifier2);
+        Offices.verifyTellerStatusIs("PAUSED");
+        Offices.goToDenominationsForTellerInOffice(tellerIdentifier2, headquarterIdentifier);
+        Denominations.verifyCreateDenominationButtonIsEnabled();
+        Offices.clickButtonCreateDenominationsForTellerInOffice(tellerIdentifier2, headquarterIdentifier);
+        Denominations.enterTextIntoNoteValueInputField("50", 1);
+        Denominations.enterTextIntoCountInputField("20", 1);
+        //subtotal
+        Denominations.verifyDenominationTotalIs("1,000.00");
+        //ToDo: Discuss expectations if teller account has been used by different teller before that has not cashed out appropriately
+        Denominations.verifyCashOnHandTotalIs("1,200.00");
+        Denominations.clickButtonAddDetail();
+        Denominations.enterTextIntoNoteValueInputField("20", 2);
+        Denominations.enterTextIntoCountInputField("9", 2);
+        //subtotal
+        Denominations.verifyDenominationTotalIs("1,180.00");
+        Denominations.verifyCashOnHandTotalIs("1,200.00");
+        //remove second detail again and verify total updates
+        Denominations.removeDetailAtPosition(2);
+        Denominations.verifyDenominationTotalIs("1,000.00");
+        Denominations.verifyCashOnHandTotalIs("1,200.00");
+        //add second detail back
+        Denominations.clickButtonAddDetail();
+        Denominations.enterTextIntoNoteValueInputField("10", 2);
+        Denominations.enterTextIntoCountInputField("19", 2);
+        //subtotal
+        Denominations.verifyDenominationTotalIs("1,190.00");
+        Denominations.verifyCashOnHandTotalIs("1,200.00");
+        Denominations.clickCreateDenominationButton();
+        Common.verifyMessagePopupIsDisplayed("Denomination is going to be saved");
+        //denomination has been created
+        Denominations.verifyCountedTotalForDenominationInRow("1190", 1);
+        Denominations.verifyCreatedByForDenominationInRow(employeeIdentifier, 1);
+        //teller balance; teller should have disbursed 10.00 cash and cash on hand now matches denomination total
+        Common.clickBackButtonInTitleBar();
+        Offices.viewTellerBalanceForTellerInOffice(tellerIdentifier2, headquarterIdentifier);
+        Offices.verifyTellerTransactionMessageForRow("Teller denomination adjustment.", 2);
+        Offices.verifyTellerCashDisbursedAmountForRow("10.00", 2);
+        Offices.verifyTotalCashOnHand("1,190.00");
+        //journey entry; teller account debited and cash over short account credited
+        Accounting.goToAccountingViaSidePanel();
+        Accounting.goToJournalEntries();
+        Accounting.enterTextIntoSearchAccountInputField(cashOverShortAccount);
+        Accounting.clickSearchButton();
+        Accounting.verifyFirstJournalEntry("Credit Adjustments", "Amount: 10.00");
+        Accounting.verifyAccountHasBeenDebitedWithAmountInRow(cashOverShortAccount, "10.00", 1);
+        Accounting.verifyAccountHasBeenCreditedWithAmountInRow(tellerAccount3, "10.00", 2)
     });
-    it('denomination - too much cash in teller', function (){
-
+    it('denomination - more cash than on hand', function (){
+        Offices.goToManageOfficesViaSidePanel();
+        Offices.goToManageTellersForOfficeByIdentifier(headquarterIdentifier);
+        Common.clickLinkShowForRowWithId(tellerIdentifier2);
+        Offices.verifyTellerStatusIs("PAUSED");
+        Offices.goToDenominationsForTellerInOffice(tellerIdentifier2, headquarterIdentifier);
+        //Offices.verifyButtonCreateDenominationsIsEnabled();
+        Offices.clickButtonCreateDenominationsForTellerInOffice(tellerIdentifier2, headquarterIdentifier);
+        Denominations.enterTextIntoNoteValueInputField("5", 1);
+        Denominations.enterTextIntoCountInputField("200", 1);
+        //subtotal
+        Denominations.verifyDenominationTotalIs("1,000.00");
+        Denominations.verifyCashOnHandTotalIs("1,190.00");
+        Denominations.clickButtonAddDetail();
+        Denominations.enterTextIntoNoteValueInputField("20", 2);
+        Denominations.enterTextIntoCountInputField("11", 2);
+        //subtotal
+        Denominations.verifyDenominationTotalIs("1,220.00");
+        Denominations.verifyCashOnHandTotalIs("1,190.00");
+        Denominations.clickCreateDenominationButton();
+        Common.verifyMessagePopupIsDisplayed("Denomination is going to be saved");
+        //denomination has been created
+        Denominations.verifyCountedTotalForDenominationInRow("1220", 1);
+        Denominations.verifyCreatedByForDenominationInRow(employeeIdentifier, 1);
+        //teller balance; teller should have received 30.00 cash and cash on hand now matches denomination total
+        Common.clickBackButtonInTitleBar();
+        Offices.viewTellerBalanceForTellerInOffice(tellerIdentifier2, headquarterIdentifier);
+        Offices.verifyTellerTransactionMessageForRow("Teller denomination adjustment.", 3);
+        Offices.verifyTellerCashReceivedAmountForRow("30.00", 3);
+        Offices.verifyTotalCashOnHand("1,220.00");
+        //journey entry; teller account credited and cash over short account debited
+        Accounting.goToAccountingViaSidePanel();
+        Accounting.goToJournalEntries();
+        Accounting.enterTextIntoSearchAccountInputField(cashOverShortAccount);
+        Accounting.clickSearchButton();
+        Accounting.verifySecondJournalEntry("Debit Adjustments", "Amount: 30.00");
+        Accounting.verifyAccountHasBeenDebitedWithAmountInRow(tellerAccount3, "30.00", 1);
+        Accounting.verifyAccountHasBeenCreditedWithAmountInRow(cashOverShortAccount, "30.00", 1);
     });
     it('denomination - expected amount of cash in teller', function (){
-
+        Offices.goToManageOfficesViaSidePanel();
+        Offices.goToManageTellersForOfficeByIdentifier(headquarterIdentifier);
+        Common.clickLinkShowForRowWithId(tellerIdentifier2);
+        Offices.verifyTellerStatusIs("PAUSED");
+        Offices.goToDenominationsForTellerInOffice(tellerIdentifier2, headquarterIdentifier);
+        Offices.clickButtonCreateDenominationsForTellerInOffice(tellerIdentifier2, headquarterIdentifier);
+        Denominations.enterTextIntoNoteValueInputField("20", 1);
+        Denominations.enterTextIntoCountInputField("61", 1);
+        //subtotal
+        Denominations.verifyDenominationTotalIs("1,220.00");
+        Denominations.verifyCashOnHandTotalIs("1,220.00");
+        Denominations.clickCreateDenominationButton();
+        Common.verifyMessagePopupIsDisplayed("Denomination is going to be saved");
+        //denomination has been created
+        Denominations.verifyCountedTotalForDenominationInRow("1220", 1);
+        Denominations.verifyJournalEntryForDenominationInRow("", 1);
+        Denominations.verifyCreatedByForDenominationInRow(employeeIdentifier, 1);
     });
     it('teller can now be closed', function (){
-        //close teller
-        //denomination cannot be created for closed teller
+        Common.clickBackButtonInTitleBar();
+        Offices.verifyMessageDisplayed("Teller can be closed");
+        Offices.clickActionCloseForTellerOfOffice(tellerIdentifier2, headquarterIdentifier);
+        Offices.selectRadioCashOut();
+        Offices.enterTextIntoAmountInputField("1220");
+        Offices.clickCloseTellerButton();
+        Common.verifyMessagePopupIsDisplayed("Teller is going to be updated");
+        Offices.clickButtonCreateDenominationsForTellerInOffice(tellerIdentifier2, headquarterIdentifier);
+        Offices.verifyMessagesAreDisplayed("Teller is not paused", "Teller must be paused to create denominations");
+        Denominations.verifyCreateDenominationButtonIsDisabled();
+        //teller balance
+        Common.clickBackButtonInTitleBar();
+        Offices.viewTellerBalanceForTellerInOffice(tellerIdentifier2, headquarterIdentifier);
+        Offices.verifyTellerTransactionMessageForRow("Teller adjustment.", 4);
+        Offices.verifyTellerCashDisbursedAmountForRow("1,220.00", 4);
+        //subtotals cash received and disbursed
+        Offices.verifyTotalCashOnHand("0.00");
     });
     it('office with teller cannot be deleted', function () {
         Offices.goToManageOfficesViaSidePanel();
         Common.clickLinkShowForRowWithId(officeIdentifier);
-        //verify office cannot be deleted; delete icon is hidden
+        Offices.verifyDeleteOfficeIconIsNotDisplayed();
     });
-    //teller transactions
-
 });

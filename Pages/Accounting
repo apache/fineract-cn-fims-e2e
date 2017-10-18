@@ -202,7 +202,7 @@ module.exports = {
     },
     clickSecondJournalEntry: function(){
         $$("fims-layout-card-over mat-nav-list a").get(1).click();
-        browser.sleep(1000);
+        browser.sleep(500);
     },
     clickThirdJournalEntry: function(){
         $$("fims-layout-card-over mat-nav-list a").get(2).click();

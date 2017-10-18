@@ -28,10 +28,10 @@ var radioNone = $$("mat-radio-group[formcontrolname='adjustment'] mat-radio-butt
 var radioCashIn = $$("mat-radio-group[formcontrolname='adjustment'] mat-radio-button").last();
 var radioCashOut = $$("mat-radio-group[formcontrolname='adjustment'] mat-radio-button").last();
 
-
 //general elements
 var primaryButton = $$(".mat-raised-button.mat-primary");
 var createOfficeButton = $$(".mat-raised-button.mat-primary").first();
+var buttons = $$(".mat-button");
 
 
 //Actions specific to the Offices section, including Teller management
@@ -361,6 +361,12 @@ module.exports = {
         $("a[href='"+link+"']").click();
         browser.wait(EC.textToBePresentInElement($$("fims-layout-card-over .mat-toolbar-row span").get(1), "Manage denominations"), 2000);
     },
+    clickButtonCreateDenominationsForTellerInOffice: function(tellerIdentifier, officeIdentifier){
+        link = "/offices/detail/" + officeIdentifier + "/tellers/detail/" + tellerIdentifier + "/denominations/create";
+        browser.wait(EC.visibilityOf($("a[href='"+link+"']")), 2000);
+        $("a[href='"+link+"']").click();
+        browser.wait(EC.textToBePresentInElement($$("fims-layout-card-over .mat-toolbar-row span").get(0), "Create new denomination"), 2000);
+    },
     verifyTellerTransactionMessageForRow: function(message, row) {
         browser.wait(EC.visibilityOf($("table tbody")), 3000);
         browser.wait(EC.textToBePresentInElement($$("table tbody tr").get(row - 1).$$(".td-data-table-cell").get(1), message));
@@ -383,5 +389,8 @@ module.exports = {
                 return text == "CANCEL";
             })
         }).click();
+    },
+    verifyDeleteOfficeIconIsNotDisplayed: function(){
+        expect($("button[title='Delete this office']").isDisplayed()).toBe(false);
     }
 }
