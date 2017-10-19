@@ -46,11 +46,13 @@ module.exports = {
         $$(".mat-raised-button").get(0).click();
     },
     clickEnabledContinueButtonForAssignEmployeeToOffice: function(){
+        browser.sleep(100);
         browser.executeScript("arguments[0].scrollIntoView();", $$(".mat-raised-button").get(1).getWebElement());
         browser.wait(EC.elementToBeClickable($$(".mat-raised-button").get(1)),2000);
         $$(".mat-raised-button").get(1).click();
     },
     clickEnabledCreateEmployeeButton: function(){
+        browser.sleep(100);
         browser.executeScript("arguments[0].scrollIntoView();", $$("td-step-body").last().getWebElement());
         primaryButton.filter(function(elem, index) {
             return elem.$("span").getText().then(function(text) {

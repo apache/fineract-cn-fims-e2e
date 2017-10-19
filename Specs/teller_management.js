@@ -577,7 +577,8 @@ describe('teller_management', function() {
         Offices.enterTextIntoAmountInputField("1220");
         Offices.clickCloseTellerButton();
         Common.verifyMessagePopupIsDisplayed("Teller is going to be updated");
-        Offices.clickButtonCreateDenominationsForTellerInOffice(tellerIdentifier2, headquarterIdentifier);
+        Offices.verifyTellerStatusIs("CLOSED");
+        Offices.goToDenominationsForTellerInOffice(tellerIdentifier2, headquarterIdentifier);
         Offices.verifyMessagesAreDisplayed("Teller is not paused", "Teller must be paused to create denominations");
         Denominations.verifyCreateDenominationButtonIsDisabled();
         //teller balance
