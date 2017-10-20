@@ -176,6 +176,7 @@ module.exports = {
         chargeNameInput1.click().sendKeys(text);
     },
     clickButtonAddCharge: function(){
+        browser.wait(EC.visibilityOf($("fims-deposit-product-charges-form button")), 2000);
         browser.wait(EC.elementToBeClickable($("fims-deposit-product-charges-form button")), 2000);
         $("fims-deposit-product-charges-form button").click();
     },

@@ -136,6 +136,8 @@ module.exports = {
         opt.click();
     },
     enterTextIntoPaymentPeriodInputField: function (text) {
+        browser.executeScript("arguments[0].scrollIntoView();", paymentPeriod.getWebElement());
+        browser.wait(EC.visibilityOf(paymentPeriod), 2000);
         paymentPeriod.click().clear().sendKeys(text);
     },
     selectPaymentPeriod: function (paymentPeriod) {
@@ -227,6 +229,12 @@ module.exports = {
         browser.wait(EC.visibilityOf($("fims-state-display")), 2000);
         status = $("fims-state-display .mat-list-text .mat-line").getText();
         expect(status).toEqual(expectedStatus);
+    },
+    goToStepLoanDetails: function(){
+        browser.sleep(100);
+        browser.wait(EC.elementToBeClickable($$(".td-step-label").get(0)), 3000);
+        $$(".td-step-label").get(0).click();
+        browser.sleep(1000);
     },
     goToStepDebtToIncomeRatio: function(){
         browser.sleep(100);

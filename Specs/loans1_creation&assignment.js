@@ -422,14 +422,22 @@ describe('Loans 1', function() {
         //CustomerLoans.enterTextIntoMemberInputField();
         //documents
         CustomerLoans.goToStepDocuments();
-        browser.pause();
+        //still error for payment period
+        CustomerLoans.verifyButtonCreateMemberLoanDisabled();
+        CustomerLoans.goToStepLoanDetails();
+        CustomerLoans.enterTextIntoPaymentPeriodInputField("5");
+        CustomerLoans.verifyButtonCreateMemberLoanEnabled();
         CustomerLoans.clickEnabledCreateMemberLoanButton();
         Common.verifyMessagePopupIsDisplayed("Case is going to be saved");
         Customers.verifyStateOfLoanAccountWithIdIs(loanAccountShortName, "CREATED");
         //details
+        Common.clickLinkShowForRowWithId(loanAccountShortName);
+        //details
+
     });
     it('planned payment', function () {
         CustomerLoans.viewPlannedPaymentForCustomerLoan(customerAccount, loanShortName, loanAccountShortName);
+        //error, ATEN-474
     });
     it('debt/income ratio', function () {
         CustomerLoans.viewDebtIncomeReportForCustomerLoan(customerAccount, loanShortName, loanAccountShortName);
