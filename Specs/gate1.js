@@ -34,6 +34,7 @@ var Offices = require('../Pages/Offices');
 var Roles = require('../Pages/Roles');
 var Teller = require('../Pages/Teller');
 var Customers = require('../Pages/Customers');
+var CustomerLoans = require('../Pages/CustomerLoans');
 var Deposits = require('../Pages/Deposits');
 var Accounting = require('../Pages/Accounting');
 var Loans = require('../Pages/Loans');
@@ -475,12 +476,12 @@ describe('Gate 1', function() {
         Customers.clickCreateLoanAccountForMember(customerAccount);
         Customers.selectProduct("My loan " + loanShortName);
         Customers.enterTextIntoShortNameInputField(loanAccountShortName);
-        Customers.enterTextIntoPrincipalAmountInputField("5000");
-        Customers.enterTextIntoTermInputField("12");
+        CustomerLoans.enterTextIntoPrincipalAmountInputField("5000");
+        CustomerLoans.enterTextIntoTermInputField("12");
         //verify correct radio button selected; BUG
-        Customers.selectDayForMonthlyRepayment("3.");
-        Customers.selectDepositAccount(customerAccount + ".9100.00001(" + depositIdentifier + ")");
-        Customers.clickEnabledCreateMemberLoanButton();
+        CustomerLoans.selectDayForMonthlyRepayment("3.");
+        CustomerLoans.selectDepositAccount(customerAccount + ".9100.00001(" + depositIdentifier + ")");
+        CustomerLoans.clickEnabledCreateMemberLoanButton();
         Common.verifyMessagePopupIsDisplayed("Case is going to be saved");
         Customers.verifyStateOfLoanAccountWithIdIs(loanAccountShortName, "CREATED");
     });
@@ -501,7 +502,7 @@ describe('Gate 1', function() {
         Customers.clickButtonForTask("APPROVE");
         Customers.clickButtonForTransaction("APPROVE");
         Common.verifyMessagePopupIsDisplayed("Case is going to be updated");
-        Customers.verifyLoanHasStatus("APPROVED");
+        CustomerLoans.verifyLoanHasStatus("APPROVED");
     });
     it('should be able to disburse loan - no task', function () {
         //currently error if this is done too quickly; workaround
@@ -513,7 +514,7 @@ describe('Gate 1', function() {
         Customers.verifyTransactionCharge("Disbursement fee", "05.00");
         Customers.clickButtonForTransaction("DISBURSE");
         Common.verifyMessagePopupIsDisplayed("Case is going to be updated");
-        Customers.verifyLoanHasStatus("ACTIVE");
+        CustomerLoans.verifyLoanHasStatus("ACTIVE");
     });
     it('bookings should be as expected (open/approve/disburse loan)', function () {
         //verify fees have been booked as expected

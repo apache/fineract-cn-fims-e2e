@@ -6,6 +6,7 @@ var Offices = require('../Pages/Offices');
 var Roles = require('../Pages/Roles');
 var Teller = require('../Pages/Teller');
 var Customers = require('../Pages/Customers');
+var CustomerLoans = require('../Pages/CustomerLoans');
 var Deposits = require('../Pages/Deposits');
 var Accounting = require('../Pages/Accounting');
 var Loans = require('../Pages/Loans');
@@ -312,12 +313,12 @@ describe('Loans 1', function() {
         Customers.clickManageLoanAccountsForMember(customerAccount);
         Customers.clickCreateLoanAccountForMember(customerAccount);
         //verify loan product cannot be selected
-        Customers.verifyLoanAccountNotOfferedForSelection(loanShortName2);
+        CustomerLoans.verifyLoanAccountNotOfferedForSelection(loanShortName2);
         Customers.selectProductFromOpenList(loanShortName);
     });
     it('should not be able to select deposit account if not enabled', function () {
         //verify deposit account cannot be selected
-        Customers.verifyDepositAccountNotOfferedForSelection(customerAccount + ".9100.00001(" + depositIdentifier +")");
+        CustomerLoans.verifyDepositAccountNotOfferedForSelection(customerAccount + ".9100.00001(" + depositIdentifier +")");
     });
     it('should open deposit account', function () {
         Teller.goToTellerManagementViaSidePanel();
@@ -356,58 +357,82 @@ describe('Loans 1', function() {
         Common.verifyFirstRowOfSearchResultHasTextAsId(customerAccount);
         Common.clickLinkShowForRowWithId(customerAccount);
         Customers.clickManageLoanAccountsForMember(customerAccount);
-        Customers.clickCreateLoanAccountForMember(customerAccount);
-        Customers.selectProduct("My loan " + loanShortName);
-        Customers.enterTextIntoShortNameInputField(loanAccountShortName);
-        Customers.enterTextIntoPrincipalAmountInputField("9999.99");
+        CustomerLoans.clickCreateLoanAccountForMember(customerAccount);
+        CustomerLoans.selectProduct("My loan " + loanShortName);
+        CustomerLoans.enterTextIntoShortNameInputField(loanAccountShortName);
+        CustomerLoans.enterTextIntoPrincipalAmountInputField("9999.99");
         //invalid input, error
-        Customers.enterTextIntoPrincipalAmountInputField("50,000.01");
+        CustomerLoans.enterTextIntoPrincipalAmountInputField("50,000.01");
         //invalid input, error
-        Customers.enterTextIntoPrincipalAmountInputField("10,000");
-        Customers.enterTextIntoInterestRateInputField("3.65");
+        CustomerLoans.enterTextIntoPrincipalAmountInputField("10,000");
+        CustomerLoans.enterTextIntoInterestRateInputField("3.65");
         //invalid input, error
-        Customers.enterTextIntoInterestRateInputField("0.79");
+        CustomerLoans.enterTextIntoInterestRateInputField("0.79");
         //invalid input, error
-        Customers.enterTextIntoInterestRateInputField("3.60");
-        Customers.enterTextIntoTermInputField("62");
+        CustomerLoans.enterTextIntoInterestRateInputField("3.60");
+        CustomerLoans.enterTextIntoTermInputField("62");
         //invalid input, error
-        Customers.enterTextIntoTermInputField("60");
+        CustomerLoans.enterTextIntoTermInputField("60");
         //valid input, no error
-        Customers.selectTemporalUnitForTerm("years");
+        CustomerLoans.selectTemporalUnitForTerm("years");
         //invalid input, error
-        Customers.enterTextIntoTermInputField("5");
+        CustomerLoans.enterTextIntoTermInputField("5");
         //valid input, no error
-        Customers.enterTextIntoPaymentPeriodInputField("62");
+        CustomerLoans.enterTextIntoPaymentPeriodInputField("62");
         //invalid input, error: Invalid payment period. Maximum allowed are 260 week(s), 60 month(s) or 5 year(s).
-        Customers.enterTextIntoPaymentPeriodInputField("6");
+        CustomerLoans.enterTextIntoPaymentPeriodInputField("6");
         //valid input, no error
-        Customers.selectPaymentPeriod("years");
+        CustomerLoans.selectPaymentPeriod("years");
         //invalid input, error
-        Customers.selectPaymentPeriod("months");
+        CustomerLoans.selectPaymentPeriod("months");
         //valid input, no error
-        Customers.selectSecondRadioOptionForMonthlyRepayment();
-        Customers.selectWeekdayForMonthlyRepayment("last", "Friday");
-        Customers.selectDepositAccount(customerAccount + ".9100.00001(" + depositIdentifier + ")");
+        CustomerLoans.selectSecondRadioOptionForMonthlyRepayment();
+        CustomerLoans.selectWeekdayForMonthlyRepayment("last", "Friday");
+        CustomerLoans.selectDepositAccount(customerAccount + ".9100.00001(" + depositIdentifier + ")");
         //change loan product to the other one
-        Customers.selectProduct(loanShortName2);
+        CustomerLoans.selectProduct(loanShortName2);
         //error for principal: Value must be smaller than or equal to 1500
-        Customers.enterTextIntoPrincipalAmountInputField("1500");
+        CustomerLoans.enterTextIntoPrincipalAmountInputField("1500");
         //interest rate input is disabled and shows 15%
         //error for payment period: Invalid payment period. Maximum allowed are 21 week(s), 5 month(s) or 0 year(s).
-        Customers.selectPaymentPeriod("months");
+        CustomerLoans.selectPaymentPeriod("months");
         //debt to income ratio
+        CustomerLoans.goToStepDebtToIncomeRatio();
+        CustomerLoans.clickButtonAddDebt();
+        CustomerLoans.enterTextDescriptionInputFieldForDebt("My loan", 1);
+        CustomerLoans.enterTextIntoAmountInputFieldForDebt("10000", 1);
+        CustomerLoans.verifyDebtTotalIs("10,000.00");
+        CustomerLoans.clickButtonAddDebt();
+        CustomerLoans.enterTextDescriptionInputFieldForDebt("My mortgage", 2);
+        CustomerLoans.enterTextIntoAmountInputFieldForDebt("5000", 2);
+        CustomerLoans.verifyDebtTotalIs("15,000.00");
+        CustomerLoans.clickButtonAddIncome();
+        CustomerLoans.enterTextIntoDescriptionInputFieldForIncome("First job", 1);
+        CustomerLoans.enterTextIntoAmountInputFieldForIncome("5000",1);
+        CustomerLoans.verifyIncomeTotalIs("5,000.00");
+        CustomerLoans.verifyDebtIncomeRatioIs("03.00");
+        CustomerLoans.clickButtonAddIncome();
+        CustomerLoans.enterTextIntoDescriptionInputFieldForIncome("Second job", 2);
+        CustomerLoans.enterTextIntoAmountInputFieldForIncome("5000",2);
+        CustomerLoans.verifyIncomeTotalIs("10,000.00");
+        CustomerLoans.verifyDebtIncomeRatioIs("01.50");
+        //browser.pause();
+        CustomerLoans.goToStepCoSigner();
         //co-signer
+        //CustomerLoans.enterTextIntoMemberInputField();
         //documents
-        Customers.clickEnabledCreateMemberLoanButton();
+        CustomerLoans.goToStepDocuments();
+        browser.pause();
+        CustomerLoans.clickEnabledCreateMemberLoanButton();
         Common.verifyMessagePopupIsDisplayed("Case is going to be saved");
         Customers.verifyStateOfLoanAccountWithIdIs(loanAccountShortName, "CREATED");
         //details
     });
     it('planned payment', function () {
-
+        CustomerLoans.viewPlannedPaymentForCustomerLoan(customerAccount, loanShortName, loanAccountShortName);
     });
     it('debt/income ratio', function () {
-
+        CustomerLoans.viewDebtIncomeReportForCustomerLoan(customerAccount, loanShortName, loanAccountShortName);
     });
     it('editing loan account possible until approved', function () {
         //edit loan account to different one (different product, different settings)
@@ -416,9 +441,13 @@ describe('Loans 1', function() {
     });
     it('update/deletion of unassigned/assigned product', function () {
         //assigned product cannot be deleted anymore
-        //what about disabled/edited? fees/tasks???
+        //what about disabled/edited?
+        //disable assigned product & check customer loan account: ATEN-475
+        //try to edit assigned product: ATEN-507
+        //fees: try to edit fees
+        //tasks: try to edit/add tasks: bug ATEN-318
         //unassigned product can be disabled/edited
-        //edit product and verify updated
+        //edit product and verify updated, edit fees and add tasks
         //unassigned product can be deleted
     });
 });

@@ -25,19 +25,6 @@ var beneficiaryInput = $("td-chips[formcontrolname='beneficiaries'] input");
 
 //create loan account
 var shortNameInput = $("fims-id-input[controlname='identifier'] input");
-var principalAmountInput = $("fims-number-input[controlname='principalAmount'] input");
-var interestRateInput = $("fims-number-input[controlname='interest'] input");
-var termInput = $("fims-text-input[controlname='term'] input");
-var termSelect = $("mat-select[formcontrolname='termTemporalUnit'] .mat-select-trigger");
-var paymentPeriod = $("fims-text-input[controlname='paymentPeriod'] input");
-var paymentPeriodSelect = $("mat-select[formcontrolname='termTemporalUnit'] .mat-select-trigger");
-var depositAccountSelect = $("mat-select[formcontrolname='depositAccountIdentifier'] .mat-select-trigger");
-
-var radioMonthSetting1 = $$("mat-radio-group[formcontrolname='monthSetting'] mat-radio-button").get(0);
-var dayForMonthlyRepaySelect = $("mat-select[formcontrolname='monthSettingDay'] .mat-select-trigger");
-var radioMonthSetting2 = $$("mat-radio-group[formcontrolname='monthSetting'] mat-radio-button").get(1);
-var numberDaySelectMonthlyRepayment = $("mat-select[formcontrolname='monthSettingWeek'] .mat-select-trigger");
-var weekdaySelectMonthlyRepayment = $("mat-select[formcontrolname='monthSettingDayInWeek'] .mat-select-trigger");
 
 //identification cards
 var identificationCardNumberInput = $("fims-id-input[controlname='number'] input");
@@ -54,9 +41,6 @@ var radioButtonCustom = $$("mat-radio-group[formcontrolname='type'] mat-radio-bu
 var radioButtonIdentificationCard = $$("mat-radio-group[formcontrolname='type'] mat-radio-button").get(0);
 var checkboxMandatory = $("mat-checkbox[formcontrolname='mandatory']");
 var checkboxAutoAssign = $("mat-checkbox[formcontrolname='predefined']");
-
-//payroll
-
 
 //general elements
 var linkCustomers = $$("a[href='/customers']");
@@ -295,112 +279,6 @@ module.exports = {
         browser.wait(EC.elementToBeClickable(shortNameInput), 5000);
         shortNameInput.click().sendKeys(text);
     },
-    enterTextIntoPrincipalAmountInputField: function (text) {
-        principalAmountInput.click().sendKeys(protractor.Key.BACK_SPACE);
-        principalAmountInput.sendKeys(protractor.Key.BACK_SPACE);
-        principalAmountInput.sendKeys(protractor.Key.BACK_SPACE);
-        principalAmountInput.sendKeys(protractor.Key.BACK_SPACE);
-        principalAmountInput.sendKeys(protractor.Key.BACK_SPACE);
-        principalAmountInput.sendKeys(protractor.Key.BACK_SPACE);
-        principalAmountInput.sendKeys(protractor.Key.BACK_SPACE);
-        principalAmountInput.sendKeys(protractor.Key.BACK_SPACE);
-        principalAmountInput.sendKeys(protractor.Key.BACK_SPACE);
-        principalAmountInput.sendKeys(text);
-    },
-    enterTextIntoInterestRateInputField: function (text) {
-        interestRateInput.click().sendKeys(protractor.Key.BACK_SPACE);
-        interestRateInput.sendKeys(protractor.Key.BACK_SPACE);
-        interestRateInput.sendKeys(protractor.Key.BACK_SPACE);
-        interestRateInput.sendKeys(protractor.Key.BACK_SPACE);
-        interestRateInput.sendKeys(text);
-    },
-    verifyLoanAccountNotOfferedForSelection: function(accountIdentifier){
-        browser.wait(EC.elementToBeClickable(productSelect), 3000);
-        productSelect.click();
-        browser.wait(EC.visibilityOf($(".mat-option")), 5000);
-        expect(element(by.cssContainingText('.mat-option', accountIdentifier)).isPresent()).toBe(false);
-    },
-    verifyDepositAccountNotOfferedForSelection: function(accountIdentifier){
-        browser.executeScript("arguments[0].scrollIntoView();", depositAccountSelect.getWebElement());
-        browser.wait(EC.elementToBeClickable(depositAccountSelect), 3000);
-        depositAccountSelect.click();
-        expect($(".mat-option").isPresent()).toBe(true);
-        expect(element(by.cssContainingText('.mat-option', accountIdentifier)).isPresent()).toBe(false);
-    },
-    enterTextIntoTermInputField: function (text) {
-        termInput.click().clear().sendKeys(text);
-    },
-    selectTemporalUnitForTerm: function (temporalUnit) {
-        browser.executeScript("arguments[0].scrollIntoView();", termSelect.getWebElement());
-        browser.wait(EC.visibilityOf(termSelect), 2000);
-        termSelect.click();
-        browser.wait(EC.visibilityOf($(".mat-option")), 5000);
-        opt = element(by.cssContainingText('.mat-option', temporalUnit));
-        browser.executeScript("arguments[0].scrollIntoView();", opt.getWebElement());
-        browser.wait(EC.elementToBeClickable(opt), 2000);
-        opt.click();
-    },
-    enterTextIntoPaymentPeriodInputField: function (text) {
-        paymentPeriod.click().clear().sendKeys(text);
-    },
-    selectPaymentPeriod: function (paymentPeriod) {
-        browser.executeScript("arguments[0].scrollIntoView();", paymentPeriodSelect.getWebElement());
-        browser.wait(EC.visibilityOf(paymentPeriodSelect), 2000);
-        paymentPeriodSelect.click();
-        browser.wait(EC.visibilityOf($(".mat-option")), 5000);
-        opt = element(by.cssContainingText('.mat-option', paymentPeriod));
-        browser.executeScript("arguments[0].scrollIntoView();", opt.getWebElement());
-        browser.wait(EC.elementToBeClickable(opt), 2000);
-        opt.click();
-    },
-    selectDayForMonthlyRepayment: function (day) {
-        browser.executeScript("arguments[0].scrollIntoView();", dayForMonthlyRepaySelect.getWebElement());
-        browser.wait(EC.visibilityOf(dayForMonthlyRepaySelect), 2000);
-        dayForMonthlyRepaySelect.click();
-        browser.wait(EC.visibilityOf($(".mat-option")), 5000);
-        opt = element(by.cssContainingText('.mat-option', day));
-        browser.executeScript("arguments[0].scrollIntoView();", opt.getWebElement());
-        browser.wait(EC.elementToBeClickable(opt), 2000);
-        opt.click();
-    },
-    selectSecondRadioOptionForMonthlyRepayment: function(){
-        radioMonthSetting2.click();
-    },
-    selectWeekdayForMonthlyRepayment: function (ordinaryNumber, weekday) {
-        browser.executeScript("arguments[0].scrollIntoView();", numberDaySelectMonthlyRepayment.getWebElement());
-        browser.wait(EC.visibilityOf(numberDaySelectMonthlyRepayment), 2000);
-        numberDaySelectMonthlyRepayment.click();
-        browser.wait(EC.visibilityOf($(".mat-option")), 5000);
-        opt = element(by.cssContainingText('.mat-option', ordinaryNumber));
-        browser.executeScript("arguments[0].scrollIntoView();", opt.getWebElement());
-        browser.wait(EC.elementToBeClickable(opt), 2000);
-        opt.click();
-        weekdaySelectMonthlyRepayment.click();
-        browser.wait(EC.visibilityOf($(".mat-option")), 5000);
-        opt = element(by.cssContainingText('.mat-option', weekday));
-        browser.executeScript("arguments[0].scrollIntoView();", opt.getWebElement());
-        browser.wait(EC.elementToBeClickable(opt), 2000);
-        opt.click();
-    },
-    selectDepositAccount: function (depositAccount) {
-        browser.executeScript("arguments[0].scrollIntoView();", depositAccountSelect.getWebElement());
-        browser.wait(EC.visibilityOf(depositAccountSelect), 2000);
-        depositAccountSelect.click();
-        browser.wait(EC.visibilityOf($(".mat-option")), 5000);
-        opt = element(by.cssContainingText('.mat-option', depositAccount));
-        browser.executeScript("arguments[0].scrollIntoView();", opt.getWebElement());
-        browser.wait(EC.elementToBeClickable(opt), 2000);
-        opt.click();
-    },
-    clickEnabledCreateMemberLoanButton: function(){
-        browser.executeScript("arguments[0].scrollIntoView();", primaryButton.first().getWebElement());
-        browser.wait(EC.elementToBeClickable(primaryButton.first()), 3000);
-        primaryButton.filter(function(elem, index) {
-            return elem.$("span").getText().then(function(text) {
-                return text === "CREATE MEMBER LOAN";
-            });
-        }).click();
-    },
     verifyTransactionCharge: function(chargeName, chargeAmount){
         browser.sleep(1000);
         browser.wait(EC.visibilityOf($("fims-case-command-confirmation-form table tbody")), 3000);
@@ -418,11 +296,6 @@ module.exports = {
                 return text === transaction;
             });
         }).click();
-    },
-    verifyLoanHasStatus: function (expectedStatus) {
-        browser.wait(EC.visibilityOf($("fims-state-display")), 2000);
-        status = $("fims-state-display .mat-list-text .mat-line").getText();
-        expect(status).toEqual(expectedStatus);
     },
 
     //customer tasks
