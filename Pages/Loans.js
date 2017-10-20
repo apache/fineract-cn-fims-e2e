@@ -9,7 +9,7 @@ var nameInput = $("fims-text-input[controlname='name'] input");
 var descriptionInput = $(".mat-input-infix textarea[formcontrolname='description']");
 var minimumPrincipalInput = $("fims-min-max input[placeholder='Minimum principal amount']");
 var maximumPrincipalInput = $("fims-min-max input[placeholder='Maximum principal amount']");
-var currencySelect = $("mat-select[formcontrolname='currencyCode']");
+var currencySelect = $("mat-select[formcontrolname='currencyCode'] .mat-select-trigger");
 var termInput = $("fims-text-input[controlname='term'] input");
 var radioWeeks = $$("mat-radio-group .mat-radio-button").first();
 var radioMonths =  $$("mat-radio-group .mat-radio-button").get(1);
@@ -91,6 +91,12 @@ module.exports = {
     verifyInterestRangeInputFieldsHaveError: function(text) {
         expect($("fims-min-max mat-error").getText()).toEqual(text);
     },
+    selectCurrencyByName: function(name){
+        browser.wait(EC.elementToBeClickable(currencySelect), 3000);
+        currencySelect.click();
+        browser.wait(EC.visibilityOf($(".mat-option")), 5000);
+        element(by.cssContainingText('.mat-option',name)).click();
+    },
     enterTextIntoTermInputField: function(text) {
         browser.executeScript("arguments[0].scrollIntoView();", termInput.getWebElement());
         termInput.click().clear().sendKeys(text);
@@ -146,12 +152,13 @@ module.exports = {
         browser.executeScript("arguments[0].scrollIntoView();", $$(".mat-raised-button").get(0).getWebElement());
         expect($$(".mat-raised-button").get(0).isEnabled()).toBeTruthy();
         $$(".mat-raised-button").get(0).click();
+        browser.sleep(500);
     },
     clickEnabledContinueButtonForLedgerAndAccountSettings: function(){
         browser.executeScript("arguments[0].scrollIntoView();", $$(".mat-raised-button").get(1).getWebElement());
         expect($$(".mat-raised-button").get(1).isEnabled()).toBeTruthy();
         $$(".mat-raised-button").get(1).click();
-        browser.sleep(1000);
+        browser.sleep(500);
     },
     clickEnabledContinueButtonForInterestSettings: function(){
         browser.executeScript("arguments[0].scrollIntoView();", $$(".mat-raised-button").get(2).getWebElement());
@@ -296,4 +303,16 @@ module.exports = {
     selectRadioButtonYears: function(){
         radioYears.click();
     },
+    selectRadioButtonMonths: function(){
+        radioMonths.click();
+    },
+    selectRadioButtonWeeks: function(){
+        radioWeeks.click();
+    },
+    verifyEditLoanProductButtonIsDisplayed: function(){
+        expect($("a[title='Edit product']").isPresent()).toBe(true);
+    },
+    verifyEditLoanProductButtonIsNotDisplayed: function(){
+        expect($("a[title='Edit product']").isPresent()).toBe(false);
+    }
 };
