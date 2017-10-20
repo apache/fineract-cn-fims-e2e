@@ -310,6 +310,7 @@ module.exports = {
         radioWeeks.click();
     },
     verifyEditLoanProductButtonIsDisplayed: function(){
+        browser.sleep(500);
         expect($("a[title='Edit product']").isPresent()).toBe(true);
     },
     verifyEditLoanProductButtonIsNotDisplayed: function(){

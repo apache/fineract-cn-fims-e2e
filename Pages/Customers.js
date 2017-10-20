@@ -29,7 +29,7 @@ var principalAmountInput = $("fims-number-input[controlname='principalAmount'] i
 var interestRateInput = $("fims-number-input[controlname='interest'] input");
 var termInput = $("fims-text-input[controlname='term'] input");
 var termSelect = $("mat-select[formcontrolname='termTemporalUnit'] .mat-select-trigger");
-var paymentPeriod = $("fima-text-input[controlname='paymentPeriod'] input");
+var paymentPeriod = $("fims-text-input[controlname='paymentPeriod'] input");
 var paymentPeriodSelect = $("mat-select[formcontrolname='termTemporalUnit'] .mat-select-trigger");
 var depositAccountSelect = $("mat-select[formcontrolname='depositAccountIdentifier'] .mat-select-trigger");
 
@@ -300,6 +300,11 @@ module.exports = {
         principalAmountInput.sendKeys(protractor.Key.BACK_SPACE);
         principalAmountInput.sendKeys(protractor.Key.BACK_SPACE);
         principalAmountInput.sendKeys(protractor.Key.BACK_SPACE);
+        principalAmountInput.sendKeys(protractor.Key.BACK_SPACE);
+        principalAmountInput.sendKeys(protractor.Key.BACK_SPACE);
+        principalAmountInput.sendKeys(protractor.Key.BACK_SPACE);
+        principalAmountInput.sendKeys(protractor.Key.BACK_SPACE);
+        principalAmountInput.sendKeys(protractor.Key.BACK_SPACE);
         principalAmountInput.sendKeys(text);
     },
     enterTextIntoInterestRateInputField: function (text) {
@@ -319,7 +324,8 @@ module.exports = {
         browser.executeScript("arguments[0].scrollIntoView();", depositAccountSelect.getWebElement());
         browser.wait(EC.elementToBeClickable(depositAccountSelect), 3000);
         depositAccountSelect.click();
-        expect($(".mat-option").isPresent()).toBe(false);
+        expect($(".mat-option").isPresent()).toBe(true);
+        expect(element(by.cssContainingText('.mat-option', accountIdentifier)).isPresent()).toBe(false);
     },
     enterTextIntoTermInputField: function (text) {
         termInput.click().clear().sendKeys(text);
