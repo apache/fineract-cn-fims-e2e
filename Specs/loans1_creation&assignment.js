@@ -436,10 +436,9 @@ describe('Loans 1', function() {
         CustomerLoans.verifyCurrentStatusForLoanAccountInRow("CREATED", 1);
         Common.clickLinkShowForRowWithId(loanAccountShortName);
         //details
-
     });
     it('planned payment', function () {
-        //CustomerLoans.viewPlannedPaymentForCustomerLoan(customerAccount, loanShortName, loanAccountShortName);
+        CustomerLoans.viewPlannedPaymentForCustomerLoan(customerAccount, loanShortName, loanAccountShortName);
         //error, ATEN-474
     });
     it('debt/income ratio', function () {
@@ -450,8 +449,17 @@ describe('Loans 1', function() {
     });
     it('should be able to edit loan account until it has been approved', function () {
         CustomerLoans.clickUpdateLoanAccountForMember(customerAccount, loanShortName2, loanAccountShortName);
-        //browser.pause();
+        browser.pause();
         //edit loan account to different one (different product, different settings)
+        CustomerLoans.selectProduct(loanShortName);
+        //error principal & interest rate, bug
+        CustomerLoans.verifyButtonUpdateMemberLoanDisabled();
+        CustomerLoans.enterTextIntoPrincipalAmountInputField(10000);
+        CustomerLoans.enterTextIntoInterestRateInputField("3.60");
+        CustomerLoans.verifyButtonUpdateMemberLoanDisabled();
+        CustomerLoans.clickEnabledUpdateMemberLoanButton();
+        //unexpected error, bug
+        Common.verifyMessagePopupIsDisplayed("Case is going to be saved");
         //planned payment
         //...
     });

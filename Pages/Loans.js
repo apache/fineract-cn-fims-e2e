@@ -83,6 +83,10 @@ module.exports = {
         maximumPrincipalInput.sendKeys(protractor.Key.BACK_SPACE);
         maximumPrincipalInput.sendKeys(protractor.Key.BACK_SPACE);
         maximumPrincipalInput.sendKeys(protractor.Key.BACK_SPACE);
+        maximumPrincipalInput.sendKeys(protractor.Key.BACK_SPACE);
+        maximumPrincipalInput.sendKeys(protractor.Key.BACK_SPACE);
+        maximumPrincipalInput.sendKeys(protractor.Key.BACK_SPACE);
+        maximumPrincipalInput.sendKeys(protractor.Key.BACK_SPACE);
         maximumPrincipalInput.sendKeys(text);
     },
     verifyPrincipalAmountInputFieldsHaveError: function(text) {

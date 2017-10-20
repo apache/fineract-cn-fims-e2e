@@ -364,7 +364,7 @@ module.exports = {
         $('a[href="' + link + '"]').click();
     },
     viewDebtIncomeReportForCustomerLoan: function(customer, productIdentifier, accountIdentifier){
-        link = "/customers/detail/" + customer + "/loans/products/" + productIdentifier + "/detail/" + accountIdentifier + "/tasks";
+        link = "/customers/detail/" + customer + "/loans/products/" + productIdentifier + "/detail/" + accountIdentifier + "/debtIncome";
         browser.wait(EC.elementToBeClickable($('a[href="' + link + '"]')), 5000);
         $('a[href="' + link + '"]').click();
         browser.wait(EC.visibilityOf($("fims-layout-card-over")), 2000);
