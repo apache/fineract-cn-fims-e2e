@@ -57,6 +57,11 @@ module.exports = {
         browser.wait(EC.visibilityOf($('a[href="' + link + '"]')));
         $('a[href="' + link + '"]').click();
     },
+    clickUpdateLoanAccountForMember: function (customer,loanProduct, loanAccount) {
+        link = "/customers/detail/" + customer + "/loans/products/" + loanProduct + "/detail/" + loanAccount + "/edit";
+        browser.wait(EC.visibilityOf($('a[href="' + link + '"]')));
+        $('a[href="' + link + '"]').click();
+    },
     selectProduct: function (productName) {
         browser.sleep(2000);
         browser.wait(EC.elementToBeClickable(productSelect), 3000);
@@ -358,9 +363,28 @@ module.exports = {
         browser.wait(EC.elementToBeClickable($('a[href="' + link + '"]')), 6000);
         $('a[href="' + link + '"]').click();
     },
-    viewDebtIncomeReportForCustomerLoan: function(customer, loanProduct, loanAccount){
-        link = "/customers/detail/" + customer + "/loans/products/" + loanProduct + "/detail/" + loanAccount + "/debtIncome";
-        browser.wait(EC.elementToBeClickable($('a[href="' + link + '"]')), 6000);
+    viewDebtIncomeReportForCustomerLoan: function(customer, productIdentifier, accountIdentifier){
+        link = "/customers/detail/" + customer + "/loans/products/" + productIdentifier + "/detail/" + accountIdentifier + "/tasks";
+        browser.wait(EC.elementToBeClickable($('a[href="' + link + '"]')), 5000);
         $('a[href="' + link + '"]').click();
+        browser.wait(EC.visibilityOf($("fims-layout-card-over")), 2000);
+    },
+    verifyPrincipalForLoanAccountInRow: function(principalAmount, row){
+        browser.wait(EC.visibilityOf($("table tbody")), 3000);
+        expect($$("table tbody tr").get(row - 1).$$(".td-data-table-cell").get(1).getText()).toEqual(principalAmount);
+    },
+    verifyInterestForLoanAccountInRow: function(interest, row){
+        browser.wait(EC.visibilityOf($("table tbody")), 3000);
+        expect($$("table tbody tr").get(row - 1).$$(".td-data-table-cell").get(2).getText()).toEqual(interest);
+    },
+    verifyCurrentStatusForLoanAccountInRow: function(status, row){
+        browser.wait(EC.visibilityOf($("table tbody")), 3000);
+        expect($$("table tbody tr").get(row - 1).$$(".td-data-table-cell").get(3).getText()).toEqual(status);
+    },
+    verifyMemberRatioIs:function (text){
+        expect($$("mat-tab-header div[role='tab']").get(0).getText()).toMatch("Member(Ratio: " + text + ")");
+    },
+    verifyCoSignerRatioIs:function (text){
+        expect($$("mat-tab-header div[role='tab']").get(1).getText()).toEqual("Co-signer(Ratio: " + text + ")");
     }
 };
