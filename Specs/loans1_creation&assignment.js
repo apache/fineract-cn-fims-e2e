@@ -286,6 +286,7 @@ describe('Loans 1', function() {
     });
     it('should enable the first loan product', function () {
         Common.clickLinkShowForRowWithId(loanShortName);
+        //ToDo: details
         CustomerLoans.verifyMessagesAreDisplayed("Product not enabled", "To assign this product to a member it needs to be enabled first");
         Loans.clickButtonEnableProduct();
         Common.verifyMessagePopupIsDisplayed("Product is going to be enabled");
@@ -328,6 +329,19 @@ describe('Loans 1', function() {
         Loans.enterTextIntoArrearsAllowanceAccountInputField("3040");
         Loans.clickEnabledCreateProductButton();
         Common.verifyMessagePopupIsDisplayed("Product is going to be saved");
+    });
+    it('should configure loan loss provision', function () {
+        Common.clickLinkShowForRowWithId(loanShortName2);
+        //ToDo: details
+        Loans.clickLinkLossProvisionConfigurationForLoanProduct(loanShortName2);
+        Loans.clickButtonEditLossProvisionConfigurationForLoanProduct(loanShortName2);
+        Loans.clickButtonAddStep();
+        Loans.enterTextIntoPercentProvisionInputField("5", 1);
+        Loans.clickButtonAddStep();
+        Loans.enterTextIntoDaysLateInputField("10", 2);
+        Loans.enterTextIntoPercentProvisionInputField("25", 2);
+        Loans.clickEnabledUpdateLossProvisionButton();
+        Common.verifyMessagePopupIsDisplayed("oss provision configuration is going to be saved");
     });
     it('should not be able to select loan product if not enabled', function () {
         Customers.goToManageCustomersViaSidePanel();
@@ -485,31 +499,84 @@ describe('Loans 1', function() {
         CustomerLoans.verifyCreatedByForLoanIs(employeeIdentifier);
     });
     it('planned payment', function () {
-        CustomerLoans.viewPlannedPaymentForCustomerLoan(customerAccount, loanShortName, loanAccountShortName);
-        //error, ATEN-474
+        // CustomerLoans.viewPlannedPaymentForCustomerLoan(customerAccount, loanShortName2, loanAccountShortName);
+        // error, ATEN-474
+        // CustomerLoans.verifyBalanceForPlannedPaymentsInRow("1500" ,"1");
+        // Common.clickBackButtonInTitleBar();
     });
     it('debt/income ratio', function () {
         CustomerLoans.viewDebtIncomeReportForCustomerLoan(customerAccount, loanShortName2, loanAccountShortName);
         CustomerLoans.verifyMemberRatioIs("01.50");
+        //ToDo: more details
         CustomerLoans.verifyCoSignerRatioIs("00.42");
+        //ToDo: more details
         Common.clickBackButtonInTitleBar();
     });
     it('should be able to edit loan account until it has been approved', function () {
         CustomerLoans.clickUpdateLoanAccountForMember(customerAccount, loanShortName2, loanAccountShortName);
-        browser.pause();
-        //edit loan account to different one (different product, different settings)
-        CustomerLoans.selectProduct(loanShortName);
-        //error principal & interest rate, bug
-        CustomerLoans.verifyButtonUpdateMemberLoanDisabled();
-        CustomerLoans.enterTextIntoPrincipalAmountInputField(10000);
-        CustomerLoans.enterTextIntoInterestRateInputField("3.60");
-        CustomerLoans.verifyButtonUpdateMemberLoanDisabled();
+        //edit loan account settings
+        //ToDo: different loan product - should not be possible or work as expected (currently error on saving)
+        CustomerLoans.enterTextIntoPrincipalAmountInputField("500");
+        CustomerLoans.verifyInterestRateInputFieldIsDisabledAndHasText("15.00");
+        CustomerLoans.enterTextIntoTermInputField("50");
+        CustomerLoans.selectTemporalUnitForTerm("weeks");
+        CustomerLoans.enterTextIntoPaymentPeriodInputField("10");
+        CustomerLoans.selectPaymentPeriod("weeks");
         CustomerLoans.clickEnabledUpdateMemberLoanButton();
-        //unexpected error, bug
         Common.verifyMessagePopupIsDisplayed("Case is going to be saved");
         //planned payment
-        //...
+        CustomerLoans.viewPlannedPaymentForCustomerLoan(customerAccount, loanShortName2, loanAccountShortName);
+        CustomerLoans.verifyBalanceForPlannedPaymentsInRow("500" ,"1");
+        CustomerLoans.verifyBalanceForPlannedPaymentsInRow("0" ,"6");
+        Common.clickBackButtonInTitleBar();
+        //edit loan account again and update debt to income ratio
+        CustomerLoans.clickUpdateLoanAccountForMember(customerAccount, loanShortName2, loanAccountShortName);
+        CustomerLoans.goToStepDebtToIncomeRatio();
+        CustomerLoans.removeDebtAtPosition(1);
+        CustomerLoans.verifyDebtTotalIs("5,000.00");
+        CustomerLoans.verifyDebtIncomeRatioIs("00.50");
+        CustomerLoans.enterTextIntoAmountInputFieldForIncome("100000", 2);
+        CustomerLoans.verifyIncomeTotalIs("105,000.00");
+        CustomerLoans.verifyDebtIncomeRatioIs("00.05");
+        CustomerLoans.clickEnabledUpdateMemberLoanButton();
+        Common.verifyMessagePopupIsDisplayed("Case is going to be saved");
+        //debt to income report
+        CustomerLoans.viewDebtIncomeReportForCustomerLoan(customerAccount, loanShortName2, loanAccountShortName);
+        CustomerLoans.verifyMemberRatioIs("00.05");
+        CustomerLoans.verifyCoSignerRatioIs("00.42");
+        //ToDo: more details
+        Common.clickBackButtonInTitleBar();
     });
+    it('should not be able to edit loan account once it has been approved', function () {
+        //open loan; can still be edited
+        CustomerLoans.goToTasksForCustomerLoan(customerAccount, loanShortName2, loanAccountShortName);
+        CustomerLoans.clickButtonForTask("OPEN");
+        browser.pause();
+        Common.verifyMessagePopupIsDisplayed("Case is going to be updated");
+        CustomerLoans.verifyLoanStatusIs("PENDING");
+        CustomerLoans.verifyEditLoanButtonIsDisplayed();
+        //approve loan; can no longer be edited
+        CustomerLoans.goToTasksForCustomerLoan(customerAccount, loanShortName2, loanAccountShortName);
+        //ToDo: task DENY
+        CustomerLoans.clickButtonForTask("APPROVE");
+        Common.verifyMessagePopupIsDisplayed("Case is going to be updated");
+        CustomerLoans.verifyLoanStatusIs("APPROVED");
+        CustomerLoans.verifyEditLoanButtonIsNotDisplayed();
+        //disburse loan; default fees & loss provision configured
+        CustomerLoans.goToTasksForCustomerLoan(customerAccount, loanShortName2, loanAccountShortName);
+        browser.pause();
+        //ToDo: task CLOSE
+        CustomerLoans.clickButtonForTask("DISBURSE");
+        Common.verifyMessagePopupIsDisplayed("Case is going to be updated");
+        CustomerLoans.verifyLoanStatusIs("ACTIVE");
+        CustomerLoans.verifyEditLoanButtonIsNotDisplayed();
+        browser.pause();
+        //ToDo: task CLOSE
+    });
+    it('should be able to add documents to loan', function () {
+        CustomerLoans.viewLoanDocumentsForCustomerLoan(customerAccount, loanShortName2, loanAccountShortName);
+    });
+
     it('update/deletion of unassigned/assigned product', function () {
         //assigned product cannot be deleted anymore
         //what about disabled/edited?

@@ -260,11 +260,6 @@ module.exports = {
         $$(".td-step-label").get(2).click();
         browser.sleep(1000);
     },
-    goToStepDocuments: function(){
-        browser.sleep(100);
-        browser.wait(EC.elementToBeClickable($$(".td-step-label").get(3)), 3000);
-        $$(".td-step-label").get(3).click();
-    },
     verifyButtonCreateMemberLoanDisabled: function(){
         expect(primaryButton.filter(function(elem, index) {
             return elem.$("span").getText().then(function(text) {
@@ -388,11 +383,21 @@ module.exports = {
         browser.wait(EC.elementToBeClickable($('a[href="' + link + '"]')), 6000);
         $('a[href="' + link + '"]').click();
     },
+    goToTasksForCustomerLoan: function (customer, productIdentifier, accountIdentifier) {
+        link = "/customers/detail/" + customer + "/loans/products/" + productIdentifier + "/detail/" + accountIdentifier + "/tasks";
+        browser.wait(EC.elementToBeClickable($('a[href="' + link + '"]')), 5000);
+        $('a[href="' + link + '"]').click();
+    },
     viewDebtIncomeReportForCustomerLoan: function(customer, productIdentifier, accountIdentifier){
         link = "/customers/detail/" + customer + "/loans/products/" + productIdentifier + "/detail/" + accountIdentifier + "/debtIncome";
         browser.wait(EC.elementToBeClickable($('a[href="' + link + '"]')), 5000);
         $('a[href="' + link + '"]').click();
         browser.wait(EC.visibilityOf($("fims-layout-card-over")), 2000);
+    },
+    viewLoanDocumentsForCustomerLoan: function(customer, loanProduct, loanAccount){
+        link = "/customers/detail/" + customer + "/loans/products/" + loanProduct + "/detail/" + loanAccount + "/documents";
+        browser.wait(EC.elementToBeClickable($('a[href="' + link + '"]')), 6000);
+        $('a[href="' + link + '"]').click();
     },
     //table
     verifyPrincipalForLoanAccountInRow: function(principalAmount, row){
@@ -477,7 +482,7 @@ module.exports = {
         })).toBe(true);
     },
     verifyMemberRatioIs:function (text){
-        expect($$("mat-tab-header div[role='tab']").get(0).getText()).toMatch("Member(Ratio: " + text + ")");
+        expect($$("mat-tab-header div[role='tab']").get(0).getText()).toEqual("Member(Ratio: " + text + ")");
     },
     verifyCoSignerRatioIs:function (text){
         expect($$("mat-tab-header div[role='tab']").get(1).getText()).toEqual("Co-signer(Ratio: " + text + ")");
@@ -508,9 +513,50 @@ module.exports = {
     verifyCreateLoanButtonIsNotDisplayed: function(){
         expect($("a[title='Create new loan for member ']").isPresent()).toBe(false);
     },
+    verifyEditLoanButtonIsNotDisplayed: function(){
+        expect($("a[title='Edit member loan']").isPresent()).toBe(false);
+    },
+    verifyEditLoanButtonIsDisplayed: function(){
+        expect($("a[title='Edit member loan']").isPresent()).toBe(true);
+    },
     verifyMessagesAreDisplayed: function(message, message2){
         browser.wait(EC.visibilityOf($("td-message")), 2500);
         expect($("td-message .td-message-label").getText()).toEqual(message);
         expect($("td-message .td-message-sublabel").getText()).toEqual(message2);
+    },
+    //planned payments
+    verifyDateForPlannedPaymentsInRow: function(date, row){
+        browser.wait(EC.visibilityOf($("table tbody")), 3000);
+        expect($$("table tbody tr").get(row - 1).$$(".td-data-table-cell").get(0).getText()).toEqual(date);
+    },
+    verifyBalanceForPlannedPaymentsInRow: function(balance, row){
+        browser.wait(EC.visibilityOf($("table tbody tr")), 4000);
+        expect($$("table tbody tr").get(row - 1).$$(".td-data-table-cell").get(4).getText()).toEqual(balance);
+    },
+    verifyPaymentForPlannedPaymentsInRow: function(payment, row){
+        browser.wait(EC.visibilityOf($("table tbody")), 3000);
+        expect($$("table tbody tr").get(row - 1).$$(".td-data-table-cell").get(1).getText()).toEqual(payment);
+    },
+    verifyInterestForPlannedPaymentsInRow: function(interest, row){
+        browser.wait(EC.visibilityOf($("table tbody")), 3000);
+        expect($$("table tbody tr").get(row - 1).$$(".td-data-table-cell").get(2).getText()).toEqual(interest);
+    },
+    verifyPrincipalForPlannedPaymentsInRow: function(principal, row){
+        browser.wait(EC.visibilityOf($("table tbody")), 3000);
+        expect($$("table tbody tr").get(row - 1).$$(".td-data-table-cell").get(3).getText()).toEqual(principal);
+    },
+    //tasks
+    selectExecuteTaskCheckbox: function(){
+        browser.wait(EC.visibilityOf($("mat-checkbox[title='Execute task']")), 3000);
+        $("mat-checkbox[title='Execute task']").click();
+        expect($("mat-checkbox[title='Execute task']").getAttribute("class")).toMatch("mat-checkbox-checked");
+    },
+    clickButtonForTask: function (action) {
+        browser.sleep(500);
+        $$('.mat-raised-button.mat-primary').filter(function (elem, index) {
+            return elem.$("span").getText().then(function (text) {
+                return text === action;
+            });
+        }).click();
     }
 };

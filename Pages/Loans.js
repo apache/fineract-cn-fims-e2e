@@ -36,6 +36,7 @@ var lateFeeAccrualAccountInput = $("fims-account-select[formcontrolname='lateFee
 var arrearsAllowanceAccountInput = $("fims-account-select[formcontrolname='account'] input");
 
 var primaryButton = $$(".mat-raised-button.mat-primary");
+var buttons = $$(".mat-button");
 
 var feeAmountInput = $("fims-text-input[controlname='amount'] input");
 var feeProportionalToSelect = $("mat-select[formcontrolname='proportionalTo'] .mat-select-trigger");
@@ -49,6 +50,9 @@ var mandatoryCheckbox = $("mat-checkbox[formcontrolname='mandatory']");
 var fourEyesCheckbox = $("mat-checkbox[formcontrolname='fourEyes']");
 var actionSelect1 = $("mat-select[formcontrolname='action'] .mat-select-trigger");
 var actionSelect2 = $$("mat-select[formcontrolname='action'] .mat-select-trigger").get(1);
+
+var daysLateInputs = $$("fims-text-input[controlname='daysLate'] input");
+var percentProvisions = $$("fims-text-input[controlname='percentProvision'] input");
 
 module.exports = {
     goToLoanProductsViaSidePanel: function() {
@@ -210,6 +214,15 @@ module.exports = {
             });
         }).click();
     },
+    clickEnabledUpdateLossProvisionButton: function(){
+        browser.executeScript("arguments[0].scrollIntoView();", primaryButton.first().getWebElement());
+        browser.wait(EC.elementToBeClickable(primaryButton.first()), 3000);
+        primaryButton.filter(function(elem, index) {
+            return elem.$("span").getText().then(function(text) {
+                return text === "UPDATE LOSS PROVISION";
+            });
+        }).click();
+    },
     clickLinkManageFeesForLoanProduct: function(identifier){
         link = "/loans/detail/" + identifier + "/charges";
         browser.wait(EC.visibilityOf($('a[href="'+ link + '"]')));
@@ -222,6 +235,32 @@ module.exports = {
     },
     clickLinkManageTasksForLoanProduct: function(identifier){
         link = "/loans/detail/" + identifier + "/tasks";
+        browser.wait(EC.visibilityOf($('a[href="'+ link + '"]')));
+        $('a[href="'+ link + '"]').click();
+    },
+    clickLinkLossProvisionConfigurationForLoanProduct: function(identifier){
+        link = "/loans/detail/" + identifier + "/lossProvision";
+        browser.wait(EC.visibilityOf($('a[href="'+ link + '"]')));
+        $('a[href="'+ link + '"]').click();
+    },
+    clickButtonAddStep: function(){
+        browser.sleep(200);
+        buttons.filter(function(elem, index) {
+            return elem.$("span").getText().then(function(text) {
+                return text === "ADD STEP";
+            });
+        }).first().click();
+    },
+    enterTextIntoDaysLateInputField: function(text, number) {
+        browser.wait(EC.visibilityOf(daysLateInputs.get(number-1)), 2000)
+        daysLateInputs.get(number-1).clear().click().sendKeys(text);
+    },
+    enterTextIntoPercentProvisionInputField: function(text, number) {
+        browser.wait(EC.visibilityOf(percentProvisions.get(number-1)), 2000)
+        percentProvisions.get(number-1).clear().click().sendKeys(text);
+    },
+    clickButtonEditLossProvisionConfigurationForLoanProduct: function(identifier){
+        link = "/loans/detail/" + identifier + "/lossProvision/edit" ;
         browser.wait(EC.visibilityOf($('a[href="'+ link + '"]')));
         $('a[href="'+ link + '"]').click();
     },

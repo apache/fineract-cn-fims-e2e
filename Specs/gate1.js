@@ -487,7 +487,7 @@ describe('Gate 1', function() {
     });
     it('should be able to open loan - mandatory task', function () {
         Common.clickLinkShowForRowWithId(loanAccountShortName);
-        Customers.clickLinkTasks(customerAccount, loanShortName, loanAccountShortName);
+        CustomerLoans.goToTasksForCustomerLoan(customerAccount, loanShortName, loanAccountShortName);
         Customers.selectExecuteTaskCheckbox();
         Common.verifyMessagePopupIsDisplayed("Task executed successfully");
         Customers.clickButtonForTask("OPEN");
@@ -497,7 +497,7 @@ describe('Gate 1', function() {
         Common.verifyMessagePopupIsDisplayed("Case is going to be updated");
     });
     it('should be able to approve loan - mandatory task already executed', function () {
-        Customers.clickLinkTasks(customerAccount, loanShortName, loanAccountShortName);
+        CustomerLoans.goToTasksForCustomerLoan(customerAccount, loanShortName, loanAccountShortName);
         //checkbox already selected since one task only that already has been executed
         Customers.clickButtonForTask("APPROVE");
         Customers.clickButtonForTransaction("APPROVE");
@@ -507,7 +507,7 @@ describe('Gate 1', function() {
     it('should be able to disburse loan - no task', function () {
         //currently error if this is done too quickly; workaround
         browser.sleep("10000");
-        Customers.clickLinkTasks(customerAccount, loanShortName, loanAccountShortName);
+        CustomerLoans.goToTasksForCustomerLoan(customerAccount, loanShortName, loanAccountShortName);
         Customers.clickButtonForTask("DISBURSE");
         Customers.verifyTransactionCharge("Processing fee", "150.00");
         Customers.verifyTransactionCharge("Loan origination fee", "50.00");

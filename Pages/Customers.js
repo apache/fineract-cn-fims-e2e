@@ -313,11 +313,6 @@ module.exports = {
         browser.wait(EC.elementToBeClickable($('a[href="' + link + '"]')), 5000);
         $('a[href="' + link + '"]').click();
     },
-    clickLinkTasks: function (customer, productIdentifier, accountIdentifier) {
-        link = "/customers/detail/" + customer + "/loans/products/" + productIdentifier + "/detail/" + accountIdentifier + "/tasks";
-        browser.wait(EC.elementToBeClickable($('a[href="' + link + '"]')), 5000);
-        $('a[href="' + link + '"]').click();
-    },
     selectExecuteTaskCheckbox: function(){
         browser.wait(EC.visibilityOf($("mat-checkbox[title='Execute task']")), 3000);
         $("mat-checkbox[title='Execute task']").click();

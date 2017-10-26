@@ -6,7 +6,7 @@ exports.config = {
 
   framework: 'jasmine',
   specs: [
-      'Specs/teller_management.js'
+      'Specs/loans1_creation&assignment.js'
   ],
     directConnect: true,
     allScriptsTimeout: 45000,
@@ -31,6 +31,7 @@ exports.config = {
         browser.ignoreSynchronization = true;
         //browser.driver.get('https://pilot.kuelap.io/index.html');
         browser.driver.get('http://localhost:4200');
+        //browser.driver.get(' https://sandbox.kuelap.io/index.html');
 
         browser.driver.findElement(by.css(".mat-input-element[formcontrolname='tenant']")).sendKeys('playground');
         browser.driver.findElement(by.css(".mat-input-element[formcontrolname='username']")).sendKeys('operator');
