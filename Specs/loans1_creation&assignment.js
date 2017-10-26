@@ -551,32 +551,46 @@ describe('Loans 1', function() {
         //open loan; can still be edited
         CustomerLoans.goToTasksForCustomerLoan(customerAccount, loanShortName2, loanAccountShortName);
         CustomerLoans.clickButtonForTask("OPEN");
-        browser.pause();
         Common.verifyMessagePopupIsDisplayed("Case is going to be updated");
         CustomerLoans.verifyLoanStatusIs("PENDING");
         CustomerLoans.verifyEditLoanButtonIsDisplayed();
         //approve loan; can no longer be edited
         CustomerLoans.goToTasksForCustomerLoan(customerAccount, loanShortName2, loanAccountShortName);
-        //ToDo: task DENY
+        //ToDo: task DENY offered here too
         CustomerLoans.clickButtonForTask("APPROVE");
         Common.verifyMessagePopupIsDisplayed("Case is going to be updated");
         CustomerLoans.verifyLoanStatusIs("APPROVED");
+        CustomerLoans.verifyMessagesAreDisplayed("Member loan approved", "To activate this loan you need to disburse");
         CustomerLoans.verifyEditLoanButtonIsNotDisplayed();
         //disburse loan; default fees & loss provision configured
         CustomerLoans.goToTasksForCustomerLoan(customerAccount, loanShortName2, loanAccountShortName);
-        browser.pause();
-        //ToDo: task CLOSE
+        //ToDo: task CLOSE offered here too
+        CustomerLoans.verifyTransactionCharge("Loan origination fee", "05.00");
+        CustomerLoans.verifyTransactionCharge("Disbursement fee", "00.50");
+        CustomerLoans.verifyTransactionCharge("Processing fee", "05.00");
+        CustomerLoans.verifyTransactionChargeTotal("10.50");
         CustomerLoans.clickButtonForTask("DISBURSE");
         Common.verifyMessagePopupIsDisplayed("Case is going to be updated");
         CustomerLoans.verifyLoanStatusIs("ACTIVE");
         CustomerLoans.verifyEditLoanButtonIsNotDisplayed();
-        browser.pause();
-        //ToDo: task CLOSE
+        //ToDo: taskCLOSE --> bug; closing seems successful but isn't (should not be possible or should work)
     });
     it('should be able to add documents to loan', function () {
         CustomerLoans.viewLoanDocumentsForCustomerLoan(customerAccount, loanShortName2, loanAccountShortName);
+        CustomerLoans.createDocumentForLoanAccount(customerAccount, loanShortName2, loanAccountShortName);
+        CustomerLoans.enterTextIntoDescriptionInputField("My document #1");
+        CustomerLoans.clickEnabledCreateDocumentButton();
+        Common.verifyMessagePopupIsDisplayed("Document is going to be saved");
+        Common.clickLinkShowForFirstRowInTable();
+        CustomerLoans.verifyMessagesAreDisplayed("Document not locked", "You can lock this document");
+        //ToDo: details
+        CustomerLoans.verifyCreatedByForDocumentIs(employeeIdentifier);
+        CustomerLoans.verifyDescriptionForDocumentIs("My document #1");
+        //ToDo: can be edited & deleted
+        //ToDo: lock
+        //ToDo: cannot be edited & deleted
     });
-
+    //ToDo: check loan loss day 0 correctly booked
     it('update/deletion of unassigned/assigned product', function () {
         //assigned product cannot be deleted anymore
         //what about disabled/edited?

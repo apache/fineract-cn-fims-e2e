@@ -46,7 +46,7 @@ var descriptionInputsIncomeCosigner = $$("fims-case-credit-factor-form").get(3).
 var amountInputsIncomeCosigner = $$("fims-case-credit-factor-form").get(3).$$("fims-text-input[controlname='amount'] input");
 
 //Documents
-var descriptionInputsDocs = $$("fims-case-documents-form fims-text-input[controlname='description'] input");
+var descriptionInput = $("textarea[formcontrolname='description']");
 
 
 //general elements
@@ -211,6 +211,15 @@ module.exports = {
             });
         }).click();
     },
+    clickEnabledCreateDocumentButton: function(){
+        browser.executeScript("arguments[0].scrollIntoView();", primaryButton.first().getWebElement());
+        browser.wait(EC.elementToBeClickable(primaryButton.first()), 3000);
+        primaryButton.filter(function(elem, index) {
+            return elem.$("span").getText().then(function(text) {
+                return text === "CREATE DOCUMENT";
+            });
+        }).click();
+    },
     clickEnabledUpdateMemberLoanButton: function(){
         browser.executeScript("arguments[0].scrollIntoView();", primaryButton.first().getWebElement());
         browser.wait(EC.elementToBeClickable(primaryButton.first()), 3000);
@@ -226,6 +235,16 @@ module.exports = {
         expect($$("fims-case-command-confirmation-form table tbody .td-data-table-row").filter(function(elem, index){
             return elem.$(".td-data-table-cell").getText().then(function(text){
                 return text === chargeName;
+            });
+        }).$$(".td-data-table-cell").last().getText().then(function(text){
+            return text === chargeAmount;
+        })).toBe(true);
+    },
+    verifyTransactionChargeTotal: function(chargeAmount){
+        browser.wait(EC.visibilityOf($("fims-case-command-confirmation-form table tbody")), 3000);
+        expect($$("fims-case-command-confirmation-form table tbody .td-data-table-row").filter(function(elem, index){
+            return elem.$(".td-data-table-cell").getText().then(function(text){
+                return text === "Total";
             });
         }).$$(".td-data-table-cell").last().getText().then(function(text){
             return text === chargeAmount;
@@ -558,5 +577,33 @@ module.exports = {
                 return text === action;
             });
         }).click();
-    }
+    },
+    createDocumentForLoanAccount: function(customer, loanProduct, loanAccount){
+        link = "/customers/detail/" + customer + "/loans/products/" + loanProduct + "/detail/" + loanAccount + "/documents/create";
+        browser.wait(EC.elementToBeClickable($('a[href="' + link + '"]')), 6000);
+        $('a[href="' + link + '"]').click();
+    },
+    enterTextIntoDescriptionInputField: function(text) {
+        browser.wait(EC.visibilityOf(descriptionInput), 2000)
+        descriptionInput.clear().click().sendKeys(text);
+    },
+    verifyCreatedByForDocumentIs: function(createdBy){
+        expect($$("fims-layout-card-over .mat-list-text").filter(function (elem, index) {
+            return elem.$("h3").getText().then(function (text) {
+                return text === "Created by";
+            });
+        }).first().$("p").getText().then(function (text) {
+            return text.indexOf(createdBy) >= 0;
+        })).toBe(true);
+    },
+    verifyDescriptionForDocumentIs: function(descr) {
+        expect($$("fims-layout-card-over .mat-list-text").filter(function (elem, index) {
+            return elem.$("h3").getText().then(function (text) {
+                return text === "Description";
+            });
+        }).first().$("p").getText().then(function (text) {
+            return text === descr;
+        })).toBe(true);
+    },
+
 };
