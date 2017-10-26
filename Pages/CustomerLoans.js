@@ -13,7 +13,7 @@ var interestRateInput = $("fims-number-input[controlname='interest'] input");
 var termInput = $("fims-text-input[controlname='term'] input");
 var termSelect = $("mat-select[formcontrolname='termTemporalUnit'] .mat-select-trigger");
 var paymentPeriod = $("fims-text-input[controlname='paymentPeriod'] input");
-var paymentPeriodSelect = $("mat-select[formcontrolname='termTemporalUnit'] .mat-select-trigger");
+var paymentPeriodSelect = $("mat-select[formcontrolname='paymentTemporalUnit'] .mat-select-trigger");
 var depositAccountSelect = $("mat-select[formcontrolname='depositAccountIdentifier'] .mat-select-trigger");
 //if "Repay every" is set to "months"
 var radioMonthSetting1 = $$("mat-radio-group[formcontrolname='monthSetting'] mat-radio-button").get(0);
@@ -40,6 +40,10 @@ var ratio = $("fims-case-debt-to-income-form");
 
 //Co-signer
 var memberSelect = $("fims-customer-select[formcontrolname='customerIdentifier'] input");
+var descriptionInputsDebtCosigner = $$("fims-case-credit-factor-form").get(2).$$("fims-text-input[controlname='description'] input");
+var amountInputsDebtCosigner = $$("fims-case-credit-factor-form").get(2).$$("fims-text-input[controlname='amount'] input");
+var descriptionInputsIncomeCosigner = $$("fims-case-credit-factor-form").get(3).$$("fims-text-input[controlname='description'] input");
+var amountInputsIncomeCosigner = $$("fims-case-credit-factor-form").get(3).$$("fims-text-input[controlname='amount'] input");
 
 //Documents
 var descriptionInputsDocs = $$("fims-case-documents-form fims-text-input[controlname='description'] input");
@@ -113,6 +117,10 @@ module.exports = {
         interestRateInput.sendKeys(protractor.Key.BACK_SPACE);
         interestRateInput.sendKeys(protractor.Key.BACK_SPACE);
         interestRateInput.sendKeys(text);
+    },
+    verifyInterestRateInputFieldIsDisabledAndHasText: function (text) {
+        expect(interestRateInput.isEnabled()).toBe(false);
+        expect(interestRateInput.getAttribute("value")).toEqual(text);
     },
     verifyLoanAccountNotOfferedForSelection: function(accountIdentifier){
         browser.wait(EC.elementToBeClickable(productSelect), 3000);
@@ -250,6 +258,7 @@ module.exports = {
         browser.sleep(100);
         browser.wait(EC.elementToBeClickable($$(".td-step-label").get(2)), 3000);
         $$(".td-step-label").get(2).click();
+        browser.sleep(1000);
     },
     goToStepDocuments: function(){
         browser.sleep(100);
@@ -290,7 +299,7 @@ module.exports = {
             return elem.$("span").getText().then(function(text) {
                 return text === "ADD DEBT";
             });
-        }).click();
+        }).first().click();
     },
     clickButtonAddIncome: function(){
         browser.sleep(200);
@@ -298,7 +307,7 @@ module.exports = {
             return elem.$("span").getText().then(function(text) {
                 return text === "ADD INCOME";
             });
-        }).click();
+        }).first().click();
     },
     removeDebtAtPosition: function(position){
         buttons.filter(function(elem, index) {
@@ -343,6 +352,22 @@ module.exports = {
         browser.wait(EC.elementToBeClickable(memberSelect), 5000);
         memberSelect.click().clear().sendKeys(text);
     },
+    enterTextDescriptionInputFieldForDebtCosigner: function(text, number) {
+        browser.wait(EC.visibilityOf(descriptionInputsDebtCosigner.get(number-1)), 2000)
+        descriptionInputsDebtCosigner.get(number-1).clear().click().sendKeys(text);
+    },
+    enterTextIntoAmountInputFieldForDebtCosigner: function(text, number) {
+        browser.wait(EC.visibilityOf(amountInputsDebtCosigner.get(number-1)), 2000)
+        amountInputsDebtCosigner.get(number-1).clear().click().sendKeys(text);
+    },
+    enterTextIntoDescriptionInputFieldForIncomeCosigner: function(text, number) {
+        browser.wait(EC.visibilityOf(descriptionInputsIncomeCosigner.get(number-1)), 2000)
+        descriptionInputsIncomeCosigner.get(number-1).clear().click().sendKeys(text);
+    },
+    enterTextIntoAmountInputFieldForIncomeCosigner: function(text, number) {
+        browser.wait(EC.visibilityOf(amountInputsIncomeCosigner.get(number-1)), 2000)
+        amountInputsIncomeCosigner.get(number-1).clear().click().sendKeys(text);
+    },
     clickButtonAddDocument: function(){
         browser.sleep(200);
         buttons.filter(function(elem, index) {
@@ -369,6 +394,7 @@ module.exports = {
         $('a[href="' + link + '"]').click();
         browser.wait(EC.visibilityOf($("fims-layout-card-over")), 2000);
     },
+    //table
     verifyPrincipalForLoanAccountInRow: function(principalAmount, row){
         browser.wait(EC.visibilityOf($("table tbody")), 3000);
         expect($$("table tbody tr").get(row - 1).$$(".td-data-table-cell").get(1).getText()).toEqual(principalAmount);
@@ -381,10 +407,110 @@ module.exports = {
         browser.wait(EC.visibilityOf($("table tbody")), 3000);
         expect($$("table tbody tr").get(row - 1).$$(".td-data-table-cell").get(3).getText()).toEqual(status);
     },
+    //details single loan
+    verifyLoanStatusIs: function(expectedStatus){
+        browser.wait(EC.visibilityOf($("fims-state-display")), 5000);
+        status = $("fims-state-display .mat-list-text .mat-line").getText();
+        expect(status).toEqual(expectedStatus);
+    },
+    verifyPrincipalAmountForLoan: function(principalAmount) {
+        expect($$("fims-layout-card-over .mat-list-text").filter(function (elem, index) {
+            return elem.$("h3").getText().then(function (text) {
+                return text === "Principal amount";
+            });
+        }).first().$("p").getText().then(function (text) {
+            return text === principalAmount;
+        })).toBe(true);
+    },
+    verifyInterestForLoan: function(interest) {
+        expect($$("fims-layout-card-over .mat-list-text").filter(function (elem, index) {
+            return elem.$("h3").getText().then(function (text) {
+                return text === "Interest";
+            });
+        }).first().$("p").getText().then(function (text) {
+            return text === interest;
+        })).toBe(true);
+    },
+    verifyPaymentCycleForLoan: function(cycle) {
+        expect($$("fims-layout-card-over .mat-list-text").filter(function (elem, index) {
+            return elem.$("h3").getText().then(function (text) {
+                return text === "Payment cycle";
+            });
+        }).first().$("p").getText().then(function (text) {
+            return text === cycle;
+        })).toBe(true);
+    },
+    verifyTermForLoan: function(term) {
+        expect($$("fims-layout-card-over .mat-list-text").filter(function (elem, index) {
+            return elem.$("h3").getText().then(function (text) {
+                return text === "Term";
+            });
+        }).first().$("p").getText().then(function (text) {
+            return text === term;
+        })).toBe(true);
+    },
+    verifyMemberDepositAccountForLoan: function(account) {
+        expect($$("fims-layout-card-over .mat-list-text").filter(function (elem, index) {
+            return elem.$("h3").getText().then(function (text) {
+                return text === "Member deposit account";
+            });
+        }).first().$("p").getText().then(function (text) {
+            return text === account;
+        })).toBe(true);
+    },
+    verifyCreatedByForLoanIs: function(createdBy){
+        expect($$("fims-layout-card-over .mat-list-text").filter(function (elem, index) {
+            return elem.$("h3").getText().then(function (text) {
+                return text === "Created by";
+            });
+        }).first().$("p").getText().then(function (text) {
+            return text.indexOf(createdBy) >= 0;
+        })).toBe(true);
+    },
+    verifyLastModifiedByForLoanIs: function(modifiedBy){
+        expect($$("fims-layout-card-over .mat-list-text").filter(function (elem, index) {
+            return elem.$("h3").getText().then(function (text) {
+                return text === "Last modified by";
+            });
+        }).first().$("p").getText().then(function (text) {
+            return text.indexOf(modifiedBy) >= 0;
+        })).toBe(true);
+    },
     verifyMemberRatioIs:function (text){
         expect($$("mat-tab-header div[role='tab']").get(0).getText()).toMatch("Member(Ratio: " + text + ")");
     },
     verifyCoSignerRatioIs:function (text){
         expect($$("mat-tab-header div[role='tab']").get(1).getText()).toEqual("Co-signer(Ratio: " + text + ")");
+    },
+    verifyPrincipalInputFieldHasError: function(errorMessage) {
+        $("fims-case-detail-form").click();
+        browser.wait(EC.textToBePresentInElement($("mat-error"), errorMessage), 2000);
+        expect(principalAmountInput.element(by.xpath("..")).element(by.xpath("..")).element(by.xpath("..")).$("mat-error").getText()).toMatch(errorMessage);
+    },
+    verifyInterestRateInputFieldHasError: function(errorMessage) {
+        $("fims-case-detail-form").click();
+        browser.wait(EC.textToBePresentInElement($("mat-error"), errorMessage), 2000);
+        expect(interestRateInput.element(by.xpath("..")).element(by.xpath("..")).element(by.xpath("..")).$("div div mat-error").getText()).toEqual(errorMessage);
+    },
+    verifyTermInputFieldHasErrorForInvalidTerm: function(errorMessage) {
+        $("fims-case-detail-form").click();
+        browser.wait(EC.textToBePresentInElement($(".tc-red-600"), errorMessage), 2000);
+    },
+    verifyTermInputFieldHasError: function(errorMessage) {
+        $("fims-case-detail-form").click();
+        browser.wait(EC.textToBePresentInElement($("mat-error"), errorMessage), 2000);
+        expect(termInput.element(by.xpath("..")).element(by.xpath("..")).element(by.xpath("..")).$("mat-error").getText()).toEqual(errorMessage);
+    },
+    verifyRepayEveryFieldHasErrorForInvalidTerm: function(errorMessage) {
+        $("fims-case-detail-form").click();
+        browser.wait(EC.textToBePresentInElement($(".tc-red-600"), errorMessage), 2000);
+    },
+    verifyCreateLoanButtonIsNotDisplayed: function(){
+        expect($("a[title='Create new loan for member ']").isPresent()).toBe(false);
+    },
+    verifyMessagesAreDisplayed: function(message, message2){
+        browser.wait(EC.visibilityOf($("td-message")), 2500);
+        expect($("td-message .td-message-label").getText()).toEqual(message);
+        expect($("td-message .td-message-sublabel").getText()).toEqual(message2);
     }
 };

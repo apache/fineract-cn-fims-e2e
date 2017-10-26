@@ -275,6 +275,10 @@ module.exports = {
     verifyIsMemberCheckboxSelected: function () {
         expect(memberCheckbox.getAttribute("class")).toMatch("mat-checkbox-checked");
     },
+    uncheckMemberCheckbox: function (){
+        expect(memberCheckbox.getAttribute("class")).toMatch("mat-checkbox-checked");
+        memberCheckbox.click();
+    },
     enterTextIntoShortNameInputField: function (text) {
         browser.wait(EC.elementToBeClickable(shortNameInput), 5000);
         shortNameInput.click().sendKeys(text);

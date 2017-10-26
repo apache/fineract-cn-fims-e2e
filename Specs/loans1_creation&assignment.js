@@ -18,6 +18,7 @@ describe('Loans 1', function() {
     officeIdentifier = helper.getRandomString(6);
     tellerIdentifier = helper.getRandomString(4);
     customerAccount = helper.getRandomString(5);
+    customerAccount2 = helper.getRandomString(5);
     depositIdentifier = helper.getRandomString(4);
     depositName = helper.getRandomString(8);
     chequeReceivablesAccount = helper.getRandomString(4);
@@ -157,17 +158,41 @@ describe('Loans 1', function() {
         Common.verifyFirstRowOfSearchResultHasTextAsId(customerAccount);
     });
     it('should not be possible to create loan account for pending customer', function () {
-
+        Common.clickLinkShowForFirstRowInTable();
+        Customers.clickManageLoanAccountsForMember(customerAccount);
+        CustomerLoans.verifyCreateLoanButtonIsNotDisplayed();
     });
     it('should activate the customer', function () {
-        Common.clickLinkShowForFirstRowInTable();
+        Common.clickBackButtonInTitleBar();
         Customers.verifyMemberHasStatusInactive();
         Customers.clickButtonGoToTasks();
         Customers.clickButtonActivate();
         Common.verifyMessagePopupIsDisplayed("Command is going to be executed");
         Customers.verifyMemberHasStatusActive();
     });
-    it('should create a deposit account - Checking with opening charge', function () {
+    it('should create another customer - co-signer', function () {
+        Common.clickBackButtonInTitleBar();
+        Common.verifyCardHasTitle("Manage members");
+        Customers.clickButtonOrLinkCreateNewMember();
+        Common.verifyCardHasTitle("Create new member");
+        Customers.enterTextIntoAccountInputField(customerAccount2);
+        Customers.enterTextIntoFirstNameInputField("Bob");
+        Customers.enterTextIntoLastNameInputField("Dylan");
+        Customers.enterTextIntoDayOfBirthInputField("9211978");
+        Customers.uncheckMemberCheckbox();
+        Customers.clickEnabledContinueButtonForMemberDetails();
+        Customers.enterTextIntoStreetInputField("800 Chatham Road #326");
+        Customers.enterTextIntoCityInputField("Winston-Salem");
+        Customers.selectCountryByName("Germany");
+        Customers.clickEnabledContinueButtonForMemberAddress();
+        Customers.clickEnabledCreateMemberButton();
+        Common.verifyMessagePopupIsDisplayed("Member is going to be saved");
+        Common.verifyCardHasTitle("Manage members");
+        Common.clickSearchButtonToMakeSearchInputFieldAppear();
+        Common.enterTextInSearchInputFieldAndApplySearch(customerAccount2);
+        Common.verifyFirstRowOfSearchResultHasTextAsId(customerAccount2);
+    });
+    it('should create a deposit account - Checking with opening charge of 0', function () {
         Deposits.goToDepositsViaSidePanel();
         Common.verifyCardHasTitle("Manage deposit products");
         Deposits.clickButtonCreateDepositAccount();
@@ -212,7 +237,7 @@ describe('Loans 1', function() {
         Customers.clickEnabledButtonCreateDepositAccount();
         Common.verifyMessagePopupIsDisplayed("Deposit account is going to be saved");
     });
-    it('create first loan product', function () {
+    it('create first loan product - interest range, max term 5 years, no fees/tasks', function () {
         Loans.goToLoanProductsViaSidePanel();
         Loans.clickButtonCreateLoanProduct();
         //product details
@@ -229,9 +254,9 @@ describe('Loans 1', function() {
         Loans.selectRadioButtonYears();
         Loans.clickEnabledContinueButtonForProductDetails();
         //ledger and account settings
-        //asset account only
+        //ToDo: asset account only
         Loans.enterTextIntoCashAccountInputField(tellerAccount);
-        //asset ledger only
+        //ToDo: asset ledger only
         Loans.enterTextIntoCustomerLoanLedgerInputField("7900");
         Loans.clickEnabledContinueButtonForLedgerAndAccountSettings();
         //interest settings
@@ -242,9 +267,9 @@ describe('Loans 1', function() {
         Loans.verifyInterestRangeInputFieldsHaveError("Must be greater than minimum");
         Loans.enterTextIntoInterestRangeMinInputField("0.80");
         Loans.enterTextIntoInterestRangeMaxInputField("3.60");
-        //revenue account only
+        //ToDo: revenue account only
         Loans.enterTextIntoIncomeAccountAccountInputField("1101");
-        //asset account only
+        //ToDo: asset account only
         Loans.enterTextIntoAccrualAccountInputField("7810");
         Loans.clickEnabledContinueButtonForInterestSettings();
         //fee income accounts
@@ -260,12 +285,12 @@ describe('Loans 1', function() {
         Common.verifyMessagePopupIsDisplayed("Product is going to be saved");
     });
     it('should enable the first loan product', function () {
-        //message
         Common.clickLinkShowForRowWithId(loanShortName);
+        CustomerLoans.verifyMessagesAreDisplayed("Product not enabled", "To assign this product to a member it needs to be enabled first");
         Loans.clickButtonEnableProduct();
         Common.verifyMessagePopupIsDisplayed("Product is going to be enabled");
     });
-    it('create second loan product', function () {
+    it('create second loan product - interest rate, max term 52 weeks, no fees/tasks', function () {
         Loans.goToLoanProductsViaSidePanel();
         Loans.clickButtonCreateLoanProduct();
         //product details
@@ -362,28 +387,38 @@ describe('Loans 1', function() {
         CustomerLoans.enterTextIntoShortNameInputField(loanAccountShortName);
         CustomerLoans.enterTextIntoPrincipalAmountInputField("9999.99");
         //invalid input, error
+        CustomerLoans.verifyPrincipalInputFieldHasError("Value must be greater than or equal to 10000");
         CustomerLoans.enterTextIntoPrincipalAmountInputField("50,000.01");
         //invalid input, error
+        CustomerLoans.verifyPrincipalInputFieldHasError("Value must be smaller than or equal to 50000");
         CustomerLoans.enterTextIntoPrincipalAmountInputField("10,000");
         CustomerLoans.enterTextIntoInterestRateInputField("3.65");
         //invalid input, error
+        CustomerLoans.verifyInterestRateInputFieldHasError("Value must be smaller than or equal to 3.6");
         CustomerLoans.enterTextIntoInterestRateInputField("0.79");
         //invalid input, error
+        CustomerLoans.verifyInterestRateInputFieldHasError("Value must be greater than or equal to 0.8");
         CustomerLoans.enterTextIntoInterestRateInputField("3.60");
         CustomerLoans.enterTextIntoTermInputField("62");
-        //invalid input, error
+        //invalid input, error: Invalid term. Maximum allowed are 260 week(s), 60 month(s) or 5 year(s).
+        CustomerLoans.verifyTermInputFieldHasErrorForInvalidTerm("Invalid term. Maximum allowed are 260 week(s), 60 month(s) or 5 year(s).");
+        CustomerLoans.enterTextIntoTermInputField("59.9");
+        //invalid input, error: Value scale must be smaller than or equal to 0
+        CustomerLoans.verifyTermInputFieldHasError("Value scale must be smaller than or equal to 0");
         CustomerLoans.enterTextIntoTermInputField("60");
-        //valid input, no error
         CustomerLoans.selectTemporalUnitForTerm("years");
         //invalid input, error
+        CustomerLoans.verifyTermInputFieldHasErrorForInvalidTerm("Invalid term. Maximum allowed are 260 week(s), 60 month(s) or 5 year(s).");
         CustomerLoans.enterTextIntoTermInputField("5");
         //valid input, no error
         CustomerLoans.enterTextIntoPaymentPeriodInputField("62");
         //invalid input, error: Invalid payment period. Maximum allowed are 260 week(s), 60 month(s) or 5 year(s).
+        CustomerLoans.verifyRepayEveryFieldHasErrorForInvalidTerm("Invalid payment period. Maximum allowed are 260 week(s), 60 month(s) or 5 year(s).");
         CustomerLoans.enterTextIntoPaymentPeriodInputField("6");
         //valid input, no error
         CustomerLoans.selectPaymentPeriod("years");
         //invalid input, error
+        CustomerLoans.verifyRepayEveryFieldHasErrorForInvalidTerm("Invalid payment period. Maximum allowed are 260 week(s), 60 month(s) or 5 year(s).");
         CustomerLoans.selectPaymentPeriod("months");
         //valid input, no error
         CustomerLoans.selectSecondRadioOptionForMonthlyRepayment();
@@ -391,11 +426,12 @@ describe('Loans 1', function() {
         CustomerLoans.selectDepositAccount(customerAccount + ".9100.00001(" + depositIdentifier + ")");
         //change loan product to the other one
         CustomerLoans.selectProduct(loanShortName2);
-        //error for principal: Value must be smaller than or equal to 1500
+        CustomerLoans.verifyPrincipalInputFieldHasError("Value must be smaller than or equal to 1500");
         CustomerLoans.enterTextIntoPrincipalAmountInputField("1500");
-        //interest rate input is disabled and shows 15%
-        //error for payment period: Invalid payment period. Maximum allowed are 21 week(s), 5 month(s) or 0 year(s).
-        CustomerLoans.selectPaymentPeriod("months");
+        CustomerLoans.verifyInterestRateInputFieldIsDisabledAndHasText("15.00");
+        CustomerLoans.verifyTermInputFieldHasErrorForInvalidTerm("Invalid term. Maximum allowed are 52 week(s), 12 month(s) or 1 year(s).");
+        CustomerLoans.selectTemporalUnitForTerm("months");
+        CustomerLoans.verifyRepayEveryFieldHasErrorForInvalidTerm("Invalid payment period. Maximum allowed are 21 week(s), 5 month(s) or 0 year(s).");
         //debt to income ratio
         CustomerLoans.goToStepDebtToIncomeRatio();
         CustomerLoans.clickButtonAddDebt();
@@ -416,12 +452,16 @@ describe('Loans 1', function() {
         CustomerLoans.enterTextIntoAmountInputFieldForIncome("5000",2);
         CustomerLoans.verifyIncomeTotalIs("10,000.00");
         CustomerLoans.verifyDebtIncomeRatioIs("01.50");
-        //browser.pause();
         CustomerLoans.goToStepCoSigner();
         //co-signer, need another member
-        //CustomerLoans.enterTextIntoMemberInputField();
-        //documents, cannot do much since I cannot upload documents via test
-        CustomerLoans.goToStepDocuments();
+        //ToDo: cannot select same member to be co-signer
+        CustomerLoans.enterTextIntoMemberInputField(customerAccount2);
+        CustomerLoans.clickButtonAddDebt();
+        CustomerLoans.enterTextDescriptionInputFieldForDebtCosigner("Co-signer debt", 1);
+        CustomerLoans.enterTextIntoAmountInputFieldForDebtCosigner("500", 1);
+        CustomerLoans.clickButtonAddIncome();
+        CustomerLoans.enterTextIntoDescriptionInputFieldForIncomeCosigner("Co-signer income", 1);
+        CustomerLoans.enterTextIntoAmountInputFieldForIncomeCosigner("1200", 1);
         //still error for payment period
         CustomerLoans.verifyButtonCreateMemberLoanDisabled();
         CustomerLoans.goToStepLoanDetails();
@@ -436,6 +476,13 @@ describe('Loans 1', function() {
         CustomerLoans.verifyCurrentStatusForLoanAccountInRow("CREATED", 1);
         Common.clickLinkShowForRowWithId(loanAccountShortName);
         //details
+        CustomerLoans.verifyLoanStatusIs("CREATED");
+        CustomerLoans.verifyPrincipalAmountForLoan("1,500.00");
+        CustomerLoans.verifyInterestForLoan("15.00");
+        CustomerLoans.verifyPaymentCycleForLoan("Repay every 5 months on the last Friday");
+        CustomerLoans.verifyTermForLoan("5 MONTHS");
+        CustomerLoans.verifyMemberDepositAccountForLoan(customerAccount + ".9100.00001");
+        CustomerLoans.verifyCreatedByForLoanIs(employeeIdentifier);
     });
     it('planned payment', function () {
         CustomerLoans.viewPlannedPaymentForCustomerLoan(customerAccount, loanShortName, loanAccountShortName);
@@ -444,7 +491,7 @@ describe('Loans 1', function() {
     it('debt/income ratio', function () {
         CustomerLoans.viewDebtIncomeReportForCustomerLoan(customerAccount, loanShortName2, loanAccountShortName);
         CustomerLoans.verifyMemberRatioIs("01.50");
-        CustomerLoans.verifyCoSignerRatioIs(" -");
+        CustomerLoans.verifyCoSignerRatioIs("00.42");
         Common.clickBackButtonInTitleBar();
     });
     it('should be able to edit loan account until it has been approved', function () {

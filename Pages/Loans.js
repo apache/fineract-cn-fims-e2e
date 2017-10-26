@@ -318,6 +318,7 @@ module.exports = {
         expect($("a[title='Edit product']").isPresent()).toBe(true);
     },
     verifyEditLoanProductButtonIsNotDisplayed: function(){
+        browser.sleep(500);
         expect($("a[title='Edit product']").isPresent()).toBe(false);
     }
 };
