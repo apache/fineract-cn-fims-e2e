@@ -220,6 +220,17 @@ module.exports = {
             });
         }).click();
     },
+    clickEnabledUpdateDocumentButton: function(){
+        browser.executeScript("arguments[0].scrollIntoView();", primaryButton.first().getWebElement());
+        browser.wait(EC.elementToBeClickable(primaryButton.first()), 3000);
+        primaryButton.filter(function(elem, index) {
+            return elem.$("span").getText().then(function(text) {
+                return text === "UPDATE DOCUMENT";
+            });
+        }).click();
+        //no message pop-up to wait for
+        browser.sleep(2000);
+    },
     clickEnabledUpdateMemberLoanButton: function(){
         browser.executeScript("arguments[0].scrollIntoView();", primaryButton.first().getWebElement());
         browser.wait(EC.elementToBeClickable(primaryButton.first()), 3000);
@@ -455,13 +466,20 @@ module.exports = {
             return text === interest;
         })).toBe(true);
     },
-    verifyPaymentCycleForLoan: function(cycle) {
+    verifyPaymentCycleForLoan: function(cycle, cycle2) {
         expect($$("fims-layout-card-over .mat-list-text").filter(function (elem, index) {
             return elem.$("h3").getText().then(function (text) {
                 return text === "Payment cycle";
             });
         }).first().$("p").getText().then(function (text) {
             return text === cycle;
+        })).toBe(true);
+        expect($$("fims-layout-card-over .mat-list-text").filter(function (elem, index) {
+            return elem.$("h3").getText().then(function (text) {
+                return text === "Payment cycle";
+            });
+        }).first().$$("p").get(1).getText().then(function (text) {
+            return text === cycle2;
         })).toBe(true);
     },
     verifyTermForLoan: function(term) {
@@ -538,6 +556,9 @@ module.exports = {
     verifyEditLoanButtonIsDisplayed: function(){
         expect($("a[title='Edit member loan']").isPresent()).toBe(true);
     },
+    verifyMessageDisplayed: function(message){
+        expect($("td-message .td-message-label").getText()).toEqual(message);
+    },
     verifyMessagesAreDisplayed: function(message, message2){
         browser.wait(EC.visibilityOf($("td-message")), 2500);
         expect($("td-message .td-message-label").getText()).toEqual(message);
@@ -572,7 +593,7 @@ module.exports = {
     },
     clickButtonForTask: function (action) {
         browser.sleep(500);
-        $$('.mat-raised-button.mat-primary').filter(function (elem, index) {
+        $$('button').filter(function (elem, index) {
             return elem.$("span").getText().then(function (text) {
                 return text === action;
             });
@@ -605,5 +626,29 @@ module.exports = {
             return text === descr;
         })).toBe(true);
     },
-
+    verifyDocumentCanBeEdited: function(){
+        expect($("a[title='Edit document']").isPresent()).toBe(true);
+    },
+    verifyDocumentCannotBeEdited: function(){
+        expect($("a[title='Edit document']").isPresent()).toBe(false);
+    },
+    verifyDocumentCanBeDeleted: function(){
+        expect($("a[title='Delete document']").isPresent()).toBe(true);
+    },
+    verifyDocumentCannotBeDeleted: function(){
+        expect($("a[title='Delete document']").isPresent()).toBe(false);
+    },
+    clickButtonEditDocument: function(){
+        $("a[title='Edit document']").click();
+    },
+    clickButtonDeleteDocument: function(){
+        $("a[title='Delete document']").click();
+    },
+    clickButtonLock: function(){
+        buttons.filter(function(elem, index) {
+            return elem.$("span").getText().then(function(text) {
+                return text === "LOCK";
+            });
+        }).click();
+    },
 };

@@ -258,6 +258,16 @@ module.exports = {
             return text == amount;
         })).toBe(true);
     },
+    verifyAccountHasBeenDebitedWithAmount: function(account, amount) {
+        browser.wait(EC.visibilityOf($("table tbody")), 3000);
+        expect($$("table tbody tr .td-data-table-cell").filter(function(elem, index) {
+            return elem.getText().then(function(text) {
+                return text === account;
+            });
+        }).first().element(by.xpath("..")).$$(".td-data-table-cell").last().getText().then(function(text){
+            return text == amount;
+        })).toBe(true);
+    },
     verifyClerkForJournalEntryIs: function (clerk){
         expect($$("mat-card .mat-list-text h3").filter(function(elem, index) {
             return elem.getText().then(function(text) {

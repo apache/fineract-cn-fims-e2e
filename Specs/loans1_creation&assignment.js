@@ -237,7 +237,7 @@ describe('Loans 1', function() {
         Customers.clickEnabledButtonCreateDepositAccount();
         Common.verifyMessagePopupIsDisplayed("Deposit account is going to be saved");
     });
-    it('create first loan product - interest range, max term 5 years, no fees/tasks', function () {
+    it('create first loan product - interest range, max term 5 years, default fees/no tasks', function () {
         Loans.goToLoanProductsViaSidePanel();
         Loans.clickButtonCreateLoanProduct();
         //product details
@@ -291,7 +291,7 @@ describe('Loans 1', function() {
         Loans.clickButtonEnableProduct();
         Common.verifyMessagePopupIsDisplayed("Product is going to be enabled");
     });
-    it('create second loan product - interest rate, max term 52 weeks, no fees/tasks', function () {
+    it('create second loan product - interest rate, max term 52 weeks, default fees/no tasks', function () {
         Loans.goToLoanProductsViaSidePanel();
         Loans.clickButtonCreateLoanProduct();
         //product details
@@ -341,7 +341,7 @@ describe('Loans 1', function() {
         Loans.enterTextIntoDaysLateInputField("10", 2);
         Loans.enterTextIntoPercentProvisionInputField("25", 2);
         Loans.clickEnabledUpdateLossProvisionButton();
-        Common.verifyMessagePopupIsDisplayed("oss provision configuration is going to be saved");
+        Common.verifyMessagePopupIsDisplayed("Loss provision configuration is going to be saved");
     });
     it('should not be able to select loan product if not enabled', function () {
         Customers.goToManageCustomersViaSidePanel();
@@ -493,7 +493,7 @@ describe('Loans 1', function() {
         CustomerLoans.verifyLoanStatusIs("CREATED");
         CustomerLoans.verifyPrincipalAmountForLoan("1,500.00");
         CustomerLoans.verifyInterestForLoan("15.00");
-        CustomerLoans.verifyPaymentCycleForLoan("Repay every 5 months on the last Friday");
+        CustomerLoans.verifyPaymentCycleForLoan("Repay every 5 months", "on the last Friday");
         CustomerLoans.verifyTermForLoan("5 MONTHS");
         CustomerLoans.verifyMemberDepositAccountForLoan(customerAccount + ".9100.00001");
         CustomerLoans.verifyCreatedByForLoanIs(employeeIdentifier);
@@ -551,12 +551,16 @@ describe('Loans 1', function() {
         //open loan; can still be edited
         CustomerLoans.goToTasksForCustomerLoan(customerAccount, loanShortName2, loanAccountShortName);
         CustomerLoans.clickButtonForTask("OPEN");
+        //principal amount, costs
+        CustomerLoans.clickButtonForTask("OPEN");
         Common.verifyMessagePopupIsDisplayed("Case is going to be updated");
         CustomerLoans.verifyLoanStatusIs("PENDING");
         CustomerLoans.verifyEditLoanButtonIsDisplayed();
         //approve loan; can no longer be edited
         CustomerLoans.goToTasksForCustomerLoan(customerAccount, loanShortName2, loanAccountShortName);
         //ToDo: task DENY offered here too
+        CustomerLoans.clickButtonForTask("APPROVE");
+        //principal amount, costs
         CustomerLoans.clickButtonForTask("APPROVE");
         Common.verifyMessagePopupIsDisplayed("Case is going to be updated");
         CustomerLoans.verifyLoanStatusIs("APPROVED");
@@ -565,6 +569,9 @@ describe('Loans 1', function() {
         //disburse loan; default fees & loss provision configured
         CustomerLoans.goToTasksForCustomerLoan(customerAccount, loanShortName2, loanAccountShortName);
         //ToDo: task CLOSE offered here too
+        browser.sleep(10000);
+        CustomerLoans.clickButtonForTask("DISBURSE");
+        //principal amount
         CustomerLoans.verifyTransactionCharge("Loan origination fee", "05.00");
         CustomerLoans.verifyTransactionCharge("Disbursement fee", "00.50");
         CustomerLoans.verifyTransactionCharge("Processing fee", "05.00");
@@ -573,7 +580,7 @@ describe('Loans 1', function() {
         Common.verifyMessagePopupIsDisplayed("Case is going to be updated");
         CustomerLoans.verifyLoanStatusIs("ACTIVE");
         CustomerLoans.verifyEditLoanButtonIsNotDisplayed();
-        //ToDo: taskCLOSE --> bug; closing seems successful but isn't (should not be possible or should work)
+        //ToDo: task CLOSE --> bug; closing seems successful but isn't (should not be possible or should work)
     });
     it('should be able to add documents to loan', function () {
         CustomerLoans.viewLoanDocumentsForCustomerLoan(customerAccount, loanShortName2, loanAccountShortName);
@@ -583,14 +590,95 @@ describe('Loans 1', function() {
         Common.verifyMessagePopupIsDisplayed("Document is going to be saved");
         Common.clickLinkShowForFirstRowInTable();
         CustomerLoans.verifyMessagesAreDisplayed("Document not locked", "You can lock this document");
-        //ToDo: details
-        CustomerLoans.verifyCreatedByForDocumentIs(employeeIdentifier);
+        //details
         CustomerLoans.verifyDescriptionForDocumentIs("My document #1");
-        //ToDo: can be edited & deleted
-        //ToDo: lock
-        //ToDo: cannot be edited & deleted
+        CustomerLoans.verifyCreatedByForDocumentIs(employeeIdentifier);
+        //document can be edited
+        CustomerLoans.verifyDocumentCanBeEdited();
+        CustomerLoans.clickButtonEditDocument();
+        CustomerLoans.enterTextIntoDescriptionInputField("My document #1 - Edited");
+        CustomerLoans.clickEnabledUpdateDocumentButton();
+        CustomerLoans.verifyDescriptionForDocumentIs("My document #1 - Edited");
+        //document can be deleted
+        CustomerLoans.verifyDocumentCanBeDeleted();
+        //ToDo: upload???
+        //lock document
+        CustomerLoans.clickButtonLock();
+        Common.verifyMessagePopupIsDisplayed("Document locked");
+        CustomerLoans.verifyMessageDisplayed("Document locked");
+        CustomerLoans.verifyDocumentCannotBeEdited();
+        CustomerLoans.verifyDocumentCannotBeDeleted();
     });
-    //ToDo: check loan loss day 0 correctly booked
+    it('journal entry should be as expected', function () {
+        Accounting.goToAccountingViaSidePanel();
+        Accounting.goToJournalEntries();
+        Accounting.enterTextIntoSearchAccountInputField(customerAccount + ".9100.00001");
+        Accounting.clickSearchButton();
+        Accounting.verifySecondJournalEntry("Controlled Disbursement", "Amount: 535.50");
+        Accounting.clickSecondJournalEntry();
+        //ToDo: order changes, improve verification
+        Accounting.verifyAccountHasBeenDebitedWithAmount("3040", "25.00");
+        Accounting.verifyAccountHasBeenDebitedWithAmount(customerAccount + ".clp.00001", "500.00");
+        Accounting.verifyAccountHasBeenDebitedWithAmount(customerAccount + ".clf.00002", "10.50");
+        Accounting.verifyAccountHasBeenCreditedWithAmount("1313", "10.50");
+        Accounting.verifyAccountHasBeenCreditedWithAmount(customerAccount + ".9100.00001", "500.00");
+        Accounting.verifyAccountHasBeenCreditedWithAmount(loanShortName2 + ".pa.00000", "25.00");
+    });
+    it('repay loan and close loan account', function() {
+        //first loan repayment; fees only partially covered
+        Teller.goToTellerManagementViaSidePanel();
+        Teller.clickButtonShowAtIndex(0);
+        Teller.clickOnRepayLoanForCustomer(customerAccount);
+        Teller.selectLoanAccountToBeAffected(customerAccount + ".clp.00001(" + loanShortName2 + ")");
+        Teller.enterTextIntoAmountInputField("10");
+        Teller.clickEnabledCreateTransactionButton();
+        Teller.verifyTransactionAmount("10");
+        Teller.verifyTransactionCharge("repay-fees", "10");
+        Teller.clickEnabledConfirmTransactionButton();
+        Common.verifyMessagePopupIsDisplayed("Transaction successfully confirmed");
+        //second loan repayment
+        Teller.clickOnRepayLoanForCustomer(customerAccount);
+        Teller.selectLoanAccountToBeAffected(customerAccount + ".clp.00001(" + loanShortName2 + ")");
+        Teller.enterTextIntoAmountInputField("5");
+        Teller.clickEnabledCreateTransactionButton();
+        Teller.verifyTransactionAmount("5");
+        Teller.verifyTransactionCharge("repay-principal", "9.5");
+        Teller.verifyTransactionCharge("repay-fees", "0.5");
+        Teller.clickEnabledConfirmTransactionButton();
+        Common.verifyMessagePopupIsDisplayed("Transaction successfully confirmed");
+        //repay rest of loan
+        //ToDo: nowhere to be seen how much that is; should not be able to overpay
+        Teller.clickOnRepayLoanForCustomer(customerAccount);
+        Teller.selectLoanAccountToBeAffected(customerAccount + ".clp.00001(" + loanShortName2 + ")");
+        Teller.enterTextIntoAmountInputField("500");
+        Teller.clickEnabledCreateTransactionButton();
+        Teller.verifyTransactionAmount("500");
+        Teller.verifyTransactionCharge("repay-principal", "490.5");
+        Teller.clickEnabledConfirmTransactionButton();
+        Common.verifyMessagePopupIsDisplayed("Transaction successfully confirmed");
+        //journal entry; 10 towards the fees
+        //journal entry; 0.5 towards fees and rest towards principal
+        //journal entry
+        //ToDO: loan should no longer be offered for selection once repaid
+        //close loan and verify action "Repay loan" is no longer offered
+        Customers.goToManageCustomersViaSidePanel();
+        Common.clickSearchButtonToMakeSearchInputFieldAppear();
+        Common.enterTextInSearchInputFieldAndApplySearch(customerAccount);
+        Common.verifyFirstRowOfSearchResultHasTextAsId(customerAccount);
+        Common.clickLinkShowForRowWithId(customerAccount);
+        Customers.clickManageLoanAccountsForMember(customerAccount);
+        Common.clickLinkShowForFirstRowInTable();
+        CustomerLoans.goToTasksForCustomerLoan(customerAccount, loanShortName2, loanAccountShortName);
+        Customers.clickButtonForTask("CLOSE");
+        Customers.clickButtonForTask("CLOSE");
+        Common.verifyMessagePopupIsDisplayed("Case is going to be updated");
+        CustomerLoans.verifyLoanStatusIs("CLOSED");
+        Common.clickBackButtonInTitleBar();
+        CustomerLoans.verifyCurrentStatusForLoanAccountInRow("CLOSED", 1);
+        Teller.goToTellerManagementViaSidePanel();
+        Teller.clickButtonShowAtIndex(0);
+        Teller.verifyActionRepayLoanNotOfferedForCustomer(customerAccount);
+    }),
     it('update/deletion of unassigned/assigned product', function () {
         //assigned product cannot be deleted anymore
         //what about disabled/edited?
