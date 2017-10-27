@@ -359,5 +359,7 @@ module.exports = {
     verifyEditLoanProductButtonIsNotDisplayed: function(){
         browser.sleep(500);
         expect($("a[title='Edit product']").isPresent()).toBe(false);
-    }
+    },
+    //ranges
+
 };

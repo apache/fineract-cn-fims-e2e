@@ -639,9 +639,9 @@ describe('Loans 1', function() {
         //second loan repayment
         Teller.clickOnRepayLoanForCustomer(customerAccount);
         Teller.selectLoanAccountToBeAffected(customerAccount + ".clp.00001(" + loanShortName2 + ")");
-        Teller.enterTextIntoAmountInputField("5");
+        Teller.enterTextIntoAmountInputField("10");
         Teller.clickEnabledCreateTransactionButton();
-        Teller.verifyTransactionAmount("5");
+        Teller.verifyTransactionAmount("10");
         Teller.verifyTransactionCharge("repay-principal", "9.5");
         Teller.verifyTransactionCharge("repay-fees", "0.5");
         Teller.clickEnabledConfirmTransactionButton();
@@ -656,10 +656,26 @@ describe('Loans 1', function() {
         Teller.verifyTransactionCharge("repay-principal", "490.5");
         Teller.clickEnabledConfirmTransactionButton();
         Common.verifyMessagePopupIsDisplayed("Transaction successfully confirmed");
-        //journal entry; 10 towards the fees
-        //journal entry; 0.5 towards fees and rest towards principal
-        //journal entry
-        //ToDO: loan should no longer be offered for selection once repaid
+        //ToDo: loan should no longer be offered for selection once repaid
+        Accounting.goToAccountingViaSidePanel();
+        Accounting.goToJournalEntries();
+        Accounting.enterTextIntoSearchAccountInputField(customerAccount + ".clf.00002");
+        Accounting.clickSearchButton();
+        Accounting.verifySecondJournalEntry("Principal Payment", "Amount: 10.00");
+        Accounting.clickSecondJournalEntry();
+        Accounting.verifyAccountHasBeenDebitedWithAmountInRow(tellerAccount, "10.00", 1);
+        Accounting.verifyAccountHasBeenCreditedWithAmountInRow(customerAccount + ".clf.00002", "10.00", 2);
+        Accounting.verifyThirdJournalEntry("Principal Payment", "Amount: 10.00");
+        Accounting.clickThirdJournalEntry();
+        Accounting.verifyAccountHasBeenDebitedWithAmountInRow(tellerAccount, "10.00", 1);
+        Accounting.verifyAccountHasBeenCreditedWithAmount(customerAccount + ".clf.00002", "0.50");
+        Accounting.verifyAccountHasBeenCreditedWithAmount(customerAccount + ".clp.00001", "9.50");
+        Accounting.enterTextIntoSearchAccountInputField(customerAccount + ".clp.00001");
+        Accounting.clickSearchButton();
+        Accounting.verifyThirdJournalEntry("Principal Payment", "Amount: 490.50");
+        Accounting.clickThirdJournalEntry();
+        Accounting.verifyAccountHasBeenDebitedWithAmountInRow(tellerAccount, "490.50", 1);
+        Accounting.verifyAccountHasBeenCreditedWithAmountInRow(customerAccount + ".clp.00001", "490.50", 2);
         //close loan and verify action "Repay loan" is no longer offered
         Customers.goToManageCustomersViaSidePanel();
         Common.clickSearchButtonToMakeSearchInputFieldAppear();
@@ -669,8 +685,8 @@ describe('Loans 1', function() {
         Customers.clickManageLoanAccountsForMember(customerAccount);
         Common.clickLinkShowForFirstRowInTable();
         CustomerLoans.goToTasksForCustomerLoan(customerAccount, loanShortName2, loanAccountShortName);
-        Customers.clickButtonForTask("CLOSE");
-        Customers.clickButtonForTask("CLOSE");
+        CustomerLoans.clickButtonForTask("CLOSE");
+        CustomerLoans.clickButtonForTask("CLOSE");
         Common.verifyMessagePopupIsDisplayed("Case is going to be updated");
         CustomerLoans.verifyLoanStatusIs("CLOSED");
         Common.clickBackButtonInTitleBar();
@@ -680,6 +696,7 @@ describe('Loans 1', function() {
         Teller.verifyActionRepayLoanNotOfferedForCustomer(customerAccount);
     }),
     it('update/deletion of unassigned/assigned product', function () {
+        browser.pause();
         //assigned product cannot be deleted anymore
         //what about disabled/edited?
         //disable assigned product & check customer loan account: ATEN-475

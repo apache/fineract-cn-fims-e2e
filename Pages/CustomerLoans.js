@@ -132,7 +132,6 @@ module.exports = {
         browser.executeScript("arguments[0].scrollIntoView();", depositAccountSelect.getWebElement());
         browser.wait(EC.elementToBeClickable(depositAccountSelect), 3000);
         depositAccountSelect.click();
-        expect($(".mat-option").isPresent()).toBe(true);
         expect(element(by.cssContainingText('.mat-option', accountIdentifier)).isPresent()).toBe(false);
     },
     enterTextIntoTermInputField: function (text) {
@@ -633,16 +632,16 @@ module.exports = {
         expect($("a[title='Edit document']").isPresent()).toBe(false);
     },
     verifyDocumentCanBeDeleted: function(){
-        expect($("a[title='Delete document']").isPresent()).toBe(true);
+        expect($("button[title='Delete document']").isPresent()).toBe(true);
     },
     verifyDocumentCannotBeDeleted: function(){
-        expect($("a[title='Delete document']").isPresent()).toBe(false);
+        expect($("button[title='Delete document']").isPresent()).toBe(false);
     },
     clickButtonEditDocument: function(){
         $("a[title='Edit document']").click();
     },
     clickButtonDeleteDocument: function(){
-        $("a[title='Delete document']").click();
+        $("button[title='Delete document']").click();
     },
     clickButtonLock: function(){
         buttons.filter(function(elem, index) {

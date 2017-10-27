@@ -324,6 +324,7 @@ module.exports = {
                 return text === action;
             });
         }).click();
+        browser.sleep(300);
     },
     goToStepCustomFields: function(){
         browser.sleep(100);
