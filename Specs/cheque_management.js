@@ -26,6 +26,7 @@ describe('cheque_management', function() {
     depositName = helper.getRandomString(8);
     tellerAccount = helper.getRandomString(4);
     chequesReceivableAccount = helper.getRandomString(4);
+    cashOverShortAccount = "COS_" + helper.getRandomString(4);
     revenueAccount = helper.getRandomString(4);
     loanShortName = helper.getRandomString(6);
     taskIdentifier = helper.getRandomString(3);
@@ -62,6 +63,15 @@ describe('cheque_management', function() {
         Accounting.enterTextIntoAccountNameInputField("Revenue from deposit charges");
         Accounting.clickButtonCreateAccount();
         Common.verifyMessagePopupIsDisplayed("Account is going to be saved");
+        Accounting.goToAccountingViaSidePanel();
+        Common.clickLinkShowForRowWithId("2000");
+        Common.clickLinkShowForRowWithId("3300");
+        Accounting.clickCreateNewAccountInLedger("3300");
+        Accounting.enterTextIntoAccountIdentifierInputField(cashOverShortAccount);
+        Accounting.verifyRadioExpenseToBeSelected();
+        Accounting.enterTextIntoAccountNameInputField("Cash over short account");
+        Accounting.clickButtonCreateAccount();
+        Common.verifyMessagePopupIsDisplayed("Account is going to be saved");
     });
     it('should create a new employee with administrator permissions', function () {
         Employees.goToManageEmployeesViaSidePanel();
@@ -90,6 +100,7 @@ describe('cheque_management', function() {
         Offices.enterTextIntoTellerAccountInputFieldAndSelectMatchingEntry(tellerAccount);
         Offices.enterTextIntoVaultAccountInputFieldAndSelectMatchingEntry("7351");
         Offices.enterTextIntoChequesReceivableAccountInputFieldAndSelectMatchingEntry(chequesReceivableAccount);
+        Offices.enterTextIntoCashOverShortInputFieldAndSelectMatchingEntry(cashOverShortAccount);
         Offices.clickCreateTellerButton();
         Common.verifyMessagePopupIsDisplayed("Teller is going to be saved");
         //workaround for current bug that teller is not always listed immediately
@@ -204,6 +215,9 @@ describe('cheque_management', function() {
         Common.verifyMessagePopupIsDisplayed("Transaction successfully confirmed");
     });
     it('customer should be able to cash cheque - cheque is not open/not on us', function () {
+        //ToDo: workaround for bug; remove once fixed
+        Teller.goToTellerManagementViaSidePanel();
+        Teller.clickButtonShowAtIndex(0);
         Teller.clickOnCashChequeForCustomer(customerAccount);
         Cheques.enterTextIntoChequeNumberInputField("123456");
         Cheques.enterTextIntoBranchSortCodeInputField(branchSortCode);

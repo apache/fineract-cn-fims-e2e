@@ -708,21 +708,29 @@ describe('Loans 1', function() {
         //Loans.verifyDeleteLoanProductButtonIsNotDisplayed();
         Loans.clickDeleteLoanProductButton();
         Common.confirmAction();
-        Common.verifyErrorMessageDisplayedWithTitleAndText("Product can't be deleted", "Product is already assigned to a customer");
+        Common.verifyErrorMessageDisplayedWithTitleAndText("Product can't be deleted", "Product is already assigned to a member.");
         Common.clickButtonOKInErrorMessage();
-        //tasks: try to add tasks: bug ATEN-318
     });
     it('unassigned product can be edited & deleted', function () {
         Loans.goToLoanProductsViaSidePanel();
-        Common.clickLinkShowForRowWithId(loanShortName2);
+        Common.clickLinkShowForRowWithId(loanShortName);
         CustomerLoans.verifyMessagesAreDisplayed("Product enabled", "This product can be assigned to a member");
         //disable product
         Loans.clickButtonDisableProduct();
         Common.verifyMessagePopupIsDisplayed("Product is going to be disabled");
         CustomerLoans.verifyMessagesAreDisplayed("Product not enabled", "To assign this product to a member it needs to be enabled first");
         //edit loan product
+        Loans.verifyEditLoanProductButtonIsDisplayed();
+        Loans.clickEditLoanProductButton();
+        Loans.enterTextIntoTermInputField("5000");
+        Loans.selectRadioButtonWeeks();
+        Loans.clickEnabledUpdateProductButton();
+        Common.verifyMessagePopupIsDisplayed("Product is going to be saved");
+        Loans.verifyTermForLoanProduct("5,000 YEARS");
+        //ToDo: customer loan, verify update
         //delete loan product
         Loans.clickDeleteLoanProductButton();
         Common.confirmAction();
+        Common.verifyMessagePopupIsDisplayed("Product is going to be deleted");
     });
 });

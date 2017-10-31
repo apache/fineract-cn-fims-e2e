@@ -466,8 +466,8 @@ describe('Loans 2', function() {
         Teller.enterTextIntoAmountInputField("3000");
         Teller.clickEnabledCreateTransactionButton();
         Teller.verifyTransactionAmount("3000");
-        // Teller.verifyTransactionCharge("repay-fees", "2675");
-        // Teller.verifyTransactionCharge("repay-principal", "325");
+        //ToDo: Teller.verifyTransactionCharge("repay-fees", "2675");
+        //ToDo: Teller.verifyTransactionCharge("repay-principal", "325");
         Teller.verifyTransactionCharge("Total", "3000");
         Teller.clickEnabledConfirmTransactionButton();
         Common.verifyMessagePopupIsDisplayed("Transaction successfully confirmed");
@@ -490,10 +490,24 @@ describe('Loans 2', function() {
         Loans.clickLinkManageFeesForLoanProduct(loanShortName);
         Common.clickLinkShowForRowWithId("disbursement-fee");
         Loans.clickButtonEditDisbursementFeeForLoanProduct(loanShortName);
-        browser.pause();
-
+        //verify proportional set to "Maximum balance", is set to "Repayment" however
+        Loans.enterTextIntoFeeAmountInputField("100");
+        Loans.selectRadioFixed();
+        Loans.selectRangeByName("MyRange_1");
+        Loans.selectRangeSegmentByName("MyStart(0.00 - 28,000.00)");
+        Loans.clickEnabledUpdateRangeButton();
+        Common.verifyMessagePopupIsDisplayed("Fee is going to be saved");
+        Common.clickBackButtonInTitleBar();
     });
     it('edit range in use by fee', function () {
-        //???
+        //bug: currently ranges can not be added, edited, or deleted anymore if loan product assigned to a member already
+        Loans.clickLinkManageRangesForLoanProduct(loanShortName);
+        Common.clickLinkShowForRowWithId("MyRange_1");
+        Loans.clickButtonEditRange();
+        Loans.removeRangeAtPosition(1);
+        //ToDo: range end for first range segment updates to 50,000
+        Loans.enterTextIntoRangeSegmentStartInputField("45000", 2);
+        Loans.clickEnabledUpdateRangeButton();
+        Common.verifyMessagePopupIsDisplayed("Range is going to be saved");
     });
 });

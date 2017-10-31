@@ -220,6 +220,15 @@ module.exports = {
             });
         }).click();
     },
+    clickEnabledUpdateProductButton: function(){
+        browser.executeScript("arguments[0].scrollIntoView();", primaryButton.first().getWebElement());
+        browser.wait(EC.elementToBeClickable(primaryButton.first()), 3000);
+        primaryButton.filter(function(elem, index) {
+            return elem.$("span").getText().then(function(text) {
+                return text === "UPDATE PRODUCT";
+            });
+        }).click();
+    },
     clickEnabledUpdateLossProvisionButton: function(){
         browser.executeScript("arguments[0].scrollIntoView();", primaryButton.first().getWebElement());
         browser.wait(EC.elementToBeClickable(primaryButton.first()), 3000);
@@ -411,6 +420,10 @@ module.exports = {
         browser.sleep(500);
         expect($("a[title='Edit product']").isPresent()).toBe(true);
     },
+    clickEditLoanProductButton: function(){
+        browser.sleep(500);
+        $("a[title='Edit product']").click();
+    },
     verifyEditLoanProductButtonIsNotDisplayed: function(){
         browser.sleep(500);
         expect($("a[title='Edit product']").isPresent()).toBe(false);
@@ -477,5 +490,21 @@ module.exports = {
         rangeSegmentSelect.click();
         browser.wait(EC.visibilityOf($(".mat-option")), 5000);
         element(by.cssContainingText('.mat-option',name)).click();
+    },
+    verifyTermForLoanProduct: function(term) {
+        expect($$("fims-layout-card-over .mat-list-text").filter(function (elem, index) {
+            return elem.$("h3").getText().then(function (text) {
+                return text === "Term";
+            });
+        }).first().$("p").getText().then(function (text) {
+            return text === term;
+        })).toBe(true);
+    },
+    removeRangeAtPosition: function(position){
+        buttons.filter(function(elem, index) {
+            return elem.$("span").getText().then(function(text) {
+                return text === "REMOVE RANGE";
+            });
+        }).get(position-1).click();
     },
 };
