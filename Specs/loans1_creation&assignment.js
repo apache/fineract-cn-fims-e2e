@@ -695,16 +695,34 @@ describe('Loans 1', function() {
         Teller.clickButtonShowAtIndex(0);
         Teller.verifyActionRepayLoanNotOfferedForCustomer(customerAccount);
     }),
-    it('update/deletion of unassigned/assigned product', function () {
-        browser.pause();
-        //assigned product cannot be deleted anymore
-        //what about disabled/edited?
-        //disable assigned product & check customer loan account: ATEN-475
-        //try to edit assigned product: ATEN-507
-        //fees: try to edit fees
-        //tasks: try to edit/add tasks: bug ATEN-318
-        //unassigned product can be disabled/edited
-        //edit product and verify updated, edit fees and add tasks
-        //unassigned product can be deleted
+    it('assigned product cannot be deleted', function () {
+        Loans.goToLoanProductsViaSidePanel();
+        Common.clickLinkShowForRowWithId(loanShortName2);
+        CustomerLoans.verifyMessagesAreDisplayed("Product enabled", "This product can be assigned to a member");
+        //disable product
+        Loans.clickButtonDisableProduct();
+        Common.verifyMessagePopupIsDisplayed("Product is going to be disabled");
+        CustomerLoans.verifyMessagesAreDisplayed("Product not enabled", "To assign this product to a member it needs to be enabled first");
+        //ToDo: assigned product cannot be edited anymore; ATEN-507
+        //Loans.verifyEditLoanProductButtonIsNotDisplayed();
+        //Loans.verifyDeleteLoanProductButtonIsNotDisplayed();
+        Loans.clickDeleteLoanProductButton();
+        Common.confirmAction();
+        Common.verifyErrorMessageDisplayedWithTitleAndText("Product can't be deleted", "Product is already assigned to a customer");
+        Common.clickButtonOKInErrorMessage();
+        //tasks: try to add tasks: bug ATEN-318
+    });
+    it('unassigned product can be edited & deleted', function () {
+        Loans.goToLoanProductsViaSidePanel();
+        Common.clickLinkShowForRowWithId(loanShortName2);
+        CustomerLoans.verifyMessagesAreDisplayed("Product enabled", "This product can be assigned to a member");
+        //disable product
+        Loans.clickButtonDisableProduct();
+        Common.verifyMessagePopupIsDisplayed("Product is going to be disabled");
+        CustomerLoans.verifyMessagesAreDisplayed("Product not enabled", "To assign this product to a member it needs to be enabled first");
+        //edit loan product
+        //delete loan product
+        Loans.clickDeleteLoanProductButton();
+        Common.confirmAction();
     });
 });

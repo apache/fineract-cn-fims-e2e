@@ -42,8 +42,11 @@ var feeAmountInput = $("fims-text-input[controlname='amount'] input");
 var feeProportionalToSelect = $("mat-select[formcontrolname='proportionalTo'] .mat-select-trigger");
 var radioFixed = $$("mat-radio-group[formcontrolname='chargeMethod'] mat-radio-button").get(0);
 var radioProportional = $$("mat-radio-group[formcontrolname='chargeMethod'] mat-radio-button").get(1);
+var rangeToggle = $("mat-slide-toggle[formcontrolname='rangeEnabled']");
+var rangeSelect = $("mat-select[formcontrolname='rangeIdentifier'] .mat-select-trigger");
+var rangeSegmentSelect = $("mat-select[formcontrolname='rangeSegmentIdentifier'] .mat-select-trigger");
 
-var taskIdentifierInput = $("fims-id-input[controlname='identifier'] input");
+var identifierInput = $("fims-id-input[controlname='identifier'] input");
 var taskNameInput = $("fims-text-input[controlname='name'] input");
 var taskDescriptionInput = $(".mat-input-infix textarea[formcontrolname='description']");
 var mandatoryCheckbox = $("mat-checkbox[formcontrolname='mandatory']");
@@ -53,6 +56,9 @@ var actionSelect2 = $$("mat-select[formcontrolname='action'] .mat-select-trigger
 
 var daysLateInputs = $$("fims-text-input[controlname='daysLate'] input");
 var percentProvisions = $$("fims-text-input[controlname='percentProvision'] input");
+
+var identifierInputs = $$("fims-id-input[controlname='identifier'] input");
+var startInputs = $$("input[formcontrolname='start']");
 
 module.exports = {
     goToLoanProductsViaSidePanel: function() {
@@ -223,13 +229,58 @@ module.exports = {
             });
         }).click();
     },
+    clickEnabledCreateRangeButton: function(){
+        browser.executeScript("arguments[0].scrollIntoView();", primaryButton.first().getWebElement());
+        browser.wait(EC.elementToBeClickable(primaryButton.first()), 3000);
+        primaryButton.filter(function(elem, index) {
+            return elem.$("span").getText().then(function(text) {
+                return text === "CREATE RANGE";
+            });
+        }).click();
+    },
+    clickEnabledUpdateRangeButton: function(){
+        browser.executeScript("arguments[0].scrollIntoView();", primaryButton.first().getWebElement());
+        browser.wait(EC.elementToBeClickable(primaryButton.first()), 3000);
+        primaryButton.filter(function(elem, index) {
+            return elem.$("span").getText().then(function(text) {
+                return text === "UPDATE RANGE";
+            });
+        }).click();
+    },
     clickLinkManageFeesForLoanProduct: function(identifier){
         link = "/loans/detail/" + identifier + "/charges";
         browser.wait(EC.visibilityOf($('a[href="'+ link + '"]')));
         $('a[href="'+ link + '"]').click();
     },
+    clickLinkManageRangesForLoanProduct: function(identifier){
+        link = "/loans/detail/" + identifier + "/charges/ranges";
+        browser.wait(EC.visibilityOf($('a[href="'+ link + '"]')));
+        $('a[href="'+ link + '"]').click();
+    },
+    clickButtonCreateNewRange: function(){
+        browser.wait(EC.visibilityOf($("a[title='Create new range']")));
+        $("a[title='Create new range']").click();
+    },
+    clickButtonEditRange: function(){
+        browser.wait(EC.visibilityOf($("a[title='Edit range']")));
+        $("a[title='Edit range']").click();
+    },
+    clickButtonDeleteRange: function(){
+        browser.wait(EC.visibilityOf($("a[title='Delete this range']")));
+        $("a[title='Delete this range']").click();
+    },
     clickButtonEditProcessingFeeForLoanProduct: function(identifier){
         link = "/loans/detail/" + identifier + "/charges/detail/processing-fee/edit";
+        browser.wait(EC.visibilityOf($('a[href="'+ link + '"]')));
+        $('a[href="'+ link + '"]').click();
+    },
+    clickButtonEditLoanOriginationFeeForLoanProduct: function(identifier){
+        link = "/loans/detail/" + identifier + "/charges/detail/loan-origination-fee/edit";
+        browser.wait(EC.visibilityOf($('a[href="'+ link + '"]')));
+        $('a[href="'+ link + '"]').click();
+    },
+    clickButtonEditDisbursementFeeForLoanProduct: function(identifier){
+        link = "/loans/detail/" + identifier + "/charges/detail/disbursement-fee/edit";
         browser.wait(EC.visibilityOf($('a[href="'+ link + '"]')));
         $('a[href="'+ link + '"]').click();
     },
@@ -284,8 +335,8 @@ module.exports = {
         }).click();
     },
     enterTextIntoTaskIdentifierInputField: function(text) {
-        browser.wait(EC.visibilityOf(taskIdentifierInput), 5000);
-        taskIdentifierInput.click().sendKeys(text);
+        browser.wait(EC.visibilityOf(identifierInput), 5000);
+        identifierInput.click().sendKeys(text);
     },
     enterTextIntoTaskNameInputField: function(text) {
         taskNameInput.click().sendKeys(text);
@@ -343,6 +394,10 @@ module.exports = {
         browser.wait(EC.elementToBeClickable($("td-message button")), 2000);
         $("td-message button").click();
     },
+    clickButtonDisableProduct: function(){
+        browser.wait(EC.elementToBeClickable($("td-message button")), 2000);
+        $("td-message button").click();
+    },
     selectRadioButtonYears: function(){
         radioYears.click();
     },
@@ -360,6 +415,67 @@ module.exports = {
         browser.sleep(500);
         expect($("a[title='Edit product']").isPresent()).toBe(false);
     },
+    verifyDeleteLoanProductButtonIsNotDisplayed: function(){
+        browser.sleep(500);
+        expect($("button[title='Delete this product']").isPresent()).toBe(false);
+    },
+    clickDeleteLoanProductButton: function(){
+        browser.sleep(500);
+        $("button[title='Delete this product']").click();
+    },
     //ranges
-
+    enterTextIntoRangeIdentifierInputField: function(text) {
+        browser.wait(EC.visibilityOf(identifierInput), 5000);
+        identifierInput.click().sendKeys(text);
+    },
+    enterTextIntoRangeSegmentIdentifierInputField: function(text, position) {
+        browser.wait(EC.visibilityOf(identifierInputs.get(position-1)), 5000);
+        identifierInputs.get(position-1).clear().click().sendKeys(text);
+    },
+    enterTextIntoRangeSegmentStartInputField: function(text, position) {
+       browser.wait(EC.visibilityOf(startInputs.get(position-1)), 5000);
+       startInputs.get(position-1).clear().click().sendKeys(text);
+    },
+    clickButtonAddRange: function(){
+        browser.sleep(200);
+        buttons.filter(function(elem, index) {
+            return elem.$("span").getText().then(function(text) {
+                return text === "ADD RANGE";
+            });
+        }).first().click();
+    },
+    selectRadioFixed: function(){
+        radioFixed.click();
+    },
+    verifyApplyAmountOnlyInRangeToggleSetToOff: function(){
+        toggleClass = rangeToggle.getAttribute('class');
+        expect(toggleClass).not.toContain("mat-checked");
+    },
+    verifyApplyAmountOnlyInRangeToggleSetToOn: function(){
+        toggleClass = rangeToggle.getAttribute('class');
+        expect(toggleClass).toContain("mat-checked");
+    },
+    toggleApplyAmountOnlyInRangeToOn: function() {
+        this.verifyApplyAmountOnlyInRangeToggleSetToOff();
+        $(".mat-slide-toggle-content").click();
+        this.verifyApplyAmountOnlyInRangeToggleSetToOn();
+        browser.sleep(200);
+    },
+    toggleApplyAmountOnlyInRangeToOff: function() {
+        this.verifyApplyAmountOnlyInRangeToggleSetToOn();
+        $(".mat-slide-toggle-content").click();
+        this.verifyApplyAmountOnlyInRangeToggleSetToOff();
+    },
+    selectRangeByName: function(name){
+        browser.wait(EC.elementToBeClickable(rangeSelect), 3000);
+        rangeSelect.click();
+        browser.wait(EC.visibilityOf($(".mat-option")), 5000);
+        element(by.cssContainingText('.mat-option',name)).click();
+    },
+    selectRangeSegmentByName: function(name){
+        browser.wait(EC.elementToBeClickable(rangeSegmentSelect), 3000);
+        rangeSegmentSelect.click();
+        browser.wait(EC.visibilityOf($(".mat-option")), 5000);
+        element(by.cssContainingText('.mat-option',name)).click();
+    },
 };

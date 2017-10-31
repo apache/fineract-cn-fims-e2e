@@ -431,15 +431,15 @@ module.exports = {
     //table
     verifyPrincipalForLoanAccountInRow: function(principalAmount, row){
         browser.wait(EC.visibilityOf($("table tbody")), 3000);
-        expect($$("table tbody tr").get(row - 1).$$(".td-data-table-cell").get(1).getText()).toEqual(principalAmount);
+        expect($$("table tbody tr").get(row - 1).$$(".td-data-table-cell").get(2).getText()).toEqual(principalAmount);
     },
     verifyInterestForLoanAccountInRow: function(interest, row){
         browser.wait(EC.visibilityOf($("table tbody")), 3000);
-        expect($$("table tbody tr").get(row - 1).$$(".td-data-table-cell").get(2).getText()).toEqual(interest);
+        expect($$("table tbody tr").get(row - 1).$$(".td-data-table-cell").get(3).getText()).toEqual(interest);
     },
     verifyCurrentStatusForLoanAccountInRow: function(status, row){
-        browser.wait(EC.visibilityOf($("table tbody")), 3000);
-        expect($$("table tbody tr").get(row - 1).$$(".td-data-table-cell").get(3).getText()).toEqual(status);
+        browser.wait(EC.visibilityOf($("table tbody tr")), 3000);
+        expect($$("table tbody tr").get(row - 1).$$(".td-data-table-cell").get(4).getText()).toEqual(status);
     },
     //details single loan
     verifyLoanStatusIs: function(expectedStatus){

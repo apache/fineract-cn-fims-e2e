@@ -259,7 +259,7 @@ module.exports = {
             return elem.$(".td-data-table-cell").getText().then(function (text) {
                 return text === identifier;
             });
-        }).$$(".td-data-table-cell").get(3).getText();
+        }).$$(".td-data-table-cell").get(4).getText();
         expect(actualState).toEqual(expectedState);
     },
     verifyStateOfDepositAccountWithId: function (identifier, expectedState) {
