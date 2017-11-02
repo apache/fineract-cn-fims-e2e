@@ -48,6 +48,9 @@ var amountInputsIncomeCosigner = $$("fims-case-credit-factor-form").get(3).$$("f
 //Documents
 var descriptionInput = $("textarea[formcontrolname='description']");
 
+//Tasks
+var checkboxExecuteTask = $$("mat-checkbox[title='Execute task']");
+
 
 //general elements
 var primaryButton =  $$(".mat-raised-button.mat-primary");
@@ -416,6 +419,7 @@ module.exports = {
         link = "/customers/detail/" + customer + "/loans/products/" + productIdentifier + "/detail/" + accountIdentifier + "/tasks";
         browser.wait(EC.elementToBeClickable($('a[href="' + link + '"]')), 5000);
         $('a[href="' + link + '"]').click();
+        browser.sleep(1000);
     },
     viewDebtIncomeReportForCustomerLoan: function(customer, productIdentifier, accountIdentifier){
         link = "/customers/detail/" + customer + "/loans/products/" + productIdentifier + "/detail/" + accountIdentifier + "/debtIncome";
@@ -428,7 +432,7 @@ module.exports = {
         browser.wait(EC.elementToBeClickable($('a[href="' + link + '"]')), 6000);
         $('a[href="' + link + '"]').click();
     },
-    //table
+    //table loan accounts
     verifyPrincipalForLoanAccountInRow: function(principalAmount, row){
         browser.wait(EC.visibilityOf($("table tbody")), 3000);
         expect($$("table tbody tr").get(row - 1).$$(".td-data-table-cell").get(2).getText()).toEqual(principalAmount);
@@ -517,6 +521,7 @@ module.exports = {
             return text.indexOf(modifiedBy) >= 0;
         })).toBe(true);
     },
+
     verifyMemberRatioIs:function (text){
         expect($$("mat-tab-header div[role='tab']").get(0).getText()).toEqual("Member(Ratio: " + text + ")");
     },
@@ -585,18 +590,47 @@ module.exports = {
         expect($$("table tbody tr").get(row - 1).$$(".td-data-table-cell").get(3).getText()).toEqual(principal);
     },
     //tasks
-    selectExecuteTaskCheckbox: function(){
+    selectExecuteTaskCheckboxForTaskAtPosition: function(taskNumber){
+        browser.wait(EC.visibilityOf(checkboxExecuteTask.first()), 3000);
+        checkboxExecuteTask.get(taskNumber - 1).click();
+    },
+    deselectExecuteTaskCheckboxForTaskAtPosition: function(taskNumber){
         browser.wait(EC.visibilityOf($("mat-checkbox[title='Execute task']")), 3000);
-        $("mat-checkbox[title='Execute task']").click();
-        expect($("mat-checkbox[title='Execute task']").getAttribute("class")).toMatch("mat-checkbox-checked");
+        $$("mat-checkbox[title='Execute task']").get(taskNumber - 1).click();
+        expect($$("mat-checkbox[title='Execute task']").get(taskNumber - 1).getAttribute("class")).not.toMatch("mat-checkbox-checked");
+    },
+    verifyExecuteTaskCheckboxSelectedAtPosition: function(taskNumber){
+        expect($$("mat-checkbox[title='Execute task']").get(taskNumber - 1).getAttribute("class")).toMatch("mat-checkbox-checked");
+    },
+    verifyExecuteTaskCheckboxDisabledAtPosition: function(taskNumber){
+        expect($$("mat-checkbox[title='Execute task']").get(taskNumber - 1).isEnabled()).toBe(false);
+    },
+    verifyExecuteTaskCheckboxNotSelectedAtPosition: function(taskNumber){
+        expect($$("mat-checkbox[title='Execute task']").get(taskNumber - 1).getAttribute("class")).not.toMatch("mat-checkbox-checked");
     },
     clickButtonForTask: function (action) {
-        browser.sleep(500);
+        browser.sleep(1000);
         $$('button').filter(function (elem, index) {
             return elem.$("span").getText().then(function (text) {
                 return text === action;
             });
         }).click();
+    },
+    verifyButtonForTaskDisabled: function (action) {
+        browser.sleep(500);
+        expect($$('button').filter(function (elem, index) {
+            return elem.$("span").getText().then(function (text) {
+                return text === action;
+            });
+        }).first().isEnabled()).toBe(false);
+    },
+    verifyButtonForTaskEnabled: function (action) {
+        browser.sleep(500);
+        expect($$('button').filter(function (elem, index) {
+            return elem.$("span").getText().then(function (text) {
+                return text === action;
+            });
+        }).first().isEnabled()).toBe(true);
     },
     createDocumentForLoanAccount: function(customer, loanProduct, loanAccount){
         link = "/customers/detail/" + customer + "/loans/products/" + loanProduct + "/detail/" + loanAccount + "/documents/create";
@@ -649,5 +683,21 @@ module.exports = {
                 return text === "LOCK";
             });
         }).click();
+    },
+    verifyMandatoryTaskIsPresentAtPosition: function(task, taskDescription, position){
+        expect($$("fims-case-tasks mat-list .mat-subheader").get(0).getText()).toEqual("Mandatory tasks(These tasks must be executed)");
+        expect($$("fims-case-tasks mat-list fims-case-task").get(position - 1).$(".mat-list-item .mat-list-text h3").getText()).toEqual(task);
+        expect($$("fims-case-tasks mat-list fims-case-task").get(position - 1).$(".mat-list-item .mat-list-text h4").getText()).toEqual(taskDescription);
+    },
+    verifyOptionalTaskIsPresent: function(task, taskDescription, position){
+        expect($$("fims-case-tasks mat-list .mat-subheader").get(1).getText()).toEqual("Optional tasks");
+        expect($$("fims-case-tasks mat-list fims-case-task").get(position - 1).$(".mat-list-item .mat-list-text h3").getText()).toEqual(task);
+        expect($$("fims-case-tasks mat-list fims-case-task").get(position - 1).$(".mat-list-item .mat-list-text h4").getText()).toEqual(taskDescription);
+    },
+    verifyTaskAtPositionExecutedBy: function(position, executedBy){
+        expect($$("fims-case-tasks mat-list fims-case-task").get(position - 1).$(".mat-list-item .mat-list-text p").getText()).toMatch(executedBy);
+    },
+    verifyTaskAtPositionReversedBy: function(position, executedBy){
+        expect($$("fims-case-tasks mat-list fims-case-task").get(position - 1).$(".mat-list-item .mat-list-text p").getText()).toEqual(executedBy + ",");
     },
 };

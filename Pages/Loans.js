@@ -49,10 +49,13 @@ var rangeSegmentSelect = $("mat-select[formcontrolname='rangeSegmentIdentifier']
 var identifierInput = $("fims-id-input[controlname='identifier'] input");
 var taskNameInput = $("fims-text-input[controlname='name'] input");
 var taskDescriptionInput = $(".mat-input-infix textarea[formcontrolname='description']");
-var mandatoryCheckbox = $("mat-checkbox[formcontrolname='mandatory']");
-var fourEyesCheckbox = $("mat-checkbox[formcontrolname='fourEyes']");
+var mandatoryCheckbox = $("mat-checkbox[formcontrolname='mandatory'] span");
+var fourEyesCheckbox = $("mat-checkbox[formcontrolname='fourEyes'] span");
 var actionSelect1 = $("mat-select[formcontrolname='action'] .mat-select-trigger");
 var actionSelect2 = $$("mat-select[formcontrolname='action'] .mat-select-trigger").get(1);
+var actionSelect3 = $$("mat-select[formcontrolname='action'] .mat-select-trigger").get(2);
+var actionSelect4 = $$("mat-select[formcontrolname='action'] .mat-select-trigger").get(3);
+var actionSelect5 = $$("mat-select[formcontrolname='action'] .mat-select-trigger").get(4);
 
 var daysLateInputs = $$("fims-text-input[controlname='daysLate'] input");
 var percentProvisions = $$("fims-text-input[controlname='percentProvision'] input");
@@ -329,6 +332,14 @@ module.exports = {
         browser.wait(EC.visibilityOf($('a[href="'+ link + '"]')));
         $('a[href="'+ link + '"]').click();
     },
+    clickButtonEditTaskForLoanProduct: function(){
+        browser.wait(EC.visibilityOf($('a[title="Edit task"]')), 2000);
+        $('a[title="Edit task"]').click();
+    },
+    clickButtonDeleteTaskForLoanProduct: function(){
+        browser.wait(EC.visibilityOf($('a[title="Delete this task"]')), 2000);
+        $('a[title="Delete this task"]').click();
+    },
     enterTextIntoFeeAmountInputField: function(text) {
         browser.executeScript("arguments[0].scrollIntoView();", feeAmountInput.getWebElement());
         browser.wait(EC.visibilityOf(feeAmountInput), 5000);
@@ -348,12 +359,15 @@ module.exports = {
         identifierInput.click().sendKeys(text);
     },
     enterTextIntoTaskNameInputField: function(text) {
-        taskNameInput.click().sendKeys(text);
+        taskNameInput.clear().click().sendKeys(text);
     },
     enterTextIntoTaskDescriptionInputField: function(text) {
-        taskDescriptionInput.click().sendKeys(text);
+        taskDescriptionInput.clear().click().sendKeys(text);
     },
     checkMandatoryCheckbox: function(){
+        mandatoryCheckbox.click();
+    },
+    uncheckMandatoryCheckbox: function(){
         mandatoryCheckbox.click();
     },
     checkFourEyesCheckbox: function(){
@@ -365,6 +379,7 @@ module.exports = {
                 return text === "Add action";
             });
         }).click();
+        browser.sleep(1000);
     },
     clickButtonCancel: function(){
         $$("fims-layout-card-over button.mat-button").filter(function(elem, index) {
@@ -389,6 +404,15 @@ module.exports = {
             });
         }).click();
     },
+    clickEnabledUpdateTaskButton: function(){
+        browser.executeScript("arguments[0].scrollIntoView();", primaryButton.first().getWebElement());
+        browser.wait(EC.elementToBeClickable(primaryButton.first()), 3000);
+        primaryButton.filter(function(elem, index) {
+            return elem.$("span").getText().then(function(text) {
+                return text === "UPDATE TASK";
+            });
+        }).click();
+    },
     selectFirstAction: function(action){
         actionSelect1.click();
         browser.wait(EC.visibilityOf($(".mat-option")), 5000);
@@ -397,7 +421,22 @@ module.exports = {
     selectSecondAction: function(action){
             actionSelect2.click();
             browser.wait(EC.visibilityOf($(".mat-option")), 5000);
-            element(by.cssContainingText('.mat-option', action)).click();
+            element(by.cssContainingText('.mat-option-text', action)).click();
+    },
+    selectThirdAction: function(action){
+        actionSelect3.click();
+        browser.wait(EC.visibilityOf($(".mat-option")), 5000);
+        element(by.cssContainingText('.mat-option-text', action)).click();
+    },
+    selectFourthAction: function(action){
+        actionSelect4.click();
+        browser.wait(EC.visibilityOf($(".mat-option")), 5000);
+        element(by.cssContainingText('.mat-option-text', action)).click();
+    },
+    selectFifthAction: function(action){
+        actionSelect5.click();
+        browser.wait(EC.visibilityOf($(".mat-option")), 5000);
+        element(by.cssContainingText('.mat-option', action)).click();
     },
     clickButtonEnableProduct: function(){
         browser.wait(EC.elementToBeClickable($("td-message button")), 2000);
@@ -506,5 +545,38 @@ module.exports = {
                 return text === "REMOVE RANGE";
             });
         }).get(position-1).click();
+    },
+    //table loan tasks
+    verifyNameForTaskInRow: function(taskName, row){
+        browser.wait(EC.visibilityOf($("table tbody")), 3000);
+        expect($$("table tbody tr").get(row - 1).$$(".td-data-table-cell").get(1).getText()).toEqual(taskName);
+    },
+    //details task
+    verifyActionsForTask: function(actions) {
+        expect($$("fims-layout-card-over .mat-list-text").filter(function (elem, index) {
+            return elem.$("h3").getText().then(function (text) {
+                return text === "Actions";
+            });
+        }).first().$("p").getText().then(function (text) {
+            return text === actions;
+        })).toBe(true);
+    },
+    verifyMandatoryForTask: function(boolean) {
+        expect($$("fims-layout-card-over .mat-list-text").filter(function (elem, index) {
+            return elem.$("h3").getText().then(function (text) {
+                return text === "Mandatory";
+            });
+        }).first().$("p").getText().then(function (text) {
+            return text === boolean;
+        })).toBe(true);
+    },
+    verifyFourEyesForTask: function(boolean) {
+        expect($$("fims-layout-card-over .mat-list-text").filter(function (elem, index) {
+            return elem.$("h3").getText().then(function (text) {
+                return text === "Four eyes";
+            });
+        }).first().$("p").getText().then(function (text) {
+            return text === boolean;
+        })).toBe(true);
     },
 };
