@@ -369,7 +369,6 @@ describe('Loans 3', function() {
         //remove actions
         Loans.clickFirstRemoveButton();
         Loans.clickFirstRemoveButton();
-        Loans.clickFirstRemoveButton();
         Loans.clickEnabledUpdateTaskButton();
         Common.verifyMessagePopupIsDisplayed("Task is going to be created");
         Loans.verifyActionsForTask("APPROVE,CLOSE,OPEN");

@@ -24,6 +24,7 @@ describe('payrolls', function() {
     depositName = helper.getRandomString(8);
     tellerIdentifier = helper.getRandomString(4);
     chequeReceivablesAccount = "ChequeReceivables_" + helper.getRandomString(4);
+    cashOverShortAccount = helper.getRandomString(4);
     payrollAccount = "Payroll_" + helper.getRandomString(4);
     tellerAccount = "Teller_" + helper.getRandomString(4);
     headquarterIdentifier = "hqo1";
@@ -62,6 +63,14 @@ describe('payrolls', function() {
         Accounting.enterTextIntoAccountIdentifierInputField(payrollAccount);
         Accounting.verifyRadioAssetToBeSelected();
         Accounting.enterTextIntoAccountNameInputField("Cash account for payroll distributions");
+        Accounting.clickButtonCreateAccount();
+        Common.verifyMessagePopupIsDisplayed("Account is going to be saved");
+        Accounting.goToAccountingViaSidePanel();
+        Common.clickLinkShowForRowWithId("2000");
+        Common.clickLinkShowForRowWithId("3300");
+        Accounting.clickCreateNewAccountInLedger("3300");
+        Accounting.enterTextIntoAccountIdentifierInputField(cashOverShortAccount);
+        Accounting.enterTextIntoAccountNameInputField("Cash over short account");
         Accounting.clickButtonCreateAccount();
         Common.verifyMessagePopupIsDisplayed("Account is going to be saved");
     });
@@ -116,6 +125,7 @@ describe('payrolls', function() {
         Offices.enterTextIntoTellerAccountInputFieldAndSelectMatchingEntry(tellerAccount);
         Offices.enterTextIntoVaultAccountInputFieldAndSelectMatchingEntry("7351");
         Offices.enterTextIntoChequesReceivableAccountInputFieldAndSelectMatchingEntry(chequeReceivablesAccount);
+        Offices.enterTextIntoCashOverShortInputFieldAndSelectMatchingEntry(cashOverShortAccount);
         Offices.clickCreateTellerButton();
         Common.verifyMessagePopupIsDisplayed("Teller is going to be saved");
         //workaround for current bug that teller is not always listed immediately
@@ -460,7 +470,6 @@ describe('payrolls', function() {
         //verify details
         Payroll.verifyCreatedByForPayrollInRow(employeeIdentifier, 1);
         Payroll.verifyAccountNumberForPayrollInRow(payrollAccount, 1);
-        //created by
         Common.clickLinkShowForFirstRowInTable();
         //verify details
         Payroll.verifyMemberIDForPaymentInRow(customerAccount, 1);
