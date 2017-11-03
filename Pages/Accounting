@@ -52,6 +52,7 @@ module.exports = {
     goToChequeClearing: function() {
         browser.wait(EC.visibilityOf($("a[href='/accounting/cheques']")), 3000);
         $("a[href='/accounting/cheques']").click();
+        browser.sleep(1000);
     },
     goToTrialBalance: function() {
         browser.wait(EC.visibilityOf($("a[href='/accounting/trialBalance']")), 3000);
